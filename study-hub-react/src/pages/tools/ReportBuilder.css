@@ -1,0 +1,325 @@
+.report-builder-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);
+    /* Adjust based on navbar */
+    background: var(--bg-dark);
+    color: white;
+}
+
+.report-header {
+    height: 70px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    background: var(--card-bg);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.icon-wrapper {
+    background: rgba(0, 243, 255, 0.1);
+    color: var(--primary-color);
+    padding: 0.6rem;
+    border-radius: 8px;
+}
+
+.report-title-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    width: 300px;
+}
+
+.report-title-input:focus {
+    outline: none;
+    border-bottom-color: var(--primary-color);
+}
+
+.report-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: black;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid var(--border-color);
+}
+
+/* Workspace */
+.report-workspace {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.report-sidebar {
+    width: 300px;
+    border-right: 1px solid var(--border-color);
+    background: var(--card-bg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.report-sidebar h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.outline-item {
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.outline-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.outline-item.active {
+    background: rgba(0, 243, 255, 0.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* Severity Markers */
+.outline-item.severity-critical {
+    border-left: 3px solid #ff4757;
+}
+
+.outline-item.severity-high {
+    border-left: 3px solid #ff6b6b;
+}
+
+.outline-item.severity-medium {
+    border-left: 3px solid #ffa502;
+}
+
+.outline-item.severity-low {
+    border-left: 3px solid #2ed573;
+}
+
+.outline-item.severity-info {
+    border-left: 3px solid #1e90ff;
+}
+
+.findings-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 2rem;
+}
+
+.findings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    color: white;
+}
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #ff4757;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.outline-item:hover .delete-btn {
+    opacity: 1;
+}
+
+.templates-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+}
+
+.template-chips {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.template-chips button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.template-chips button:hover {
+    background: var(--primary-color);
+    color: black;
+}
+
+/* Editor */
+.report-editor {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    background: #0a0a0a;
+}
+
+.editor-section {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.full-editor {
+    width: 100%;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: none;
+}
+
+.finding-editor {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.finding-header-inputs {
+    display: flex;
+    gap: 1rem;
+}
+
+.input-title {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 0.8rem;
+    color: white;
+    border-radius: 6px;
+    font-size: 1.1rem;
+}
+
+.input-severity {
+    background: #1a1a1a;
+    color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0 1rem;
+}
+
+.markdown-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    height: 400px;
+}
+
+.split-pane {
+    display: flex;
+    flex-direction: column;
+}
+
+.split-pane label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.split-pane textarea {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 1rem;
+    border-radius: 6px;
+    resize: none;
+}
+
+.evidence-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.evidence-section textarea {
+    height: 150px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    background: #000;
+    border: 1px solid var(--border-color);
+    color: #00ff9d;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.helper-text {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}

@@ -100,6 +100,14 @@ except ImportError:
     register_docker_routes = None
     print("⚠ Docker Routes: NOT AVAILABLE")
 
+# Import report routes
+try:
+    from reports_routes import register_report_routes
+    print("✓ Report Routes: READY")
+except ImportError:
+    register_report_routes = None
+    print("⚠ Report Routes: NOT AVAILABLE")
+
 
 def create_app(config_name=None):
     """Application factory pattern"""
@@ -636,6 +644,10 @@ if register_admin_routes:
 # Register docker routes
 if register_docker_routes:
     register_docker_routes(app)
+
+# Register report routes
+if register_report_routes:
+    register_report_routes(app)
 
 # ==================== AUTOMATION API ====================
 

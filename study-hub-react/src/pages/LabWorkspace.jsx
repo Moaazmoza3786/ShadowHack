@@ -103,6 +103,15 @@ const LabWorkspace = () => {
                             <Copy size={12} />
                         </button>
                     </div>
+
+                    <button
+                        onClick={() => navigate(`/tools/report-builder?lab_id=${id}`)}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded bg-primary-600/10 border border-primary-500/20 text-primary-500 hover:bg-primary-600 hover:text-white transition-colors text-xs font-bold uppercase"
+                    >
+                        <FileText size={14} />
+                        Report Finding
+                    </button>
+
                     <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                         <span className="text-[10px] font-bold text-green-500 uppercase tracking-widest">System Active</span>

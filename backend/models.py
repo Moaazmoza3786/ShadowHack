@@ -431,8 +431,65 @@ class LabSubmission(db.Model):
     time_to_solve_seconds = db.Column(db.Integer)
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+
+# ==================== REPORTING MODELS ====================
+
+class Report(db.Model):
+    """Vulnerability Reports"""
+    __tablename__ = 'reports'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    lab_id = db.Column(db.Integer, db.ForeignKey('labs.id'), nullable=True) # Optional link to a lab
+    
+    title = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(20), default='draft') # draft, submitted, approved, rejected
+    executive_summary = db.Column(db.Text)
+    
+    # Meta
+    report_date = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    findings = db.relationship('Finding', backref='report', lazy='dynamic', cascade='all, delete-orphan')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'status': self.status,
+            'report_date': self.report_date.isoformat(),
+            'finding_count': self.findings.count(),
+            'lab_id': self.lab_id
+        }
+
+class Finding(db.Model):
+    """Individual Vulnerability Finding"""
+    __tablename__ = 'findings'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
+    
+    title = db.Column(db.String(200), nullable=False)
+    severity = db.Column(db.String(20), default='Low') # Critical, High, Medium, Low, Info
+    description = db.Column(db.Text)
+    remediation = db.Column(db.Text)
+    evidence = db.Column(db.Text) # Base64 image or text log
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'severity': self.severity,
+            'description': self.description,
+            'remediation': self.remediation
+        }
 
 # ==================== QUIZ MODELS ====================
 

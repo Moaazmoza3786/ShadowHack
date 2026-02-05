@@ -141,6 +141,7 @@ function App() {
                   <Route path="/tools/finding-reporter" element={<FindingReporter />} />
                   <Route path="/tools/cve-radar" element={<CVERadar />} />
                   <Route path="/tools/cve-museum" element={<CVEMuseum />} />
+                  <Route path="/tools/report-builder" element={<ReportBuilder />} />
                   <Route path="/tools/hash-identifier" element={<HashIdentifier />} />
                   <Route path="/tools/subnet-calc" element={<SubnetCalculator />} />
                   <Route path="/tools/xss-payloads" element={<XSSPayloads />} />
