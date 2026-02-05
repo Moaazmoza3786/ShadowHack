@@ -1,0 +1,352 @@
+.profile-container {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.profile-container.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    color: var(--text-secondary);
+}
+
+/* Header */
+.profile-header {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.avatar-section {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+}
+
+.level-badge {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-color);
+    color: black;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 0.75rem;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.name-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.name-section h1 {
+    margin: 0;
+    font-size: 1.75rem;
+}
+
+.rank-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.bio {
+    color: var(--text-secondary);
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+}
+
+.profile-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.profile-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.profile-meta a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-self: flex-start;
+}
+
+.edit-btn,
+.save-btn,
+.cancel-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.edit-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: white;
+}
+
+.save-btn {
+    background: var(--primary-color);
+    border: none;
+    color: black;
+}
+
+.cancel-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.edit-input,
+.edit-textarea,
+.edit-input-small {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: white;
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-size: inherit;
+}
+
+.edit-input {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.edit-textarea {
+    width: 100%;
+    min-height: 60px;
+    resize: vertical;
+    margin-bottom: 0.5rem;
+}
+
+.edit-input-small {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.stat-icon {
+    margin-bottom: 0.5rem;
+}
+
+.stat-icon.xp {
+    color: var(--primary-color);
+}
+
+.stat-icon.labs {
+    color: var(--secondary-color);
+}
+
+.stat-icon.achievements {
+    color: #ffd700;
+}
+
+.stat-icon.streak {
+    color: #ff6b6b;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* Team Card */
+.team-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: linear-gradient(135deg, rgba(0, 255, 157, 0.1), rgba(0, 243, 255, 0.1));
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.team-card svg {
+    color: var(--primary-color);
+}
+
+.team-tag {
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+.team-name {
+    font-weight: 600;
+}
+
+.team-role {
+    margin-left: auto;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* Tabs */
+.profile-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 6px 6px 0 0;
+}
+
+.tab-btn:hover {
+    color: white;
+}
+
+.tab-btn.active {
+    color: var(--secondary-color);
+    background: rgba(0, 243, 255, 0.1);
+}
+
+/* Tab Content */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.achievement-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.achievement-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
+
+.achievement-info h4 {
+    margin: 0 0 0.25rem;
+    font-size: 0.9rem;
+}
+
+.achievement-info span {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+}
+
+.empty-text {
+    color: var(--text-secondary);
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+}
+
+.settings-section,
+.overview-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.spin {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

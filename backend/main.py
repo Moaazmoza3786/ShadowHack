@@ -59,6 +59,14 @@ except ImportError:
     register_notification_routes = None
     print("⚠ Notification Routes: NOT AVAILABLE")
 
+# Import profile routes
+try:
+    from profile_routes import register_profile_routes
+    print("✓ Profile Routes: READY")
+except ImportError:
+    register_profile_routes = None
+    print("⚠ Profile Routes: NOT AVAILABLE")
+
 
 def create_app(config_name=None):
     """Application factory pattern"""
@@ -575,6 +583,10 @@ if register_assessment_routes:
 # Register notification routes
 if register_notification_routes:
     register_notification_routes(app)
+
+# Register profile routes
+if register_profile_routes:
+    register_profile_routes(app)
 
 # ==================== AUTOMATION API ====================
 

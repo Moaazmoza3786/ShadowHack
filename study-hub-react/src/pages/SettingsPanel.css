@@ -1,0 +1,255 @@
+.settings-container {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.settings-container.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    color: var(--text-secondary);
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-icon {
+    color: var(--secondary-color);
+}
+
+.settings-header h1 {
+    font-size: 1.75rem;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.highlight {
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--secondary-color);
+}
+
+.settings-header p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.settings-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2rem;
+}
+
+/* Sidebar Nav */
+.settings-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.875rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.nav-item.active {
+    background: rgba(0, 243, 255, 0.1);
+    color: var(--secondary-color);
+    border-left: 3px solid var(--secondary-color);
+}
+
+/* Content Area */
+.settings-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.settings-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.1rem;
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.setting-row:last-child {
+    border-bottom: none;
+}
+
+.setting-label {
+    color: var(--text-primary);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    width: 48px;
+    height: 26px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 13px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+}
+
+.toggle-switch.active {
+    background: var(--primary-color);
+}
+
+.toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: left 0.2s;
+}
+
+.toggle-switch.active .toggle-thumb {
+    left: 25px;
+}
+
+/* Select */
+.setting-select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.setting-select option {
+    background: var(--bg-primary);
+}
+
+/* Security Options */
+.security-option {
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.security-option h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+}
+
+.security-option p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0 0 1rem;
+}
+
+.action-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Save Button */
+.save-settings-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.save-settings-btn:hover {
+    filter: brightness(1.1);
+}
+
+.save-settings-btn.saved {
+    background: #4ecdc4;
+}
+
+.save-settings-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.spin {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .settings-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 0.25rem;
+    }
+
+    .nav-item {
+        flex-shrink: 0;
+    }
+}
