@@ -1117,3 +1117,85 @@ class UserMissionProgress(db.Model):
     
     user = db.relationship('User', backref=db.backref('mission_progress', lazy='dynamic'))
     mission = db.relationship('Mission', backref=db.backref('user_progress', lazy='dynamic'))
+
+
+# ==================== NOTIFICATION & ACTIVITY MODELS (Phase 10) ====================
+
+class Notification(db.Model):
+    """User notifications"""
+    __tablename__ = 'notifications'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    
+    # Notification content
+    title = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text)
+    icon = db.Column(db.String(50), default='bell')  # icon name
+    
+    # Type and category
+    notification_type = db.Column(db.String(50), default='info')  # info, success, warning, achievement
+    category = db.Column(db.String(50))  # system, social, achievement, mission
+    
+    # Link to related content
+    action_url = db.Column(db.String(500))
+    action_label = db.Column(db.String(100))
+    
+    # Status
+    is_read = db.Column(db.Boolean, default=False, index=True)
+    read_at = db.Column(db.DateTime)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    
+    user = db.relationship('User', backref=db.backref('notifications', lazy='dynamic'))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'message': self.message,
+            'icon': self.icon,
+            'type': self.notification_type,
+            'category': self.category,
+            'action_url': self.action_url,
+            'action_label': self.action_label,
+            'is_read': self.is_read,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+
+
+class ActivityFeed(db.Model):
+    """Public activity feed for social features"""
+    __tablename__ = 'activity_feed'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    
+    # Activity details
+    activity_type = db.Column(db.String(50), nullable=False)  # lab_complete, achievement, level_up, team_join
+    content = db.Column(db.Text)
+    
+    # Related entities
+    related_id = db.Column(db.Integer)
+    related_type = db.Column(db.String(50))  # lab, achievement, team, etc.
+    
+    # Visibility
+    is_public = db.Column(db.Boolean, default=True)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    
+    user = db.relationship('User', backref=db.backref('activities', lazy='dynamic'))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'username': self.user.username if self.user else None,
+            'avatar_url': self.user.avatar_url if self.user else None,
+            'activity_type': self.activity_type,
+            'content': self.content,
+            'related_id': self.related_id,
+            'related_type': self.related_type,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+
