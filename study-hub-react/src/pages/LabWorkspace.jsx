@@ -9,11 +9,11 @@ import {
     BookOpen,
     Shield,
     Cpu,
-    Activity,
     CheckCircle2,
     Copy,
     Server
 } from 'lucide-react';
+import LabControlPanel from '../components/LabControlPanel';
 
 const LabWorkspace = () => {
     const { id } = useParams();
@@ -111,9 +111,15 @@ const LabWorkspace = () => {
 
             {/* Split View */}
             <div className="flex-1 flex overflow-hidden">
-                {/* Left Panel: Guide & Tasks */}
-                <div className="w-1/3 min-w-[350px] max-w-[500px] border-r border-white/5 bg-dark-800/20 flex flex-col">
-                    <div className="p-6 overflow-y-auto scrollbar-cyber flex-1 space-y-8">
+                {/* Left Panel - Guide & Controls */}
+                <div className="col-span-4 bg-[#0a0a0a] border-r border-white/5 flex flex-col overflow-hidden">
+                    <div className="p-6 overflow-y-auto custom-scrollbar">
+                        <LabControlPanel
+                            labId={id}
+                            userId={user?.id || 1}
+                            onStatusChange={(status) => console.log('Lab status:', status)}
+                        />
+
                         {/* Objectives */}
                         <div className="space-y-4">
                             <h2 className="flex items-center gap-2 text-sm font-black text-gray-400 uppercase tracking-widest">

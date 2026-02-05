@@ -91,6 +91,14 @@ except ImportError:
     register_admin_routes = None
     print("⚠ Admin Routes: NOT AVAILABLE")
 
+# Import docker routes
+try:
+    from docker_routes import register_docker_routes
+    print("✓ Docker Routes: READY")
+except ImportError:
+    register_docker_routes = None
+    print("⚠ Docker Routes: NOT AVAILABLE")
+
 
 def create_app(config_name=None):
     """Application factory pattern"""
@@ -623,6 +631,10 @@ if register_chat_routes:
 # Register admin routes
 if register_admin_routes:
     register_admin_routes(app)
+
+# Register docker routes
+if register_docker_routes:
+    register_docker_routes(app)
 
 # ==================== AUTOMATION API ====================
 
