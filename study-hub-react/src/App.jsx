@@ -68,6 +68,8 @@ import SkillAssessment from './pages/SkillAssessment';
 import ActivityFeed from './pages/ActivityFeed';
 import UserProfile from './pages/UserProfile';
 import SettingsPanel from './pages/SettingsPanel';
+import Bookmarks from './pages/Bookmarks';
+import GlobalSearch from './components/GlobalSearch';
 import RedTeamPath from './pages/paths/RedTeamPath';
 import BlueTeamPath from './pages/paths/BlueTeamPath';
 import SOCPath from './pages/paths/SOCPath';
@@ -161,6 +163,7 @@ function App() {
                   <Route path="/activity" element={<ActivityFeed />} />
                   <Route path="/profile" element={<UserProfile />} />
                   <Route path="/settings" element={<SettingsPanel />} />
+                  <Route path="/bookmarks" element={<Bookmarks />} />
 
                   <Route path="/paths/red" element={<RedTeamPath />} />
                   <Route path="/paths/blue" element={<BlueTeamPath />} />

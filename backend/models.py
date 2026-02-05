@@ -1199,3 +1199,38 @@ class ActivityFeed(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
 
+
+# ==================== SEARCH & BOOKMARK MODELS (Phase 12) ====================
+
+class Bookmark(db.Model):
+    """User bookmarks for quick access"""
+    __tablename__ = 'bookmarks'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    
+    # Bookmarked item details
+    item_type = db.Column(db.String(50), nullable=False)  # lab, course, tool, team
+    item_id = db.Column(db.Integer, nullable=False)
+    
+    # Metadata for display without joining everything
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(500))
+    path = db.Column(db.String(200))  # frontend route path
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref=db.backref('bookmarks', lazy='dynamic'))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'type': self.item_type,
+            'item_id': self.item_id,
+            'title': self.title,
+            'description': self.description,
+            'path': self.path,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+
+
