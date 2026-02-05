@@ -27,6 +27,14 @@ except ImportError:
     automation_manager = None
     print("⚠ Automation Manager: NOT AVAILABLE")
 
+# Import team routes
+try:
+    from teams_routes import register_team_routes
+    print("✓ Team Routes: READY")
+except ImportError:
+    register_team_routes = None
+    print("⚠ Team Routes: NOT AVAILABLE")
+
 
 def create_app(config_name=None):
     """Application factory pattern"""
@@ -527,6 +535,10 @@ def seed_v2_data():
 # It must be at module level (outside if __name__ == '__main__')
 app = create_app()
 init_database(app)
+
+# Register team routes
+if register_team_routes:
+    register_team_routes(app)
 
 # ==================== AUTOMATION API ====================
 

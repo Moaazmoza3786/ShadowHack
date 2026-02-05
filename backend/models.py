@@ -992,3 +992,128 @@ class Challenge(db.Model):
             'files_url': self.files_url,
             'difficulty': self.difficulty
         }
+
+# ==================== TEAM & MISSION MODELS (Phase 8) ====================
+
+class Team(db.Model):
+    """Squads/Teams for collaborative play"""
+    __tablename__ = 'teams'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False, index=True)
+    tag = db.Column(db.String(10), unique=True, nullable=False)  # e.g., [SHK]
+    description = db.Column(db.Text)
+    avatar_url = db.Column(db.String(500))
+    banner_url = db.Column(db.String(500))
+    
+    # Team stats
+    total_xp = db.Column(db.Integer, default=0)
+    wins = db.Column(db.Integer, default=0)
+    losses = db.Column(db.Integer, default=0)
+    
+    # Ownership
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+    # Privacy
+    is_public = db.Column(db.Boolean, default=True)
+    invite_code = db.Column(db.String(20), unique=True)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    members = db.relationship('TeamMember', backref='team', lazy='dynamic', cascade='all, delete-orphan')
+    owner = db.relationship('User', backref='owned_teams')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'tag': self.tag,
+            'description': self.description,
+            'avatar_url': self.avatar_url,
+            'total_xp': self.total_xp,
+            'wins': self.wins,
+            'losses': self.losses,
+            'member_count': self.members.count(),
+            'owner_id': self.owner_id,
+            'is_public': self.is_public
+        }
+
+
+class TeamMember(db.Model):
+    """Team membership records"""
+    __tablename__ = 'team_members'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    
+    role = db.Column(db.String(20), default='member')  # owner, captain, member
+    contribution_xp = db.Column(db.Integer, default=0)
+    
+    joined_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    __table_args__ = (db.UniqueConstraint('team_id', 'user_id'),)
+    
+    # Relationship to user
+    user = db.relationship('User', backref=db.backref('team_memberships', lazy='dynamic'))
+
+
+class Mission(db.Model):
+    """Daily/Weekly gamified missions"""
+    __tablename__ = 'missions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    
+    # Mission type
+    mission_type = db.Column(db.String(20), default='daily')  # daily, weekly, event
+    category = db.Column(db.String(50))  # ctf, labs, learning, social
+    
+    # Objective (e.g., "solve_labs:3", "earn_xp:500")
+    objective_type = db.Column(db.String(50), nullable=False)
+    objective_target = db.Column(db.Integer, default=1)
+    
+    # Rewards
+    xp_reward = db.Column(db.Integer, default=100)
+    badge_id = db.Column(db.Integer, db.ForeignKey('achievements.id'), nullable=True)
+    
+    # Availability
+    starts_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime, nullable=True)
+    
+    is_active = db.Column(db.Boolean, default=True)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'mission_type': self.mission_type,
+            'category': self.category,
+            'objective_type': self.objective_type,
+            'objective_target': self.objective_target,
+            'xp_reward': self.xp_reward,
+            'starts_at': self.starts_at.isoformat() if self.starts_at else None,
+            'expires_at': self.expires_at.isoformat() if self.expires_at else None
+        }
+
+
+class UserMissionProgress(db.Model):
+    """Track user progress on missions"""
+    __tablename__ = 'user_mission_progress'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    mission_id = db.Column(db.Integer, db.ForeignKey('missions.id'), nullable=False, index=True)
+    
+    current_progress = db.Column(db.Integer, default=0)
+    is_completed = db.Column(db.Boolean, default=False, index=True)
+    completed_at = db.Column(db.DateTime, nullable=True)
+    
+    __table_args__ = (db.UniqueConstraint('user_id', 'mission_id'),)
+    
+    user = db.relationship('User', backref=db.backref('mission_progress', lazy='dynamic'))
+    mission = db.relationship('Mission', backref=db.backref('user_progress', lazy='dynamic'))
