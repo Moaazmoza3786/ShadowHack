@@ -99,6 +99,10 @@ class User(db.Model):
             if self.level >= level_threshold:
                 self.current_rank = rank
                 break
+
+    # Admin Control
+    role = db.Column(db.String(20), default='user') # user, admin, moderator
+    is_banned = db.Column(db.Boolean, default=False)
     
     def to_dict(self, include_email=False):
         """Convert to dictionary for JSON response"""
@@ -345,6 +349,9 @@ class Lab(db.Model):
     # Writeup
     writeup_html = db.Column(db.Text)
     writeup_html_ar = db.Column(db.Text)
+    
+    # Admin Control
+    is_banned = db.Column(db.Boolean, default=False)
     
     # Stats
     total_attempts = db.Column(db.Integer, default=0)

@@ -83,6 +83,14 @@ except ImportError:
     register_chat_routes = None
     print("⚠ Chat Routes: NOT AVAILABLE")
 
+# Import admin routes
+try:
+    from admin_routes import register_admin_routes
+    print("✓ Admin Routes: READY")
+except ImportError:
+    register_admin_routes = None
+    print("⚠ Admin Routes: NOT AVAILABLE")
+
 
 def create_app(config_name=None):
     """Application factory pattern"""
@@ -611,6 +619,10 @@ if register_search_routes:
 # Register chat routes
 if register_chat_routes:
     register_chat_routes(app)
+
+# Register admin routes
+if register_admin_routes:
+    register_admin_routes(app)
 
 # ==================== AUTOMATION API ====================
 
