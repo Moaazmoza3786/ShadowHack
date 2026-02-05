@@ -18,6 +18,15 @@ from auth_routes import auth_bp
 from leagues_routes import leagues_bp
 from subscription_routes import subscription_bp
 
+# Import automation manager
+try:
+    from automation_manager import get_automation_manager
+    automation_manager = get_automation_manager()
+    print("✓ Automation Manager: INITIALIZED")
+except ImportError:
+    automation_manager = None
+    print("⚠ Automation Manager: NOT AVAILABLE")
+
 
 def create_app(config_name=None):
     """Application factory pattern"""
@@ -518,6 +527,62 @@ def seed_v2_data():
 # It must be at module level (outside if __name__ == '__main__')
 app = create_app()
 init_database(app)
+
+# ==================== AUTOMATION API ====================
+
+@app.route('/api/automation/scan', methods=['POST'])
+def start_scan():
+    if not automation_manager:
+        return jsonify({'success': False, 'error': 'Automation manager not available'}), 503
+    
+    data = request.json
+    target = data.get('target')
+    scan_type = data.get('type', 'nmap')
+    args = data.get('args', '-F')
+    
+    if not target:
+        return jsonify({'success': False, 'error': 'Target required'}), 400
+        
+    if scan_type == 'nmap':
+        result = automation_manager.run_nmap_scan(target, args)
+        return jsonify(result)
+    
+    return jsonify({'success': False, 'error': 'Unsupported scan type'}), 400
+
+@app.route('/api/automation/tasks/<task_id>', methods=['GET'])
+def get_task_info(task_id):
+    if not automation_manager:
+        return jsonify({'success': False, 'error': 'Automation manager not available'}), 503
+    
+    result = automation_manager.get_task_status(task_id)
+    return jsonify(result)
+
+@app.route('/api/automation/active', methods=['GET'])
+def list_active_automation():
+    if not automation_manager:
+        return jsonify({'success': False, 'error': 'Automation manager not available'}), 503
+        
+    return jsonify({'success': True, 'tasks': automation_manager.list_active_tasks()})
+
+@app.route('/api/automation/active', methods=['GET'])
+def list_active_automation():
+    if not automation_manager:
+        return jsonify({'success': False, 'error': 'Automation manager not available'}), 503
+        
+    return jsonify({'success': True, 'tasks': automation_manager.list_active_tasks()})
+
+@app.route('/api/automation/analyze', methods=['POST'])
+def analyze_automation_result():
+    if not automation_manager:
+        return jsonify({'success': False, 'error': 'Automation manager not available'}), 503
+    
+    data = request.json
+    output = data.get('output')
+    if not output:
+        return jsonify({'success': False, 'error': 'Output required for analysis'}), 400
+        
+    result = automation_manager.analyze_scan_with_ai(output)
+    return jsonify(result)
 
 if __name__ == '__main__':
     # Local development server

@@ -60,6 +60,7 @@ import C2CommandCenter from './pages/tools/C2CommandCenter';
 import CloudSecurityPro from './pages/tools/CloudSecurityPro';
 import LandingNode from './pages/tools/LandingNode';
 import CyberIntel from './pages/CyberIntel';
+import CyberOpsDashboard from './pages/CyberOpsDashboard';
 import RedTeamPath from './pages/paths/RedTeamPath';
 import BlueTeamPath from './pages/paths/BlueTeamPath';
 import SOCPath from './pages/paths/SOCPath';
@@ -145,6 +146,7 @@ function App() {
                   <Route path="/tools/c2-red-ops" element={<C2CommandCenter />} />
                   <Route path="/tools/cloud-security" element={<CloudSecurityPro />} />
                   <Route path="/cyber-intel" element={<CyberIntel />} />
+                  <Route path="/cyber-ops" element={<CyberOpsDashboard />} />
 
                   <Route path="/paths/red" element={<RedTeamPath />} />
                   <Route path="/paths/blue" element={<BlueTeamPath />} />
