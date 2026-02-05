@@ -45,6 +45,7 @@ class User(db.Model):
     # Subscription
     subscription_tier = db.Column(db.String(20), default='free', nullable=False)  # free, monthly, annual
     subscription_expires_at = db.Column(db.DateTime, nullable=True)
+    max_concurrent_labs = db.Column(db.Integer, default=1, nullable=False)
     
     # Account Status
     is_active = db.Column(db.Boolean, default=True)
@@ -398,16 +399,16 @@ class LabSubmission(db.Model):
     __tablename__ = 'lab_submissions'
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    lab_id = db.Column(db.Integer, db.ForeignKey('labs.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    lab_id = db.Column(db.Integer, db.ForeignKey('labs.id'), nullable=False, index=True)
     
     user_input_flag = db.Column(db.String(500))
-    is_correct = db.Column(db.Boolean, default=False, nullable=False)
+    is_correct = db.Column(db.Boolean, default=False, nullable=False, index=True)
     
     # Instance info
-    instance_id = db.Column(db.String(100))
+    instance_id = db.Column(db.String(100), index=True)
     instance_ip = db.Column(db.String(50))
-    instance_started_at = db.Column(db.DateTime)
+    instance_started_at = db.Column(db.DateTime, index=True)
     instance_ended_at = db.Column(db.DateTime)
     
     # Hints used
@@ -419,7 +420,7 @@ class LabSubmission(db.Model):
     xp_awarded = db.Column(db.Integer, default=0)
     
     # Time tracking
-    attempt_time = db.Column(db.DateTime, default=datetime.utcnow)
+    attempt_time = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     time_to_solve_seconds = db.Column(db.Integer)
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

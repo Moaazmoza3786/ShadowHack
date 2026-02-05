@@ -178,6 +178,9 @@ def init_database(app):
         # Create all tables
         db.create_all()
         
+        # Update quotas for existing users
+        update_user_quotas()
+        
         # Check if we need to seed data
         from models import Domain, Achievement, League
         
@@ -216,6 +219,17 @@ def seed_leagues():
         league = League(**data)
         db.session.add(league)
     
+    db.session.commit()
+
+def update_user_quotas():
+    """Update existing users to have default quotas if missing"""
+    from models import User
+    users = User.query.filter_by(max_concurrent_labs=None).all()
+    for user in users:
+        if user.subscription_tier in ['monthly', 'annual']:
+            user.max_concurrent_labs = 3
+        else:
+            user.max_concurrent_labs = 1
     db.session.commit()
 
 
