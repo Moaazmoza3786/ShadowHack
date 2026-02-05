@@ -35,6 +35,22 @@ except ImportError:
     register_team_routes = None
     print("⚠ Team Routes: NOT AVAILABLE")
 
+# Import analytics routes
+try:
+    from analytics_routes import register_analytics_routes
+    print("✓ Analytics Routes: READY")
+except ImportError:
+    register_analytics_routes = None
+    print("⚠ Analytics Routes: NOT AVAILABLE")
+
+# Import assessments routes
+try:
+    from assessments_routes import register_assessment_routes
+    print("✓ Assessment Routes: READY")
+except ImportError:
+    register_assessment_routes = None
+    print("⚠ Assessment Routes: NOT AVAILABLE")
+
 
 def create_app(config_name=None):
     """Application factory pattern"""
@@ -539,6 +555,14 @@ init_database(app)
 # Register team routes
 if register_team_routes:
     register_team_routes(app)
+
+# Register analytics routes
+if register_analytics_routes:
+    register_analytics_routes(app)
+
+# Register assessment routes
+if register_assessment_routes:
+    register_assessment_routes(app)
 
 # ==================== AUTOMATION API ====================
 

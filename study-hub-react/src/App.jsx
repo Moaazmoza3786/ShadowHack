@@ -63,6 +63,8 @@ import CyberIntel from './pages/CyberIntel';
 import CyberOpsDashboard from './pages/CyberOpsDashboard';
 import TeamsHub from './pages/TeamsHub';
 import DailyMissions from './pages/DailyMissions';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import SkillAssessment from './pages/SkillAssessment';
 import RedTeamPath from './pages/paths/RedTeamPath';
 import BlueTeamPath from './pages/paths/BlueTeamPath';
 import SOCPath from './pages/paths/SOCPath';
@@ -151,6 +153,8 @@ function App() {
                   <Route path="/cyber-ops" element={<CyberOpsDashboard />} />
                   <Route path="/teams" element={<TeamsHub />} />
                   <Route path="/missions" element={<DailyMissions />} />
+                  <Route path="/analytics" element={<AnalyticsDashboard />} />
+                  <Route path="/assessments" element={<SkillAssessment />} />
 
                   <Route path="/paths/red" element={<RedTeamPath />} />
                   <Route path="/paths/blue" element={<BlueTeamPath />} />

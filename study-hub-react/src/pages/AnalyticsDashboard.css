@@ -1,0 +1,229 @@
+.analytics-container {
+    padding: 2rem;
+    min-height: calc(100vh - 80px);
+}
+
+.analytics-container.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.analytics-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-icon {
+    color: var(--secondary-color);
+}
+
+.analytics-header h1 {
+    font-size: 1.75rem;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.highlight {
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--secondary-color);
+}
+
+.analytics-header p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Stat Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-left-width: 3px;
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.stat-sub {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+/* Chart Sections */
+.chart-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-section h2 {
+    font-size: 1rem;
+    margin: 0 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.xp-chart {
+    height: 200px;
+}
+
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 100%;
+    gap: 4px;
+}
+
+.bar-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.bar {
+    width: 100%;
+    max-width: 20px;
+    background: linear-gradient(to top, var(--primary-color), var(--secondary-color));
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+    transition: height 0.3s ease;
+}
+
+.bar:hover {
+    filter: brightness(1.2);
+}
+
+.bar-label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+.empty-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-secondary);
+    gap: 0.5rem;
+}
+
+/* Heatmap */
+.heatmap {
+    padding: 1rem 0;
+}
+
+.heatmap-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+
+.heatmap-cell {
+    width: 14px;
+    height: 14px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+/* Rank Section */
+.rank-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 255, 157, 0.1), rgba(0, 243, 255, 0.1));
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.rank-icon {
+    color: var(--primary-color);
+}
+
+.rank-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.rank-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.rank-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.spin {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
