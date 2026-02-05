@@ -1,0 +1,35 @@
+---
+title: IDOR & Broken Access Control
+description: Accessing data you shouldn't see.
+---
+
+# IDOR & Broken Access Control
+
+**IDOR** (Insecure Direct Object Reference) is a type of access control vulnerability that occurs when an application uses user-supplied input to access objects directly.
+
+## The IDOR Concept
+
+Imagine your user profile URL is `https://app.com/profile?id=123`.
+What happens if you change it to `https://app.com/profile?id=124`?
+
+If you can see User 124's private info, that's an IDOR!
+
+<InfoBox type="info">
+IDOR is a subset of "Broken Access Control", which is currently #1 in the OWASP Top 10.
+</InfoBox>
+
+### Horizontal vs Vertical Escalation
+- **Horizontal:** Accessing data of another user with the same level of permissions.
+- **Vertical:** Accessing data of a user with higher permissions (e.g., an Admin).
+
+<Quiz 
+  question="What does IDOR stand for?" 
+  answer="Insecure Direct Object Reference" 
+  hint="I-D-O-R." 
+/>
+
+<Quiz 
+  question="If a regular user can access the admin dashboard, what type of escalation is this?" 
+  answer="Vertical" 
+  hint="Think of moving up the hierarchy." 
+/>

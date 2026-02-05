@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 CryptoLab - Encoder/Decoder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #10b981;
+        }
+
+        .header p {
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .card {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 18px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            color: #10b981;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+
+        .section-title {
+            font-size: 13px;
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .input-area {
+            width: 100%;
+            background: #0f0f1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            color: #22d3ee;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .input-area:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-encode {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-decode {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .key-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .key-input input,
+        .key-input select {
+            flex: 1;
+            padding: 10px;
+            background: #0f0f1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        .output-area {
+            background: #0f0f1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 14px;
+            color: #10b981;
+            min-height: 80px;
+            word-break: break-all;
+        }
+
+        .success-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid #22c55e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-box h4 {
+            color: #22c55e;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #86efac;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+
+        .challenge-data {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .challenge-data h4 {
+            color: #fbbf24;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .challenge-data code {
+            display: block;
+            background: #0f0f1a;
+            padding: 10px;
+            border-radius: 6px;
+            color: #22d3ee;
+            font-size: 12px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 CryptoLab</h1>
+            <p>Encoder / Decoder Suite</p>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" onclick="setMode('base64')">Base64</div>
+                <div class="tab" onclick="setMode('caesar')">Caesar</div>
+                <div class="tab" onclick="setMode('xor')">XOR</div>
+                <div class="tab" onclick="setMode('hex')">Hex</div>
+                <div class="tab" onclick="setMode('rot13')">ROT13</div>
+            </div>
+
+            <div class="challenge-data" id="challengeData">
+                <h4>🎯 Challenge Data</h4>
+                <code id="challengeCode">RkxBR3tiNHMzXzY0X2QzYzBkM2R9</code>
+            </div>
+
+            <div class="section-title">Input</div>
+            <textarea class="input-area" id="inputArea">RkxBR3tiNHMzXzY0X2QzYzBkM2R9</textarea>
+
+            <div class="key-input" id="keySection" style="display: none;">
+                <input type="text" id="keyInput" placeholder="Key / Shift value">
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-encode" onclick="encode()">Encode</button>
+                <button class="btn btn-decode" onclick="decode()">Decode</button>
+            </div>
+
+            <div class="section-title">Output</div>
+            <div class="output-area" id="outputArea">Click decode to see result...</div>
+
+            <div id="successArea"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'base64';
+
+        const challenges = {
+            base64: {
+                data: 'RkxBR3tiNHMzXzY0X2QzYzBkM2R9',
+                flag: 'FLAG{b4s3_64_d3c0d3d}'
+            },
+            caesar: {
+                data: 'IODJ{fdhvdu_flskhu_fuxvkhg}',
+                flag: 'FLAG{caesar_cipher_crushed}',
+                key: 3
+            },
+            xor: {
+                data: '1d080b1c4f2d2a2f2a4f262b2a2825254f',
+                flag: 'FLAG{x0r_s1ngl3_byt3}',
+                key: 0x49
+            },
+            hex: {
+                data: '464c41477b6833785f643363306433647d',
+                flag: 'FLAG{h3x_d3c0d3d}'
+            },
+            rot13: {
+                data: 'SYNT{ebg13_vf_rnfl}',
+                flag: 'FLAG{rot13_is_easy}'
+            }
+        };
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const challenge = challenges[mode];
+            document.getElementById('challengeCode').textContent = challenge.data;
+            document.getElementById('inputArea').value = challenge.data;
+            document.getElementById('outputArea').textContent = 'Click decode to see result...';
+            document.getElementById('successArea').innerHTML = '';
+
+            // Show key input for certain modes
+            const keySection = document.getElementById('keySection');
+            if (mode === 'caesar' || mode === 'xor') {
+                keySection.style.display = 'flex';
+                document.getElementById('keyInput').placeholder = mode === 'caesar' ? 'Shift (0-25)' : 'XOR key (hex, e.g. 49)';
+            } else {
+                keySection.style.display = 'none';
+            }
+        }
+
+        function encode() {
+            const input = document.getElementById('inputArea').value;
+            const key = document.getElementById('keyInput').value;
+            let output = '';
+
+            switch (currentMode) {
+                case 'base64':
+                    output = btoa(input);
+                    break;
+                case 'hex':
+                    output = Array.from(input).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
+                    break;
+                case 'caesar':
+                    const shift = parseInt(key) || 3;
+                    output = input.split('').map(c => {
+                        if (c >= 'A' && c <= 'Z') return String.fromCharCode((c.charCodeAt(0) - 65 + shift) % 26 + 65);
+                        if (c >= 'a' && c <= 'z') return String.fromCharCode((c.charCodeAt(0) - 97 + shift) % 26 + 97);
+                        return c;
+                    }).join('');
+                    break;
+                case 'rot13':
+                    output = input.split('').map(c => {
+                        if (c >= 'A' && c <= 'Z') return String.fromCharCode((c.charCodeAt(0) - 65 + 13) % 26 + 65);
+                        if (c >= 'a' && c <= 'z') return String.fromCharCode((c.charCodeAt(0) - 97 + 13) % 26 + 97);
+                        return c;
+                    }).join('');
+                    break;
+                case 'xor':
+                    const xorKey = parseInt(key, 16) || 0x49;
+                    output = Array.from(input).map(c => (c.charCodeAt(0) ^ xorKey).toString(16).padStart(2, '0')).join('');
+                    break;
+            }
+
+            document.getElementById('outputArea').textContent = output;
+        }
+
+        function decode() {
+            const input = document.getElementById('inputArea').value;
+            const key = document.getElementById('keyInput').value;
+            let output = '';
+
+            try {
+                switch (currentMode) {
+                    case 'base64':
+                        output = atob(input);
+                        break;
+                    case 'hex':
+                        output = input.match(/.{2}/g).map(h => String.fromCharCode(parseInt(h, 16))).join('');
+                        break;
+                    case 'caesar':
+                        const shift = parseInt(key) || 3;
+                        output = input.split('').map(c => {
+                            if (c >= 'A' && c <= 'Z') return String.fromCharCode((c.charCodeAt(0) - 65 - shift + 26) % 26 + 65);
+                            if (c >= 'a' && c <= 'z') return String.fromCharCode((c.charCodeAt(0) - 97 - shift + 26) % 26 + 97);
+                            return c;
+                        }).join('');
+                        break;
+                    case 'rot13':
+                        output = input.split('').map(c => {
+                            if (c >= 'A' && c <= 'Z') return String.fromCharCode((c.charCodeAt(0) - 65 + 13) % 26 + 65);
+                            if (c >= 'a' && c <= 'z') return String.fromCharCode((c.charCodeAt(0) - 97 + 13) % 26 + 97);
+                            return c;
+                        }).join('');
+                        break;
+                    case 'xor':
+                        const xorKey = parseInt(key, 16) || 0x49;
+                        const bytes = input.match(/.{2}/g);
+                        output = bytes.map(h => String.fromCharCode(parseInt(h, 16) ^ xorKey)).join('');
+                        break;
+                }
+            } catch (e) {
+                output = 'Error: ' + e.message;
+            }
+
+            document.getElementById('outputArea').textContent = output;
+            checkFlag(output);
+        }
+
+        function checkFlag(output) {
+            const challenge = challenges[currentMode];
+
+            if (output === challenge.flag || output.includes('FLAG{')) {
+                document.getElementById('successArea').innerHTML = `
+                    <div class="success-box">
+                        <h4>🎯 Decryption Successful!</h4>
+                        <p>You decoded the ${currentMode.toUpperCase()} message!</p>
+                        <div class="flag-display">🚩 ${challenge.flag}</div>
+                    </div>
+                `;
+
+                if (window.parent !== window) {
+                    try { window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: challenge.flag }, '*'); } catch (e) { }
+                }
+            }
+        }
+
+        // Set default challenge
+        setMode('base64');
+    </script>
+</body>
+
+</html>

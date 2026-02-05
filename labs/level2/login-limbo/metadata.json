@@ -1,0 +1,10 @@
+{
+  "id": "ctf-login-limbo",
+  "name": "Login Limbo",
+  "description": "An outdated portal guarded by a weak lock. Can you bypass the gate?",
+  "difficulty": "medium",
+  "tier": 2,
+  "port": 80,
+  "category": "Web / SQLi",
+  "flag": "AG{SQL_Inj3ct10n_M4st3r}"
+}

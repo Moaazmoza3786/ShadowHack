@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💬 CommentBox - Share Your Thoughts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+        }
+
+        .header p {
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #134e5e, #1a6b5f);
+            padding: 20px 25px;
+            color: white;
+        }
+
+        .card-header h2 {
+            font-size: 1.1rem;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .comment-form {
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #134e5e;
+        }
+
+        textarea.form-input {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #134e5e, #1a6b5f);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(19, 78, 94, 0.3);
+        }
+
+        .comments-section {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+
+        .comments-title {
+            font-size: 1rem;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+
+        .comment {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #134e5e;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .comment-text {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border: 1px solid #34d399;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-box h4 {
+            color: #065f46;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #047857;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+
+        .cookie-display {
+            background: #1e293b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 12px;
+            color: #38bdf8;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💬 CommentBox</h1>
+            <p>Share your thoughts with the community</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>📝 Blog Post: Security Best Practices</h2>
+            </div>
+            <div class="card-body">
+                <form class="comment-form" onsubmit="addComment(event)">
+                    <div class="form-group">
+                        <label class="form-label">Your Name</label>
+                        <input type="text" class="form-input" id="authorInput" placeholder="Enter your name"
+                            value="Guest">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Comment</label>
+                        <textarea class="form-input" id="commentInput" placeholder="Write your comment..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Post Comment</button>
+                </form>
+
+                <div class="comments-section">
+                    <h3 class="comments-title">Comments (2)</h3>
+                    <div id="commentsList">
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">John Admin</span>
+                                <span class="comment-time">2 hours ago</span>
+                            </div>
+                            <div class="comment-text">Great article! Security is so important these days.</div>
+                        </div>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">Sarah</span>
+                                <span class="comment-time">1 hour ago</span>
+                            </div>
+                            <div class="comment-text">Very helpful, thanks for sharing!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="successArea"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Flag is stored securely - not in cookies!
+        const SECRET_FLAG = 'FLAG{ST0R3D_XSS_C00K13_TH13F}';
+
+        // Normal session cookies (no flag in them)
+        document.cookie = "session=user_session_token; path=/";
+        document.cookie = "theme=light; path=/";
+
+        // Track if XSS executed
+        let xssExecuted = false;
+
+        // Override alert to detect XSS execution
+        const originalAlert = window.alert;
+        window.alert = function (msg) {
+            xssExecuted = true;
+            originalAlert(msg);
+
+            setTimeout(() => {
+                showXSSSuccess();
+            }, 100);
+        };
+
+        function showXSSSuccess() {
+            const successArea = document.getElementById('successArea');
+
+            if (!document.getElementById('xss-success')) {
+                successArea.innerHTML = `
+                    <div class="success-box" id="xss-success">
+                        <h4>🎯 Stored XSS Successful!</h4>
+                        <p>Your malicious comment executed JavaScript!</p>
+                        <p style="margin-top:8px;">This XSS is <strong>persistent</strong> - it would affect ALL visitors!</p>
+                        <div class="cookie-display">
+                            <strong>Session Stolen:</strong><br>
+                            ${document.cookie}<br><br>
+                            <strong>Admin Secret:</strong><br>
+                            ${SECRET_FLAG}
+                        </div>
+                        <div class="flag-display">🚩 ${SECRET_FLAG}</div>
+                    </div>
+                `;
+
+                if (window.parent !== window) {
+                    try {
+                        window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: SECRET_FLAG }, '*');
+                    } catch (e) { }
+                }
+            }
+        }
+
+        function addComment(event) {
+            event.preventDefault();
+
+            const author = document.getElementById('authorInput').value;
+            const comment = document.getElementById('commentInput').value;
+            const commentsList = document.getElementById('commentsList');
+
+            if (!comment.trim()) return;
+
+            // VULNERABLE: Directly inserting user content (Stored XSS)
+            // In real apps, this would be saved to database and shown to everyone!
+            const newComment = document.createElement('div');
+            newComment.className = 'comment';
+            newComment.innerHTML = `
+                <div class="comment-header">
+                    <span class="comment-author">${author}</span>
+                    <span class="comment-time">Just now</span>
+                </div>
+                <div class="comment-text">${comment}</div>
+            `;
+
+            commentsList.insertBefore(newComment, commentsList.firstChild);
+            document.getElementById('commentInput').value = '';
+
+            // Give hint if they're trying XSS without alert
+            setTimeout(() => {
+                if (!xssExecuted) {
+                    const commentLower = comment.toLowerCase();
+                    if (commentLower.includes('<script') ||
+                        commentLower.includes('onerror') ||
+                        commentLower.includes('onload')) {
+
+                        if (!commentLower.includes('alert')) {
+                            document.getElementById('successArea').innerHTML = `
+                                <div style="background:#fef3c7;border:1px solid #f59e0b;padding:15px;border-radius:10px;margin-top:15px;color:#92400e;">
+                                    💡 Tip: Use alert() to prove your XSS works!
+                                </div>
+                            `;
+                        }
+                    }
+                }
+            }, 200);
+        }
+    </script>
+</body>
+
+</html>

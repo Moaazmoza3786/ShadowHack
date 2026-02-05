@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 NetTools - Network Diagnostics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%);
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #00ff88;
+        }
+
+        .header p {
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .card {
+            background: rgba(0, 255, 136, 0.03);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .tool-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tool-tab {
+            padding: 10px 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            color: #00ff88;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tool-tab.active,
+        .tool-tab:hover {
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        .input-section {
+            background: #0a0a0a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .input-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .host-input {
+            flex: 1;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 14px 16px;
+            color: #00ff88;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .host-input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .run-btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #0a0a0a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .terminal {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red {
+            background: #ff5f56;
+        }
+
+        .terminal-dot.yellow {
+            background: #ffbd2e;
+        }
+
+        .terminal-dot.green {
+            background: #27ca40;
+        }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .terminal-body {
+            padding: 15px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 13px;
+            color: #00ff88;
+            min-height: 200px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .terminal-prompt {
+            color: #666;
+        }
+
+        .terminal-command {
+            color: #00ff88;
+        }
+
+        .terminal-output {
+            color: #94a3b8;
+        }
+
+        .terminal-error {
+            color: #ef4444;
+        }
+
+        .terminal-success {
+            color: #22c55e;
+        }
+
+        .success-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid #22c55e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-box h4 {
+            color: #22c55e;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #86efac;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 NetTools</h1>
+            <p>Network Diagnostics Suite</p>
+        </div>
+
+        <div class="card">
+            <div class="tool-tabs">
+                <div class="tool-tab active">Ping</div>
+                <div class="tool-tab">Traceroute</div>
+                <div class="tool-tab">DNS Lookup</div>
+            </div>
+
+            <div class="input-section">
+                <div class="input-label">Target Host</div>
+                <form class="input-form" onsubmit="runCommand(event)">
+                    <input type="text" class="host-input" id="hostInput" value="8.8.8.8"
+                        placeholder="Enter hostname or IP...">
+                    <button type="submit" class="run-btn">Run</button>
+                </form>
+            </div>
+
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                    <div class="terminal-title">Terminal Output</div>
+                </div>
+                <div class="terminal-body" id="terminalOutput">
+                    <span class="terminal-prompt">$</span> <span class="terminal-command">Ready. Enter a host to
+                        ping...</span>
+                </div>
+            </div>
+
+            <div id="successArea"></div>
+        </div>
+    </div>
+
+    <script>
+        const FLAG = 'FLAG{RC3_SH3LL_P0PP3D}';
+
+        // Simulated command outputs
+        const commandOutputs = {
+            'id': `uid=33(www-data) gid=33(www-data) groups=33(www-data)
+<span class="terminal-success">🚩 Command executed! Flag: ${FLAG}</span>`,
+            'whoami': `www-data
+<span class="terminal-success">🚩 Command executed! Flag: ${FLAG}</span>`,
+            'cat /etc/passwd': `root:x:0:0:root:/root:/bin/bash
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+flag:x:1337:1337:${FLAG}:/home/flag:/bin/bash`,
+            'ls': `index.php
+config.php
+flag.txt
+<span class="terminal-success">🚩 You found files! Flag: ${FLAG}</span>`,
+            'cat flag.txt': `${FLAG}`,
+            'uname -a': `Linux nettools-server 5.4.0-42-generic #46-Ubuntu SMP x86_64 GNU/Linux`
+        };
+
+        function runCommand(event) {
+            event.preventDefault();
+
+            const host = document.getElementById('hostInput').value;
+            const output = document.getElementById('terminalOutput');
+            const successArea = document.getElementById('successArea');
+
+            // Build the simulated command
+            const simulatedCmd = `ping -c 4 ${host}`;
+
+            // Start output
+            let html = `<span class="terminal-prompt">$</span> <span class="terminal-command">${escapeHtml(simulatedCmd)}</span>\n\n`;
+
+            // Check for command injection patterns
+            const injectionPatterns = [';', '|', '&&', '||', '`', '$('];
+            const hasInjection = injectionPatterns.some(p => host.includes(p));
+
+            if (hasInjection) {
+                // Command injection detected - execute the injected command!
+                html += `<span class="terminal-output">PING ${escapeHtml(host.split(/[;|&`$]/)[0])} (8.8.8.8): 56 data bytes\n\n</span>`;
+
+                // Find what command they're trying to run
+                let injectedCmd = '';
+                for (const pattern of injectionPatterns) {
+                    if (host.includes(pattern)) {
+                        const parts = host.split(pattern);
+                        if (parts.length > 1) {
+                            injectedCmd = parts[1].trim().replace(/[()$`]/g, '');
+                            break;
+                        }
+                    }
+                }
+
+                // Check if we have output for this command
+                let foundOutput = false;
+                for (const [cmd, cmdOutput] of Object.entries(commandOutputs)) {
+                    if (injectedCmd.toLowerCase().includes(cmd.toLowerCase()) ||
+                        cmd.toLowerCase().includes(injectedCmd.toLowerCase())) {
+                        html += `<span class="terminal-success">--- Injected Command Output ---</span>\n`;
+                        html += cmdOutput + '\n';
+                        foundOutput = true;
+
+                        // Show success
+                        successArea.innerHTML = `
+                            <div class="success-box">
+                                <h4>🎯 Command Injection Successful!</h4>
+                                <p>You executed arbitrary commands on the server!</p>
+                                <p style="margin-top:8px;">Injected: <code>${escapeHtml(injectedCmd)}</code></p>
+                                <div class="flag-display">🚩 ${FLAG}</div>
+                            </div>
+                        `;
+
+                        if (window.parent !== window) {
+                            try { window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: FLAG }, '*'); } catch (e) { }
+                        }
+                        break;
+                    }
+                }
+
+                if (!foundOutput) {
+                    html += `<span class="terminal-success">--- Injected Command Output ---</span>\n`;
+                    html += `<span class="terminal-output">Command '${escapeHtml(injectedCmd)}' executed.\nTry: id, whoami, ls, or cat flag.txt</span>`;
+                    successArea.innerHTML = `
+                        <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;padding:15px;border-radius:10px;margin-top:15px;color:#fbbf24;">
+                            💡 Command injection works! Try: <code>; id</code> or <code>; whoami</code> or <code>; cat flag.txt</code>
+                        </div>
+                    `;
+                }
+            } else {
+                // Normal ping output
+                const ip = host.match(/^\d+\.\d+\.\d+\.\d+$/) ? host : '93.184.216.34';
+                html += `<span class="terminal-output">PING ${escapeHtml(host)} (${ip}): 56 data bytes
+64 bytes from ${ip}: icmp_seq=0 ttl=56 time=11.632 ms
+64 bytes from ${ip}: icmp_seq=1 ttl=56 time=11.726 ms
+64 bytes from ${ip}: icmp_seq=2 ttl=56 time=10.683 ms
+64 bytes from ${ip}: icmp_seq=3 ttl=56 time=9.674 ms
+
+--- ${escapeHtml(host)} ping statistics ---
+4 packets transmitted, 4 packets received, 0.0% packet loss</span>`;
+                successArea.innerHTML = '';
+            }
+
+            output.innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+
+</html>

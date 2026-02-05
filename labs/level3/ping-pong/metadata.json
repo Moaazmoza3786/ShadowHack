@@ -1,0 +1,10 @@
+{
+  "id": "ctf-ping-pong",
+  "name": "Ping Pong",
+  "description": "A diagnostic tool with a serious logic flaw. Can you break out of the script?",
+  "difficulty": "hard",
+  "tier": 3,
+  "port": 5000,
+  "category": "Web / Command Injection",
+  "flag": "AG{C0mm4nd_Inj3ct10n_1s_L3th4l}"
+}

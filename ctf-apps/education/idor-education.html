@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OWASP Education - IDOR</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0a0e27;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .theory-section {
+            background: #1a1f3a;
+            padding: 30px;
+            height: 100vh;
+            overflow-y: auto;
+            border-left: 3px solid #00d9ff;
+        }
+
+        .lab-section {
+            background: #0f1729;
+            padding: 30px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background: #252b4a;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-right: 4px solid #666;
+        }
+
+        .task-item.completed {
+            border-right-color: #00ff88;
+        }
+
+        .task-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+        }
+
+        .hint-btn {
+            background: #ff9500;
+            border: none;
+            margin: 5px;
+        }
+
+        .hint-content {
+            background: #2a3150;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .flag-input {
+            background: #1a1f3a;
+            border: 2px solid #00d9ff;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .flag-input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .btn-submit {
+            background: #00ff88;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-submit:hover {
+            background: #00d970;
+        }
+
+        .alert-success {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .alert-danger {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        .profile-card {
+            background: #1a1f3a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #00d9ff;
+        }
+
+        .code-block {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+
+        h2,
+        h3 {
+            color: #00d9ff;
+        }
+
+        .badge-task {
+            background: #00d9ff;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Theory Section -->
+            <div class="col-md-5 theory-section">
+                <h2><i class="fas fa-book"></i> النظرية: IDOR</h2>
+                <p class="lead">Insecure Direct Object Reference</p>
+
+                <div class="mb-4">
+                    <h3>🏨 تخيل هذا السيناريو</h3>
+                    <div class="alert alert-info">
+                        <p class="mb-0">
+                            تخيل أنك في فندق 🏨، واستلمت مفتاح غرفتك رقم <strong>101</strong>.
+                            <br>
+                            إذا كان نظام الفندق سيئاً، يمكنك ببساطة تغيير الرقم المكتوب على مفتاحك إلى
+                            <strong>102</strong> وتفتح غرفة جارك! 😱
+                            <br>
+                            هذا بالضبط ما يحدث في ثغرة <strong>IDOR</strong>.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>🛠️ كيف تعمل الثغرة؟</h3>
+                    <p>تحدث الثغرة عندما يستخدم المبرمج <strong>أرقاماً مباشرة</strong> (مثل 1, 2, 3) للوصول إلى
+                        البيانات، وينسى أن يتحقق: <em>"هل هذا المستخدم مسموح له برؤية هذه البيانات؟"</em> 🤔</p>
+
+                    <div class="card bg-dark border-danger mb-3">
+                        <div class="card-header bg-danger text-white">
+                            <i class="fas fa-times-circle"></i> كود مصاب (Vulnerable)
+                        </div>
+                        <div class="card-body code-block my-0">
+                            // PHP Example<br>
+                            $id = $_GET['id'];<br>
+                            // ❌ لا يوجد تحقق من الملكية!<br>
+                            $data = db->query("SELECT * FROM users WHERE id = $id");
+                        </div>
+                    </div>
+
+                    <div class="card bg-dark border-success mb-3">
+                        <div class="card-header bg-success text-white">
+                            <i class="fas fa-check-circle"></i> كود آمن (Secure)
+                        </div>
+                        <div class="card-body code-block my-0">
+                            // ✅ التحقق من أن المستخدم يطلب بياناته فقط<br>
+                            $id = $_SESSION['user_id'];<br>
+                            $data = db->query("SELECT * FROM users WHERE id = $id");
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>🕵️‍♂️ كيف تكتشفها؟ (Bug Hunting)</h3>
+                    <ul class="list-group list-group-flush bg-transparent">
+                        <li class="list-group-item bg-transparent text-white"><i class="fas fa-search text-info"></i>
+                            ابحث عن معرفات في الرابط: <code>?id=123</code>, <code>/user/123</code></li>
+                        <li class="list-group-item bg-transparent text-white"><i
+                                class="fas fa-exchange-alt text-warning"></i> جرب تغيير الرقم: هل يمكنك رؤية بيانات
+                            غيرك؟</li>
+                        <li class="list-group-item bg-transparent text-white"><i class="fas fa-random text-success"></i>
+                            جرب معرفات عشوائية أو متسلسلة.</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h3>✅ المهام المطلوبة</h3>
+                    <div class="task-item" id="task1">
+                        <input type="checkbox" id="check1" onchange="checkTask(1)">
+                        <label for="check1">
+                            <span class="badge-task">1</span>
+                            اعرض ملفك الشخصي (لاحظ أن الـ ID الخاص بك هو 5)
+                        </label>
+                    </div>
+                    <div class="task-item" id="task2">
+                        <input type="checkbox" id="check2" onchange="checkTask(2)">
+                        <label for="check2">
+                            <span class="badge-task">2</span>
+                            غير الـ ID في الرابط إلى <strong>1</strong> (حساب المدير)
+                        </label>
+                    </div>
+                    <div class="task-item" id="task3">
+                        <input type="checkbox" id="check3" onchange="checkTask(3)">
+                        <label for="check3">
+                            <span class="badge-task">3</span>
+                            انسخ الـ Flag من "ملاحظات سرية" وضعه في الأسفل
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>💡 التلميحات</h3>
+                    <div class="d-flex gap-2">
+                        <button class="btn hint-btn flex-grow-1" onclick="showHint(1)">تلميح 1</button>
+                        <button class="btn hint-btn flex-grow-1" onclick="showHint(2)">تلميح 2</button>
+                        <button class="btn hint-btn flex-grow-1" onclick="showHint(3)">الحل</button>
+                    </div>
+
+                    <div class="hint-content" id="hint1">
+                        💡 انظر إلى الرابط في الأعلى <code>?user_id=5</code>. هذا هو المكان الذي تتحكم فيه!
+                    </div>
+                    <div class="hint-content" id="hint2">
+                        💡 المدير (Admin) عادة ما يكون له أول رقم في قاعدة البيانات. جرب الرقم <code>1</code>.
+                    </div>
+                    <div class="hint-content" id="hint3">
+                        🎯 الحل: قم بتغيير الرابط يدوياً ليصبح <code>?user_id=1</code> واضغط Enter.
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>🚩 تسليم الـ Flag</h3>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text bg-dark text-light border-info"><i class="fas fa-flag"></i></span>
+                        <input type="text" class="form-control flag-input" id="flagInput" placeholder="FLAG{...}">
+                    </div>
+                    <button class="btn btn-submit w-100" onclick="checkFlag()">
+                        تحقق من الإجابة
+                    </button>
+                    <div id="flagResult" class="mt-2"></div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>🛡️ نصائح للحماية</h3>
+                    <div class="alert alert-warning">
+                        <ul class="mb-0">
+                            <li>🔒 <strong>تحقق من الصلاحيات:</strong> دائماً تأكد أن المستخدم الحالي يملك الحق في
+                                الوصول للبيانات المطلوبة.</li>
+                            <li>🔏 <strong>استخدم UUIDs:</strong> بدلاً من <code>id=1</code>، استخدم
+                                <code>id=a1b2-c3d4...</code> لكي يصعب تخمينها.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lab Section -->
+            <div class="col-md-7 lab-section">
+                <h2><i class="fas fa-flask"></i> اللاب العملي</h2>
+                <p class="text-muted">نظام عرض الملفات الشخصية</p>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> أنت مسجل دخول كـ: <strong>User #5</strong>
+                </div>
+
+                <div class="profile-card" id="profileCard">
+                    <div class="text-center">
+                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                        <p class="mt-3">جاري التحميل...</p>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button class="btn btn-secondary" onclick="loadProfile(5)">
+                        <i class="fas fa-redo"></i> إعادة تحميل ملفي
+                    </button>
+                    <button class="btn btn-warning" onclick="resetLab()">
+                        <i class="fas fa-sync"></i> إعادة تعيين اللاب
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const users = {
+            1: {
+                name: 'Admin',
+                email: 'admin@company.com',
+                role: 'Administrator',
+                notes: 'FLAG{idor_master_2024}',
+                avatar: '👑'
+            },
+            2: {
+                name: 'Alice',
+                email: 'alice@company.com',
+                role: 'Developer',
+                notes: 'Working on new features',
+                avatar: '👩‍💻'
+            },
+            3: {
+                name: 'Bob',
+                email: 'bob@company.com',
+                role: 'Designer',
+                notes: 'UI/UX improvements',
+                avatar: '👨‍🎨'
+            },
+            5: {
+                name: 'You',
+                email: 'user@company.com',
+                role: 'User',
+                notes: 'My personal notes',
+                avatar: '👤'
+            }
+        };
+
+        let completedTasks = [false, false, false];
+
+        function loadProfile(userId) {
+            const params = new URLSearchParams(window.location.search);
+            params.set('user_id', userId);
+            window.history.pushState({}, '', '?' + params.toString());
+
+            const user = users[userId];
+            const card = document.getElementById('profileCard');
+
+            if (user) {
+                card.innerHTML = `
+                    <div class="text-center mb-3">
+                        <div style="font-size: 80px;">${user.avatar}</div>
+                    </div>
+                    <h3 class="text-center">${user.name}</h3>
+                    <hr>
+                    <p><strong>البريد:</strong> ${user.email}</p>
+                    <p><strong>الدور:</strong> ${user.role}</p>
+                    <p><strong>ملاحظات سرية:</strong></p>
+                    <div class="code-block">${user.notes}</div>
+                    <div class="text-muted mt-3">
+                        <small>User ID: ${userId}</small>
+                    </div>
+                `;
+
+                if (userId === 5 && !completedTasks[0]) {
+                    completedTasks[0] = true;
+                    document.getElementById('task1').classList.add('completed');
+                    document.getElementById('check1').checked = true;
+                }
+
+                if (userId === 1 && !completedTasks[1]) {
+                    completedTasks[1] = true;
+                    document.getElementById('task2').classList.add('completed');
+                    document.getElementById('check2').checked = true;
+                }
+            } else {
+                card.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> المستخدم غير موجود!
+                    </div>
+                `;
+            }
+        }
+
+        function showHint(num) {
+            document.getElementById('hint' + num).style.display = 'block';
+        }
+
+        function checkTask(num) {
+            const checkbox = document.getElementById('check' + num);
+            const task = document.getElementById('task' + num);
+            if (checkbox.checked) {
+                task.classList.add('completed');
+            } else {
+                task.classList.remove('completed');
+            }
+        }
+
+        function checkFlag() {
+            const input = document.getElementById('flagInput').value.trim();
+            const result = document.getElementById('flagResult');
+
+            if (input === 'FLAG{idor_master_2024}') {
+                result.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-trophy"></i> <strong>صحيح!</strong> أحسنت! لقد أتقنت ثغرة IDOR 🎉
+                    </div>
+                `;
+                if (!completedTasks[2]) {
+                    completedTasks[2] = true;
+                    document.getElementById('task3').classList.add('completed');
+                    document.getElementById('check3').checked = true;
+                }
+            } else if (input) {
+                result.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times"></i> خطأ! حاول مرة أخرى
+                    </div>
+                `;
+            }
+        }
+
+        function resetLab() {
+            completedTasks = [false, false, false];
+            document.querySelectorAll('.task-item').forEach(t => t.classList.remove('completed'));
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+            document.querySelectorAll('.hint-content').forEach(h => h.style.display = 'none');
+            document.getElementById('flagInput').value = '';
+            document.getElementById('flagResult').innerHTML = '';
+            loadProfile(5);
+        }
+
+        // Load initial profile
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            const userId = params.get('user_id') || '5';
+            loadProfile(parseInt(userId));
+        };
+    </script>
+</body>
+
+</html>

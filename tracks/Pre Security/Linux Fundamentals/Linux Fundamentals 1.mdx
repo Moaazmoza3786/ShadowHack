@@ -1,0 +1,85 @@
+# Linux Fundamentals 1: Navigation
+
+The Linux terminal is your cockpit. As a cybersecurity professional, you will live here. 
+Graphical interfaces (GUIs) are slow and limited. The Command Line Interface (CLI) is where power lives.
+
+In this module, we will cover the absolute essentials: **Navigation**.
+
+## essential Commands
+
+| Command | Name | Description |
+| :--- | :--- | :--- |
+| `pwd` | Print Working Directory | Tells you where you are. |
+| `ls` | List | Shows you what is in the current directory. |
+| `cd` | Change Directory | Moves you to a different folder. |
+| `cat` | Concatenate | Displays the contents of a file. |
+
+## 1. Where am I? (`pwd`)
+
+Unlike a GUI file explorer, the terminal doesn't visually show your current folder by default. You ask it.
+
+<CodeBlock language="bash">
+user@breachlabs:~$ pwd
+/home/user
+</CodeBlock>
+
+## 2. What is here? (`ls`)
+
+Use `ls` to list files. Add arguments like `-l` (long format) or `-a` (all files, including hidden ones) for more info.
+
+<TerminalWindow 
+  cmd="ls -la" 
+  output="total 42
+drwxr-xr-x 2 user user 4096 Jan 11 10:00 .
+drwxr-xr-x 3 root root 4096 Jan 01 00:00 ..
+-rw------- 1 user user  512 Jan 11 10:01 .bash_history
+-rw-r--r-- 1 user user   24 Jan 11 10:02 flag.txt" 
+/>
+
+> [!NOTE]
+> Files starting with a dot `.` are hidden. You won't see them with a standard `ls`.
+
+## 3. Moving Around (`cd`)
+
+To enter a directory, use `cd <directory_name>`.
+To go back one level, use `cd ..`.
+
+```bash
+cd Downloads    # Enter 'Downloads'
+cd ..           # Go back to parent
+cd /            # Go to root
+cd ~            # Go to home directory
+```
+
+## 4. Reading Files (`cat`)
+
+To see what's inside a text file, simply `cat` it.
+
+```bash
+cat note.txt
+```
+
+---
+
+## Mission: Find the Flag
+
+You have been dropped into a directory with a hidden secret. 
+Use your skills to navigate the system and read the contents of `flag.txt`.
+
+<TerminalWindow 
+  cmd="cat flag.txt" 
+  output="Access Granted.
+Flag: BL{L1nux_N4v1gat0r_Pr0}" 
+/>
+
+Enter the flag below to complete the module.
+
+<Quiz 
+  question="What is the flag found in the hidden file?"
+  options={[
+    "BL{Linux_Is_Hard}",
+    "BL{L1nux_N4v1gat0r_Pr0}",
+    "BL{Root_Access_Denied}",
+    "admin123"
+  ]}
+/>

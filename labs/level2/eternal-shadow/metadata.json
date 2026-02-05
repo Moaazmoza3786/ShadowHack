@@ -1,0 +1,9 @@
+{
+    "id": "ctf-eternal-shadow",
+    "name": "Eternal Shadow",
+    "difficulty": "medium",
+    "tier": 2,
+    "port": 80,
+    "category": "Network / CVE",
+    "flag": "AG{3t3rn4l_r0cks_th3_syst3m}"
+}

@@ -1,0 +1,55 @@
+# Wireshark Intro
+
+Wireshark is the X-Ray machine of the network. It captures packets in real-time.
+As a hacker, you use it to find cleartext passwords, analyze malware traffic, and debug exploits.
+
+## The Interface
+
+*   **Packet List:** The top pane. Shows every packet captured.
+*   **Packet Details:** Middle pane. Shows the headers of the selected packet.
+*   **Packet Bytes:** Bottom pane. Hex dump of the payload.
+
+## Filtering Noise
+
+The network is noisy. You need filters.
+
+| Filter | Action |
+| :--- | :--- |
+| `ip.addr == 10.10.10.5` | Show traffic to/from this IP. |
+| `tcp.port == 80` | Show HTTP traffic. |
+| `http.request.method == "POST"` | Show uploaded data (forms, logins). |
+
+## Lab: Cleartext Disaster
+
+A user just logged into a legacy FTP server. FTP does not use encryption.
+Filter for `ftp` traffic and follow the stream.
+
+<TerminalWindow 
+  cmd="tshark -r ftp_login.pcap -Y ftp" 
+  output="1 0.000000 192.168.1.10 -> 10.0.0.5 FTP Request: USER administrative
+2 0.001000 10.0.0.5 -> 192.168.1.10 FTP Response: 331 Password required
+3 0.004000 192.168.1.10 -> 10.0.0.5 FTP Request: PASS BL{W1r3shark_Sn1ff3r}
+4 0.005000 10.0.0.5 -> 192.168.1.10 FTP Response: 230 User logged in" 
+/>
+
+We caught the password in plain text. This is why we use SSH instead of Telnet/FTP.
+
+<Quiz 
+  question="What filter would you use to see only traffic involving IP 1.2.3.4?"
+  options={[
+    "ip.addr == 1.2.3.4",
+    "ip.src == 1.2.3.4",
+    "host == 1.2.3.4",
+    "net 1.2.3.4"
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag found in the FTP password field?"
+  options={[
+    "BL{W1r3shark_Sn1ff3r}",
+    "BL{FTP_1s_D3ad}",
+    "BL{Clear_T3xt_Pwn}",
+    "administrative"
+  ]}
+/>

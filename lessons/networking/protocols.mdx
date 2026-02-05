@@ -1,0 +1,42 @@
+---
+title: Common Ports & Protocols
+description: The languages of the internet.
+---
+
+# Common Ports & Protocols
+
+Protocols are sets of rules that govern how data is exchanged. Ports are virtual "doors" that services use to communicate.
+
+## Well-Known Ports
+
+| Port | Protocol | Description |
+|------|----------|-------------|
+| 21   | FTP      | File Transfer Protocol |
+| 22   | SSH      | Secure Shell (Remote access) |
+| 23   | Telnet   | Unencrypted remote access |
+| 25   | SMTP     | Simple Mail Transfer Protocol |
+| 53   | DNS      | Domain Name System |
+| 80   | HTTP     | Hypertext Transfer Protocol |
+| 443  | HTTPS    | HTTP Secure |
+
+<InfoBox type="warning">
+Telnet (Port 23) is insecure because it sends data in plain text. Always use SSH (Port 22) instead.
+</InfoBox>
+
+<TerminalWindow 
+  title="Port Scanning with Nmap" 
+  command="nmap -F 192.168.1.1" 
+  output="Starting Nmap...\nPORT   STATE SERVICE\n22/tcp open  ssh\n80/tcp open  http\n443/tcp open  https" 
+/>
+
+<Quiz 
+  question="Which port is used for HTTPS?" 
+  answer="443" 
+  hint="It's one of the most common ports." 
+/>
+
+<Quiz 
+  question="What protocol is used for remote access and is encrypted?" 
+  answer="SSH" 
+  hint="Port 22." 
+/>

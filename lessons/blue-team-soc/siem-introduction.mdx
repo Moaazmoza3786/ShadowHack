@@ -1,0 +1,289 @@
+---
+title: "SIEM Introduction (Splunk & ELK)"
+description: "Learn the fundamentals of Security Information and Event Management systems."
+difficulty: "Intermediate"
+estimatedTime: "55 minutes"
+tags: ["blue-team", "siem", "splunk", "elk", "soc"]
+---
+
+# SIEM Introduction: Splunk & ELK
+
+<InfoBox type="tip" title="The SOC's Command Center">
+A SIEM is like having **X-ray vision** across your entire infrastructure. It collects, correlates, and alerts on security events from every corner of your network.
+</InfoBox>
+
+## What is a SIEM?
+
+**Security Information and Event Management (SIEM)** systems combine:
+- **SIM** (Security Information Management) - Log collection & storage
+- **SEM** (Security Event Management) - Real-time monitoring & alerting
+
+### Core SIEM Functions
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        SIEM ARCHITECTURE                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐            │
+│  │Firewall │  │ Server  │  │   EDR   │  │  Cloud  │  ◀─ Sources│
+│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘            │
+│       │            │            │            │                  │
+│       └────────────┴─────┬──────┴────────────┘                  │
+│                          ▼                                      │
+│              ┌───────────────────────┐                          │
+│              │   Log Collection      │  ◀─ Ingestion            │
+│              │   (Forwarders/Agents) │                          │
+│              └───────────┬───────────┘                          │
+│                          ▼                                      │
+│              ┌───────────────────────┐                          │
+│              │   Parsing & Indexing  │  ◀─ Normalization        │
+│              └───────────┬───────────┘                          │
+│                          ▼                                      │
+│              ┌───────────────────────┐                          │
+│              │   Correlation Engine  │  ◀─ Detection            │
+│              └───────────┬───────────┘                          │
+│                          ▼                                      │
+│              ┌───────────────────────┐                          │
+│              │   Dashboards & Alerts │  ◀─ Visualization        │
+│              └───────────────────────┘                          │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Splunk
+
+Splunk is the **industry leader** in enterprise SIEM. It's powerful, scalable, and... expensive.
+
+### Splunk Architecture
+
+| Component | Purpose |
+|-----------|---------|
+| **Forwarder** | Collects and sends data |
+| **Indexer** | Stores and indexes data |
+| **Search Head** | Query interface |
+| **Deployment Server** | Manages forwarders |
+
+### Splunk Search Processing Language (SPL)
+
+<TerminalWindow title="Basic SPL Queries">
+# Search for failed logins
+index=windows EventCode=4625
+
+# Count failed logins by source IP
+index=windows EventCode=4625 
+| stats count by src_ip 
+| sort -count
+
+# Find brute force attempts (>5 failures in 5 min)
+index=windows EventCode=4625
+| bin _time span=5m
+| stats count by src_ip, _time
+| where count > 5
+
+# PowerShell execution with base64
+index=windows source="WinEventLog:Microsoft-Windows-PowerShell/Operational"
+| search Message="*-EncodedCommand*" OR Message="*-enc*"
+
+# Lateral movement detection
+index=windows (EventCode=4624 Logon_Type=3) OR EventCode=4648
+| stats count by src_ip, dest, user
+| where count > 10
+</TerminalWindow>
+
+### Building Splunk Alerts
+
+<TerminalWindow title="Alert: Multiple Failed Logins">
+# Search
+index=windows EventCode=4625
+| stats count by src_ip
+| where count > 10
+
+# Alert Settings
+- Trigger: Number of results > 0
+- Time range: Last 15 minutes
+- Action: Send email, create ticket
+- Throttle: Suppress for 1 hour per src_ip
+</TerminalWindow>
+
+---
+
+## ELK Stack (Elasticsearch, Logstash, Kibana)
+
+ELK is the **open-source alternative** to Splunk. Popular for its flexibility and cost.
+
+### ELK Components
+
+| Component | Purpose | Equivalent |
+|-----------|---------|------------|
+| **Elasticsearch** | Search & storage engine | Splunk Indexer |
+| **Logstash** | Log collection & parsing | Splunk Forwarder |
+| **Kibana** | Visualization & dashboards | Splunk Search Head |
+| **Beats** | Lightweight data shippers | Universal Forwarder |
+
+### Beat Types
+
+- **Filebeat** - Log files
+- **Winlogbeat** - Windows Event Logs
+- **Packetbeat** - Network data
+- **Auditbeat** - Audit data
+- **Metricbeat** - System metrics
+
+### Elasticsearch Query DSL
+
+<TerminalWindow title="Elasticsearch Queries">
+# Basic match query
+GET /windows-*/_search
+{
+  "query": {
+    "match": {
+      "event.code": "4625"
+    }
+  }
+}
+
+# Failed logins from specific IP
+GET /windows-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "event.code": "4625" }},
+        { "match": { "source.ip": "192.168.1.100" }}
+      ]
+    }
+  }
+}
+
+# Aggregation - Count by source IP
+GET /windows-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_source_ip": {
+      "terms": {
+        "field": "source.ip",
+        "size": 10
+      }
+    }
+  }
+}
+</TerminalWindow>
+
+### Kibana Query Language (KQL)
+
+<TerminalWindow title="KQL in Kibana">
+# Simple search
+event.code: 4625
+
+# Boolean operators
+event.code: 4625 AND source.ip: 192.168.1.100
+
+# Wildcards
+process.name: *mimikatz*
+
+# Ranges
+@timestamp >= "2026-01-15" AND @timestamp < "2026-01-16"
+
+# NOT operator
+event.code: 4624 AND NOT user.name: SYSTEM
+</TerminalWindow>
+
+---
+
+## Splunk vs ELK Comparison
+
+| Feature | Splunk | ELK Stack |
+|---------|--------|-----------|
+| **Cost** | $$$$ (per GB/day) | Free (open source) |
+| **Ease of Setup** | Easy | Moderate |
+| **Scalability** | Excellent | Good (needs tuning) |
+| **Query Language** | SPL (powerful) | KQL/DSL (learning curve) |
+| **Support** | Enterprise support | Community + Elastic support |
+| **Best For** | Enterprise SOC | Budget-conscious, developers |
+
+---
+
+## Practical SIEM Exercises
+
+<ChallengeBox 
+  title="Write the SPL Query"
+  difficulty="medium"
+  points={75}
+>
+
+Write a Splunk query to detect potential **password spraying** attacks:
+- Same password attempted across multiple accounts
+- From the same source IP
+- Within a 10-minute window
+
+Hint: Look for Event Code 4625 with the same Failure_Reason across different Target_User values.
+
+<details>
+<summary>Answer</summary>
+
+```spl
+index=windows EventCode=4625 
+| bin _time span=10m 
+| stats dc(TargetUserName) as unique_users, values(TargetUserName) as users by src_ip, _time 
+| where unique_users > 5
+| sort -unique_users
+```
+
+**Explanation**:
+- `dc()` counts distinct/unique usernames
+- `values()` lists the actual usernames
+- Grouped by source IP and 10-min time windows
+- Filters for attempts against 5+ different accounts
+</details>
+</ChallengeBox>
+
+---
+
+## Building Detection Rules
+
+### SIGMA - Universal Detection Format
+
+SIGMA rules can be converted to both Splunk and ELK queries:
+
+<TerminalWindow title="SIGMA Rule Example">
+title: Mimikatz Execution
+status: experimental
+description: Detects Mimikatz execution based on process name
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\mimikatz.exe'
+            - '\mimi.exe'
+        CommandLine|contains:
+            - 'sekurlsa'
+            - 'kerberos::list'
+    condition: selection
+level: critical
+</TerminalWindow>
+
+---
+
+## Key Takeaways
+
+- **SIEM is essential** for modern security operations
+- **Splunk** = Enterprise power, enterprise price
+- **ELK** = Open source, highly customizable
+- **Learn query languages** - SPL and KQL are critical skills
+- **Start with use cases** - Detection rules drive SIEM value
+
+<Quiz
+  question="Which ELK component is responsible for data visualization and dashboards?"
+  options={[
+    "Elasticsearch",
+    "Logstash",
+    "Kibana",
+    "Filebeat"
+  ]}
+  correctIndex={2}
+  explanation="Kibana is the visualization layer of the ELK stack. Elasticsearch stores data, Logstash processes it, and Beats collect it."
+/>

@@ -1,0 +1,53 @@
+#,title,videoUrl,videoId,publishedAt,position
+1,00- Security+ (SY0-601) Course Introduction -  عربي,https://www.youtube.com/watch?v=dyKg_bQOXfU&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=1,dyKg_bQOXfU,2022-02-19T13:35:00Z,0
+2,01- Comparing Security Roles and Security Controls,https://www.youtube.com/watch?v=H_u72hlzyoE&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=2,H_u72hlzyoE,2022-02-19T13:35:17Z,1
+3,02- Explaining Threat Actors and Threat Intelligence,https://www.youtube.com/watch?v=PQSF_1cWMCk&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=3,PQSF_1cWMCk,2022-02-19T13:35:36Z,2
+4,03.1- Performing Security Assessments - Part 1,https://www.youtube.com/watch?v=Z6sxhcyJ8Kc&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=4,Z6sxhcyJ8Kc,2022-02-19T13:36:32Z,3
+5,03.2- Performing Security Assessments - Part 2 (Exploring the Lab Environment Lab),https://www.youtube.com/watch?v=NFTVFOubAUg&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=5,NFTVFOubAUg,2022-02-19T13:37:30Z,4
+6,03.3- Performing Security Assessments - Part 3 (Scanning and Identifying Network Nodes Lab),https://www.youtube.com/watch?v=vyaBoVd_Zj8&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=6,vyaBoVd_Zj8,2022-02-19T13:38:09Z,5
+7,03.4- Performing Security Assessments - Part 4,https://www.youtube.com/watch?v=IfUGpBZbBkQ&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=7,IfUGpBZbBkQ,2022-02-19T13:39:12Z,6
+8,03.5- Performing Security Assessments - Part 5 (Intercepting and Interpreting Network Traffic Lab),https://www.youtube.com/watch?v=0eWWS5g0KHU&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=8,0eWWS5g0KHU,2022-02-19T13:39:54Z,7
+9,03.6- Performing Security Assessments - Part 6,https://www.youtube.com/watch?v=q8kzykuxWpk&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=9,q8kzykuxWpk,2022-02-19T13:41:39Z,8
+10,03.7- Performing Security Assessments - Part 7 ( Credentialed Vulnerability Scan Lab),https://www.youtube.com/watch?v=nAZjbj0nq8A&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=10,nAZjbj0nq8A,2022-02-19T13:42:37Z,9
+11,04.1- Identifying Social Engineering and Malware - Part 1,https://www.youtube.com/watch?v=5bwzteyoUsU&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=11,5bwzteyoUsU,2022-02-19T13:43:07Z,10
+12,04.2- Identifying Social Engineering and Malware - Part 2,https://www.youtube.com/watch?v=f-pgjZzid-o&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=12,f-pgjZzid-o,2022-02-19T13:46:43Z,11
+13,04.3- Identifying Social Engineering and Malware - Part 3 (Malware-based Backdoor Lab),https://www.youtube.com/watch?v=r69MX51XzEQ&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=13,r69MX51XzEQ,2022-02-19T13:44:32Z,12
+14,05- Summarizing Basic Cryptographic Concepts,https://www.youtube.com/watch?v=3eZjVNCpyDU&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=14,3eZjVNCpyDU,2022-02-19T13:46:06Z,13
+15,06.1- Implementing Public Key Infrastructure - Part 1,https://www.youtube.com/watch?v=q1rLVrMFbcY&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=15,q1rLVrMFbcY,2022-02-19T14:29:37Z,14
+16,06.2- Implementing Public Key Infrastructure - Part 2 (Managing the Lifecycle of a Certificate Lab),https://www.youtube.com/watch?v=9RUzcNv37Wk&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=16,9RUzcNv37Wk,2022-02-19T14:30:25Z,15
+17,07.1- Implementing Authentication Controls - Part 1,https://www.youtube.com/watch?v=ftIpzBeBIqw&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=17,ftIpzBeBIqw,2022-02-19T14:30:53Z,16
+18,07.2- Implementing Authentication Controls - Part 2 (Password Cracking Lab),https://www.youtube.com/watch?v=GJAN7oU0kKA&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=18,GJAN7oU0kKA,2022-02-19T14:31:44Z,17
+19,07.3- Implementing Authentication Controls - Part 3 (Managing Centralized Authentication Lab),https://www.youtube.com/watch?v=sls2j_jTrHc&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=19,sls2j_jTrHc,2022-02-19T14:32:54Z,18
+20,08.1- Implementing Identity and Account Management Controls - Part 1,https://www.youtube.com/watch?v=0v51j2EmzFY&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=20,0v51j2EmzFY,2022-02-19T14:33:24Z,19
+21,08.2- Implementing Identity and Account Management Controls - Part 2 (Access Controls Lab),https://www.youtube.com/watch?v=xy0GPXg-yss&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=21,xy0GPXg-yss,2022-02-19T14:35:54Z,20
+22,08.3- Implementing Identity and Account Management Controls - Part 3 (Auditing Policies Lab),https://www.youtube.com/watch?v=6A0cUYVbdK0&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=22,6A0cUYVbdK0,2022-02-19T14:36:58Z,21
+23,08.4- Implementing Identity and Account Management Controls - Part 4 (Access Controls in Linux Lab),https://www.youtube.com/watch?v=AEAEmsywsbE&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=23,AEAEmsywsbE,2022-02-19T14:37:56Z,22
+24,09.1- Implementing Secure Network Designs - Part 1,https://www.youtube.com/watch?v=0uZ_lxxYrxk&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=24,0uZ_lxxYrxk,2022-02-19T14:38:30Z,23
+25,09.2- Implementing Secure Network Designs - Part 2,https://www.youtube.com/watch?v=Gmjuy6m5_9s&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=25,Gmjuy6m5_9s,2022-02-19T14:38:52Z,24
+26,09.3- Implementing Secure Network Designs - Part 3 (Implementing a Secure Network Design Lab),https://www.youtube.com/watch?v=X24w8M7SLCE&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=26,X24w8M7SLCE,2022-02-19T14:39:22Z,25
+27,10.1- Implementing Network Security Appliances - Part 1,https://www.youtube.com/watch?v=LwUHbTfjOZU&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=27,LwUHbTfjOZU,2022-02-19T14:40:15Z,26
+28,10.2- Implementing Network Security Appliances - Part 2 (Configuring a Firewall Lab),https://www.youtube.com/watch?v=LyxLUdrsLuU&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=28,LyxLUdrsLuU,2022-02-19T14:41:56Z,27
+29,10.3- Implementing Network Security Appliances - Part 3 (Intrusion Detection System Lab),https://www.youtube.com/watch?v=yh3AfEmD4MQ&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=29,yh3AfEmD4MQ,2022-02-19T14:42:45Z,28
+30,11.1- Implementing Secure Network Protocols  - Part 1,https://www.youtube.com/watch?v=6oCNbljA7Zo&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=30,6oCNbljA7Zo,2022-02-19T14:43:18Z,29
+31,11.2 - Implementing Secure Network Protocols - Part 2 (Secure Network Addressing Services Lab),https://www.youtube.com/watch?v=xzz2cxzTtMw&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=31,xzz2cxzTtMw,2022-02-19T14:44:32Z,30
+32,11.3- Implementing Secure Network Protocols - Part 3 (Implementing a Virtual Private Network Lab),https://www.youtube.com/watch?v=fx6OsgNl7Bk&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=32,fx6OsgNl7Bk,2022-02-19T14:45:15Z,31
+33,11.4- Implementing Secure Network Protocols - Part 4 (Implementing a Secure SSH Server Lab),https://www.youtube.com/watch?v=kVUK3SSHl88&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=33,kVUK3SSHl88,2022-02-19T14:45:51Z,32
+34,12.1- Implementing Host Security Solutions - Part 1,https://www.youtube.com/watch?v=EToNpewImjs&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=34,EToNpewImjs,2022-02-19T14:46:35Z,33
+35,12.2- Implementing Host Security Solutions - Part 2 (Implementing Endpoint Protection Lab),https://www.youtube.com/watch?v=DG5kfBgT7r4&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=35,DG5kfBgT7r4,2022-02-19T14:47:09Z,34
+36,13- Implementing Secure Mobile Solutions,https://www.youtube.com/watch?v=T1JXEG85r40&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=36,T1JXEG85r40,2022-02-19T14:47:44Z,35
+37,14.1- Summarizing Secure Application Concepts - Part 1,https://www.youtube.com/watch?v=cs4lKSsgvkY&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=37,cs4lKSsgvkY,2022-02-19T14:48:18Z,36
+38,14.2- Summarizing Secure Application Concepts - Part 2 (Application Attack Indicators Lab),https://www.youtube.com/watch?v=BxvjYO3G4Ew&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=38,BxvjYO3G4Ew,2022-02-19T14:49:08Z,37
+39,14.3- Summarizing Secure Application Concepts - Part 3 (Identifying a Browser Attack Lab),https://www.youtube.com/watch?v=xPLSITWpx3w&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=39,xPLSITWpx3w,2022-02-19T14:52:38Z,38
+40,14.4- Summarizing Secure Application Concepts - Part 4 (Implementing PowerShell Security Lab),https://www.youtube.com/watch?v=hevbOcH0S8s&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=40,hevbOcH0S8s,2022-02-19T14:53:45Z,39
+41,14.5- Summarizing Secure Application Concepts - Part 5 (Identifying Malicious Code Lab),https://www.youtube.com/watch?v=8Ad2-DIJRpc&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=41,8Ad2-DIJRpc,2022-02-19T14:54:19Z,40
+42,15- Implementing Secure Cloud Solutions,https://www.youtube.com/watch?v=GrEINwEZSm0&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=42,GrEINwEZSm0,2022-02-19T15:00:41Z,41
+43,16- Explaining Data Privacy and Protection Concepts,https://www.youtube.com/watch?v=QLbr-I6DP4Y&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=43,QLbr-I6DP4Y,2022-02-19T14:58:30Z,42
+44,17.1- Performing Incident Response - Part 1,https://www.youtube.com/watch?v=hn4XGgsc6nI&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=44,hn4XGgsc6nI,2022-02-19T15:08:56Z,43
+45,17.2- Performing Incident Response - Part 2 (Managing Data Sources for Incident Response Lab),https://www.youtube.com/watch?v=xd6HXJfSKJc&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=45,xd6HXJfSKJc,2022-02-19T15:08:40Z,44
+46,17.3- Performing Incident Response - Part 3 (Configuring Mitigation Controls Lab),https://www.youtube.com/watch?v=jr6RNQZaihg&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=46,jr6RNQZaihg,2022-02-19T15:07:07Z,45
+47,18.1- Explaining Digital Forensics - Part 1,https://www.youtube.com/watch?v=VRlldq5snmM&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=47,VRlldq5snmM,2022-02-19T15:06:50Z,46
+48,18.2- Explaining Digital Forensics - Part 2 (Acquiring Digital Forensics Evidence Lab),https://www.youtube.com/watch?v=8QCMP-nYW-A&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=48,8QCMP-nYW-A,2022-02-19T15:08:26Z,47
+49,19- Summarizing Risk Management Concepts,https://www.youtube.com/watch?v=piw75hexagQ&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=49,piw75hexagQ,2022-02-19T15:11:54Z,48
+50,20.1- Implementing Cybersecurity Resilience - Part 1,https://www.youtube.com/watch?v=QT4xFnC1Mh4&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=50,QT4xFnC1Mh4,2022-02-19T15:11:28Z,49
+51,20.2- Implementing Cybersecurity Resilience - Part 2 (Backing Up Data in Windows and Linux Lab),https://www.youtube.com/watch?v=JvcnnC__008&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=51,JvcnnC__008,2022-02-19T15:12:23Z,50
+52,21- Explaining Physical Security,https://www.youtube.com/watch?v=rcYIAlazvjI&list=PLky4bd7_03m8o1NB0j96OsxZs0KcKlgMO&index=52,rcYIAlazvjI,2022-02-19T15:15:52Z,51

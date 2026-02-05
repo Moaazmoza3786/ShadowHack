@@ -1,0 +1,98 @@
+---
+title: "Bash Scripting Basics for Hackers"
+path: "Pre-Security"
+module: "Linux Fundamentals"
+difficulty: "Beginner"
+---
+
+# Bash Scripting Basics for Hackers
+
+A key difference between a script kiddie and a professional hacker is **Automation**. If you find yourself running the same 5 commands over and over, you should write a script.
+
+In Linux, we use **Bash Scripting** to automate tasks, scan networks, and even exploit vulnerabilities.
+
+---
+
+## The Anatomy of a Script
+
+Every Bash script must start with a "Shebang" line. This tells the system which interpreter to use.
+
+```bash
+#!/bin/bash
+# This is a comment
+
+echo "Hello, Antigravity Pilot!"
+```
+
+### Making it Executable
+Before you can run your script, you must give it "Execute" permissions.
+<TerminalWindow cmd="chmod +x myscript.sh; ./myscript.sh" output="Hello, Antigravity Pilot!" />
+
+---
+
+## Variables & User Input
+
+Variables allow you to store data for later use.
+
+```bash
+#!/bin/bash
+echo "Enter the target IP:"
+read target_ip
+echo "Scanning $target_ip now..."
+```
+
+---
+
+## Loops: The Power of Automation
+
+Loops allow you to run a command multiple times. For example, a simple ping-sweep to see which machines are alive on a network:
+
+```bash
+#!/bin/bash
+# Simple Ping Sweep
+for ip in $(seq 1 254); do
+    ping -c 1 192.168.1.$ip | grep "64 bytes" | cut -d " " -f 4 | tr -d ":" &
+done
+```
+
+<InfoBox type="note">
+The `&` at the end of the ping command runs each ping in the **background**, making the scan much faster.
+</InfoBox>
+
+---
+
+## Conditional Logic (If/Else)
+
+Scripts can make decisions based on the result of a command.
+
+```bash
+#!/bin/bash
+if grep "root" /etc/passwd; then
+    echo "Root user found!"
+else
+    echo "Something is very wrong."
+fi
+```
+
+---
+
+## Interactive Script Simulation
+
+Let's simulate a simple port scanner script.
+
+<TerminalWindow cmd="./scanner.sh 10.10.10.1" output="[*] Probing target 10.10.10.1...
+[+] Port 22 is OPEN
+[+] Port 80 is OPEN
+[+] Port 443 is OPEN
+Scan Complete." />
+
+---
+
+## Knowledge Check
+
+<Quiz 
+  question="What is the 'Shebang' line at the start of a Bash script?"
+  options={["#!/bin/bash", "#bash-only", "start bash", "// bin/bash"]}
+  answer="#!/bin/bash"
+  explanation="The shebang (#!) followed by the path to the interpreter tells the OS how to execute the script."
+/>

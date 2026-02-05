@@ -1,0 +1,44 @@
+#,title,videoUrl,videoId,publishedAt,position
+1,اساسيات الهندسة العكسية Reverse Engineering gdb - ghidra,https://www.youtube.com/watch?v=B-ig97fNEO4&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=1,B-ig97fNEO4,2023-11-24T21:53:26Z,0
+2,عمل كيجين بالهندسة العكسية reverse engineering simple keygen,https://www.youtube.com/watch?v=fHJR3WXfERo&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=2,fHJR3WXfERo,2023-11-30T15:36:20Z,1
+3,حل تحدي بسيط Stack Buffer over flow,https://www.youtube.com/watch?v=cV1kBZWYpSM&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=3,cV1kBZWYpSM,2024-01-01T14:38:52Z,2
+4,طريقة قراءة محتويات الرجيسترز في الهندسة العكسية GDB,https://www.youtube.com/watch?v=J9_i8CMNopA&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=4,J9_i8CMNopA,2024-01-02T17:17:21Z,3
+5,هندسة عكسية تخطي الفترة التجريبية وانشاء سيريال بسهولة x64dgb,https://www.youtube.com/watch?v=jt8dvLZX5iw&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=5,jt8dvLZX5iw,2024-01-05T08:48:25Z,4
+6,هندسة عكسية شرح تخطي الـ anti-debugger بسهولة,https://www.youtube.com/watch?v=1dpM7pDUSPo&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=6,1dpM7pDUSPo,2024-01-10T23:08:00Z,5
+7,حل تحدي بالهندسة العكسية وشرح الxoring بالتفصيل,https://www.youtube.com/watch?v=C9rX3_W0AF4&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=7,C9rX3_W0AF4,2024-01-12T17:19:03Z,6
+8,طريقة عمل هندسة عكسية للالعاب المبنية على محرك godot,https://www.youtube.com/watch?v=bTMIS1TAx6c&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=8,bTMIS1TAx6c,2024-01-18T01:35:02Z,7
+9,شرح استغلال سترنق فورمات وكتابة اكسبلويت بلغة بايثون binary exploitation - string format,https://www.youtube.com/watch?v=DVqCnHDYMTo&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=9,DVqCnHDYMTo,2024-02-01T14:06:27Z,8
+10,هندسة عكسية لبرامج الدوت نت وقراءة محتويات الذاكرة عن طريق الdebugging,https://www.youtube.com/watch?v=gViubT1c3oQ&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=10,gViubT1c3oQ,2024-02-02T16:19:18Z,9
+11,عمل هندسة عكسية لالعاب مبنية على محرك يونيتي بلغة سي شارب,https://www.youtube.com/watch?v=k8mxt4ogaSY&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=11,k8mxt4ogaSY,2024-02-11T22:38:20Z,10
+12,هندسة عكسية - حل تحدي تشفير عن طريق تحليل الكود وعكسه,https://www.youtube.com/watch?v=QJupXXArJE8&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=12,QJupXXArJE8,2024-02-16T06:51:25Z,11
+13,شرح عمل هندسة عكسية باكثر من طريقة وحل تحدي vault-door-4,https://www.youtube.com/watch?v=obrstpGbfOM&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=13,obrstpGbfOM,2024-02-19T08:58:16Z,12
+14,"هندسة عكسية , استخراج ومعالجة النصوص بشكل برمجي.",https://www.youtube.com/watch?v=tfD4poYgK8Y&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=14,tfD4poYgK8Y,2024-02-24T20:18:14Z,13
+15,هندسة العكسية المقطع 16 - كيف تجيب تحديات ريفيرس وتحلها ؟,https://www.youtube.com/watch?v=wihhhk8QGPU&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=15,wihhhk8QGPU,2024-03-01T16:53:51Z,14
+16,Deleted video,https://www.youtube.com/watch?v=_3k0W3czMco&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=16,_3k0W3czMco,,15
+17,هندسة عكسية 20 - شرح الباكرز بشكل نظري وعملي مع حل تحدي,https://www.youtube.com/watch?v=FdH4qZGOzyg&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=17,FdH4qZGOzyg,2024-03-17T08:16:28Z,16
+18,الهندسة العكسية 21 - تخطي Advanced anti-debugging,https://www.youtube.com/watch?v=s8o93CimfPQ&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=18,s8o93CimfPQ,2024-03-28T16:53:08Z,17
+19,الهندسة العكسية - assembly x64 linux system calls,https://www.youtube.com/watch?v=jNpl3MXVkfs&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=19,jNpl3MXVkfs,2024-06-01T09:14:55Z,18
+20,كيف تتعلم اساسيات الهندسة العكسية واسيمبلي بالعربي ؟,https://www.youtube.com/watch?v=MisMeruezic&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=20,MisMeruezic,2024-06-06T06:29:56Z,19
+21,شرح الشيل كود | وكيف تكتب اول شيل كود بسيط بنفسك,https://www.youtube.com/watch?v=7iekgEp3pD0&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=21,7iekgEp3pD0,2024-06-08T15:56:02Z,20
+22,كيف المبرمج يسوي برنامج غش في لعبة؟,https://www.youtube.com/watch?v=mWTvYl-4sNo&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=22,mWTvYl-4sNo,2024-07-01T09:16:09Z,21
+23,مدخل الى الهندسة العكسية للالعاب,https://www.youtube.com/watch?v=emPh3AUSemE&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=23,emPh3AUSemE,2024-07-07T13:05:14Z,22
+24,الهندسة العكسية - PicoCTF WinAntiDbg0x300,https://www.youtube.com/watch?v=ytALpqrPAoI&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=24,ytALpqrPAoI,2024-08-14T19:00:26Z,23
+25,كيف تشتغل الباكرز وكيف ممكن فكها بشكل يدوي ؟,https://www.youtube.com/watch?v=cQammtCUP5g&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=25,cQammtCUP5g,2024-12-26T10:02:41Z,24
+26,هندسة عكسية | شرح تخطي الفترة التجريبية وكود التفعيل.,https://www.youtube.com/watch?v=4K10N5OTXwQ&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=26,4K10N5OTXwQ,2025-01-24T14:00:07Z,25
+27,هندسة عكسية | تفعيل البرامج بأستعمال x64dbg,https://www.youtube.com/watch?v=tiW5obGfDCM&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=27,tiW5obGfDCM,2025-02-04T13:35:43Z,26
+28,هندسة عكسية | كيف تفك حماية الـpackers بشكل يدوي,https://www.youtube.com/watch?v=iohGDHvfxeQ&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=28,iohGDHvfxeQ,2025-02-16T13:13:59Z,27
+29,هل الذكاء الاصطناعي يقدر يسوي هندسة عكسية؟,https://www.youtube.com/watch?v=7ePt0sv0_dc&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=29,7ePt0sv0_dc,2025-04-21T17:00:09Z,28
+30,كيف تتعلم الهندسة العكسية وتحليل البرمجيات الخبيثة؟,https://www.youtube.com/watch?v=4fVZYXqENh0&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=30,4fVZYXqENh0,2025-05-16T13:38:11Z,29
+31,هندسة عكسية | كيف تتبع وتحذف نافذة التفعيل المزعجة؟,https://www.youtube.com/watch?v=GsopIGeOJ08&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=31,GsopIGeOJ08,2025-05-22T15:37:00Z,30
+32,هندسة عكسية | Flareon24 1-2 كيف تصحح أخطاء الديكومبايلر,https://www.youtube.com/watch?v=Qb23Di0r3WQ&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=32,Qb23Di0r3WQ,2025-06-13T11:20:46Z,31
+33,اساسيات الهندسة العكسية وحل تحديات الـCTF | Flareon-1,https://www.youtube.com/watch?v=zK6gAI1goIQ&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=33,zK6gAI1goIQ,2025-08-10T17:28:12Z,32
+34,هندسة عكسية | تفكيك كود مشفر على عدة مراحل (Obfuscation),https://www.youtube.com/watch?v=wJKBa7jDkwQ&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=34,wJKBa7jDkwQ,2025-08-12T16:28:14Z,33
+35,هندسة عكسية | تحليل برنامج كوده يتغير اثناء التشغيل (Self-modifying Code),https://www.youtube.com/watch?v=R44SV6rpzNY&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=35,R44SV6rpzNY,2025-08-18T18:06:34Z,34
+36,كيف ممكن تسوي هندسة عكسية لبرنامج يغير كوده بنفسه؟,https://www.youtube.com/watch?v=Lrf4KZDvQNI&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=36,Lrf4KZDvQNI,2025-08-27T10:45:30Z,35
+37,هندسة عكسية | اسهل طريقة للتلاعب في كود البرنامج اثناء التشغيل,https://www.youtube.com/watch?v=E74hWlgA3l8&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=37,E74hWlgA3l8,2025-09-02T20:27:14Z,36
+38,هندسة عكسية | لمحة بسيطة عن تحليل الـVM,https://www.youtube.com/watch?v=Af6jvbJpsV0&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=38,Af6jvbJpsV0,2025-09-10T18:00:23Z,37
+39,هندسة عكسية | يقدر الذكاء الاصطناعي يحلل مالوير بالكامل بدون تدخل منك؟,https://www.youtube.com/watch?v=xgWsqmjpMKA&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=39,xgWsqmjpMKA,2025-09-15T16:49:42Z,38
+40,هندسة عكسية | كيف تحل تحديات الهندسة العكسية في مسابقات الـCTF,https://www.youtube.com/watch?v=y3MT7maXV-c&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=40,y3MT7maXV-c,2025-10-02T16:26:21Z,39
+41,هندسة عكسية | محاكاة اسيمبلي شيل كود باستعمال Unicorn,https://www.youtube.com/watch?v=T0uYPu7Wbr0&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=41,T0uYPu7Wbr0,2025-10-29T16:02:09Z,40
+42,هندسة عكسية | كيف تتعامل مع البرامج المحمية بإستعمال Packers,https://www.youtube.com/watch?v=LoowTK44sag&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=42,LoowTK44sag,2025-11-19T17:00:42Z,41
+43,هندسة عكسية | شرح الـCalling conventions,https://www.youtube.com/watch?v=amllwuAUyEY&list=PLzp8FYHY3OhJnblFFZFCmbOl42Jd0hmRs&index=43,amllwuAUyEY,2025-11-23T13:05:02Z,42

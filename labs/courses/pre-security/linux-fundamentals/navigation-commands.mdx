@@ -1,0 +1,71 @@
+---
+title: "Shell Navigation & Basic Commands"
+path: "Pre-Security"
+module: "Linux Fundamentals"
+difficulty: "Beginner"
+---
+
+# Shell Navigation & Basic Commands
+
+In the world of cybersecurity, the **CLI (Command Line Interface)** is your primary tool. While a GUI (Graphical User Interface) is easy to use, the CLI is faster, more powerful, and essential for automation.
+
+The program that interprets your commands is called the **Shell**. The most common shell in Linux is **Bash** (Bourne Again SHell).
+
+---
+
+## Survival Commands
+
+Before you can hack, you must learn to walk. Here are the core commands for moving around the system.
+
+### 1. Where am I? (`pwd`)
+Stands for **Print Working Directory**. It shows your current location in the filesystem.
+
+<TerminalWindow cmd="pwd" output="/home/explorer" />
+
+### 2. What's in here? (`ls`)
+Stands for **List**. It shows files and folders in your current directory.
+- `ls -l`: Long listing (shows permissions and size).
+- `ls -a`: Show hidden files (files starting with a `.`).
+
+### 3. Moving around (`cd`)
+Stands for **Change Directory**.
+- `cd /etc`: Go to the `/etc` folder.
+- `cd ..`: Go up one level.
+- `cd ~`: Go to your home directory.
+
+---
+
+## Handling Files
+
+### Creating & Reading
+- `touch filename.txt`: Create an empty file.
+- `mkdir folder_name`: Create a new directory.
+- `cat filename.txt`: Read the contents of a file.
+- `head -n 5 file.txt`: View the first 5 lines.
+- `tail -n 5 file.txt`: View the last 5 lines.
+
+### Copying & Moving
+- `cp source destination`: Copy a file.
+- `mv source destination`: Move or **rename** a file.
+- `rm filename`: Delete a file. **Warning: There is no Trash can in the CLI.**
+
+---
+
+## Finding Help
+
+You don't need to memorize every command. Linux has built-in manuals.
+
+<TerminalWindow cmd="man ls" output="LS(1) User Commands
+NAME: ls - list directory contents
+DESCRIPTION: List information about the FILEs (the current directory by default)..." />
+
+---
+
+## Knowledge Check
+
+<Quiz 
+  question="Which command is used to see all files in a directory, including hidden ones?"
+  options={["ls -l", "ls -a", "ls -h", "show all"]}
+  answer="ls -a"
+  explanation="The -a flag stands for 'all' and reveals hidden files prefixed with a dot (.)."
+/>

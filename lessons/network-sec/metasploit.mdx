@@ -1,0 +1,37 @@
+---
+title: Metasploit Fundamentals
+description: Using the world's most popular exploit framework.
+---
+
+# Metasploit Fundamentals
+
+The **Metasploit Framework (MSF)** is an open-source project that provides infrastructure, content, and tools to perform penetration tests and security audits.
+
+## Key Terminology
+
+- **Exploit:** A sequence of commands that takes advantage of a bug or vulnerability.
+- **Payload:** The code that runs on the target system after successful exploitation (e.g., a reverse shell).
+- **Module:** A piece of software that performs a specific task (Exploit, Auxiliary, Post, etc.).
+- **Listener:** A component that waits for an incoming connection from the exploited target.
+
+<TerminalWindow 
+  title="Searching for Exploits" 
+  command="msfconsole -q\nmsf6 > search redis" 
+  output="Matching Modules\n================\n   #  Name                                           Disclosure Date  Rank       Check  Description\n   -  ----                                           ---------------  ----       -----  -----------\n   0  exploit/linux/redis/redis_replication_cmd_exec  2019-07-02       excellent  Yes    Redis Replication Remote Code Execution" 
+/>
+
+<InfoBox type="important">
+The **Meterpreter** is an advanced, multi-faceted payload that operates via in-memory DLL injection. It is difficult to detect and provides a vast array of post-exploitation tools.
+</InfoBox>
+
+<Quiz 
+  question="What is the command to use a specific module in Metasploit?" 
+  answer="use" 
+  hint="Followed by the module path." 
+/>
+
+<Quiz 
+  question="What is the name of the advanced Metasploit payload that runs entirely in memory?" 
+  answer="Meterpreter" 
+  hint="Starts with 'Meter'." 
+/>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 URLFetcher - Preview Any URL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: #e2e8f0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .header p {
+            color: #a5b4fc;
+            margin-top: 8px;
+        }
+
+        /* Fetch Card */
+        .fetch-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .url-label {
+            font-size: 12px;
+            color: #a5b4fc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .url-form {
+            display: flex;
+            gap: 12px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #4f46e5;
+            border-radius: 10px;
+            color: #22d3ee;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: #818cf8;
+            box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.2);
+        }
+
+        .fetch-btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .fetch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Results */
+        .results {
+            margin-top: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .results-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .results-title {
+            font-weight: 600;
+            color: #a5b4fc;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: #22c55e;
+            color: #0f172a;
+        }
+
+        .status-error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .results-body {
+            padding: 20px;
+        }
+
+        .results-content {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 13px;
+            color: #94a3b8;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Internal panel */
+        .internal-panel {
+            background: linear-gradient(135deg, #1e3a5f, #1e293b);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .internal-panel h3 {
+            color: #0ea5e9;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-info {
+            display: grid;
+            gap: 10px;
+        }
+
+        .admin-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        .admin-label {
+            color: #64748b;
+        }
+
+        .admin-value {
+            color: #22d3ee;
+            font-weight: 600;
+        }
+
+        /* Success Box */
+        .success-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid #22c55e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-box h4 {
+            color: #22c55e;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #86efac;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 URLFetcher</h1>
+            <p>Server-side URL Preview Tool</p>
+        </div>
+
+        <div class="fetch-card">
+            <div class="url-label">Enter URL to preview</div>
+            <form class="url-form" onsubmit="fetchUrl(event)">
+                <input type="text" class="url-input" id="urlInput" placeholder="https://example.com"
+                    value="https://example.com">
+                <button type="submit" class="fetch-btn">
+                    <span>📡</span> Fetch
+                </button>
+            </form>
+
+            <div class="results" id="results" style="display: none;">
+                <div class="results-header">
+                    <span class="results-title">Response</span>
+                    <span class="status-badge" id="statusBadge">-</span>
+                </div>
+                <div class="results-body">
+                    <div class="results-content" id="resultsContent"></div>
+                </div>
+            </div>
+
+            <div id="successArea"></div>
+        </div>
+    </div>
+
+    <script>
+        const FLAG = 'FLAG{SSRF_1NT3RN4L_4CC3SS}';
+
+        // Simulated responses
+        const responses = {
+            'https://example.com': {
+                status: 200,
+                content: `<!DOCTYPE html>
+<html>
+<head><title>Example Domain</title></head>
+<body>
+<h1>Example Domain</h1>
+<p>This domain is for use in illustrative examples.</p>
+</body>
+</html>`
+            },
+            'http://localhost:8080/admin': {
+                status: 200,
+                content: 'INTERNAL_ADMIN_PANEL',
+                isInternal: true
+            },
+            'http://127.0.0.1:8080/admin': {
+                status: 200,
+                content: 'INTERNAL_ADMIN_PANEL',
+                isInternal: true
+            },
+            'http://localhost/admin': {
+                status: 200,
+                content: 'INTERNAL_ADMIN_PANEL',
+                isInternal: true
+            },
+            'http://127.0.0.1/admin': {
+                status: 200,
+                content: 'INTERNAL_ADMIN_PANEL',
+                isInternal: true
+            }
+        };
+
+        function fetchUrl(event) {
+            event.preventDefault();
+
+            const url = document.getElementById('urlInput').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('results');
+            const statusBadge = document.getElementById('statusBadge');
+            const resultsContent = document.getElementById('resultsContent');
+            const successArea = document.getElementById('successArea');
+
+            resultsDiv.style.display = 'block';
+            successArea.innerHTML = '';
+
+            // Check for SSRF to internal services
+            const isSSRF = url.includes('localhost') ||
+                url.includes('127.0.0.1') ||
+                url.includes('0.0.0.0') ||
+                url.includes('internal') ||
+                url.includes('169.254') ||
+                url.includes('192.168') ||
+                url.includes('10.0');
+
+            if (isSSRF && url.includes('admin')) {
+                // SSRF Success!
+                statusBadge.textContent = '200 OK';
+                statusBadge.className = 'status-badge status-success';
+
+                resultsContent.innerHTML = `<div class="internal-panel">
+    <h3>🔓 Internal Admin Panel</h3>
+    <div class="admin-info">
+        <div class="admin-row">
+            <span class="admin-label">Server</span>
+            <span class="admin-value">internal-app-01</span>
+        </div>
+        <div class="admin-row">
+            <span class="admin-label">Database</span>
+            <span class="admin-value">mongodb://localhost:27017</span>
+        </div>
+        <div class="admin-row">
+            <span class="admin-label">API Key</span>
+            <span class="admin-value">sk-internal-xk9f2m...</span>
+        </div>
+        <div class="admin-row">
+            <span class="admin-label">Secret Flag</span>
+            <span class="admin-value">${FLAG}</span>
+        </div>
+    </div>
+</div>`;
+
+                successArea.innerHTML = `
+                    <div class="success-box">
+                        <h4>🎯 SSRF Vulnerability Exploited!</h4>
+                        <p>You accessed an internal service by making the server fetch a localhost URL!</p>
+                        <div class="flag-display">🚩 ${FLAG}</div>
+                    </div>
+                `;
+
+                // Notify parent if in iframe
+                if (window.parent !== window) {
+                    try {
+                        window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: FLAG }, '*');
+                    } catch (e) { }
+                }
+            } else if (isSSRF) {
+                // SSRF attempt but wrong endpoint
+                statusBadge.textContent = '403 Forbidden';
+                statusBadge.className = 'status-badge status-error';
+                resultsContent.textContent = 'Access denied. Try finding the admin panel...';
+            } else if (url.startsWith('http')) {
+                // External URL - simulate fetch
+                statusBadge.textContent = '200 OK';
+                statusBadge.className = 'status-badge status-success';
+                resultsContent.textContent = responses[url]?.content ||
+                    `<!DOCTYPE html>\n<html>\n<body>\n<h1>Content from ${url}</h1>\n</body>\n</html>`;
+            } else {
+                statusBadge.textContent = 'Error';
+                statusBadge.className = 'status-badge status-error';
+                resultsContent.textContent = 'Invalid URL. Please enter a valid HTTP/HTTPS URL.';
+            }
+        }
+    </script>
+</body>
+
+</html>

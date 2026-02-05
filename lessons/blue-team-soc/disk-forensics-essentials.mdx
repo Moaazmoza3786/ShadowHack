@@ -1,0 +1,340 @@
+---
+title: "Disk Forensics Essentials"
+description: "Learn essential disk forensics techniques for incident response and investigation."
+difficulty: "Advanced"
+estimatedTime: "55 minutes"
+tags: ["blue-team", "forensics", "disk-forensics", "dfir"]
+---
+
+# Disk Forensics Essentials
+
+<InfoBox type="tip" title="The Persistent Evidence">
+Unlike memory, disk artifacts **persist after reboot**. Even deleted files leave traces. Disk forensics reveals the complete story of an incident.
+</InfoBox>
+
+## Why Disk Forensics?
+
+Disk forensics answers critical questions:
+- When did the compromise occur?
+- What did the attacker download/install?
+- What data was accessed or exfiltrated?
+- How did they persist?
+- What was the scope of the breach?
+
+---
+
+## Key Evidence Locations
+
+### Windows Artifacts
+
+| Artifact | Location | Contains |
+|----------|----------|----------|
+| **Registry** | `C:\Windows\System32\config\*` | Config, persistence, recent activity |
+| **Event Logs** | `C:\Windows\System32\winevt\Logs\*` | Security events, app logs |
+| **Prefetch** | `C:\Windows\Prefetch\*` | Program execution history |
+| **MFT** | `$MFT` (NTFS metadata) | File timeline, deleted files |
+| **USN Journal** | `$UsnJrnl` | File system changes |
+| **Browser History** | `AppData\Local\*` | Web activity |
+| **ShimCache** | Registry | Executed programs |
+| **AmCache** | `C:\Windows\AppCompat\*` | Installed applications |
+
+### Linux Artifacts
+
+| Artifact | Location | Contains |
+|----------|----------|----------|
+| **Auth logs** | `/var/log/auth.log` | Logins, sudo |
+| **Syslog** | `/var/log/syslog` | System events |
+| **Bash history** | `~/.bash_history` | Command history |
+| **Cron** | `/etc/crontab`, `/var/spool/cron` | Scheduled tasks |
+| **SSH** | `~/.ssh/`, `/var/log/auth.log` | Keys, connections |
+| **Apt/Yum logs** | `/var/log/apt/` | Package installs |
+
+---
+
+## Forensic Image Acquisition
+
+<InfoBox type="warning" title="Golden Rule">
+**Never modify the evidence!** Always work on forensic copies, maintain chain of custody, and document everything.
+</InfoBox>
+
+### Creating Forensic Images
+
+<TerminalWindow title="Disk Imaging Tools">
+# Linux - dd (basic, no progress)
+$ sudo dd if=/dev/sda of=/mnt/evidence/disk.img bs=4M status=progress
+
+# Linux - dcfldd (forensic dd with hashing)
+$ sudo dcfldd if=/dev/sda of=/mnt/evidence/disk.img bs=4M hash=sha256 hashlog=disk.hash
+
+# FTK Imager (Windows/GUI) - Best for beginners
+# Creates E01 format with built-in hashing
+
+# Guymager (Linux GUI)
+$ sudo guymager
+
+# Verify integrity
+$ sha256sum disk.img
+$ cat disk.hash  # Compare
+</TerminalWindow>
+
+### Image Formats
+
+| Format | Extension | Features |
+|--------|-----------|----------|
+| **Raw** | `.dd`, `.img` | Simple, universal |
+| **E01 (EnCase)** | `.E01` | Compression, metadata, checksums |
+| **AFF** | `.aff` | Open format, compression |
+
+---
+
+## Essential Tools
+
+### Autopsy
+
+<TerminalWindow title="Autopsy - Open Source Forensics">
+# Install Autopsy (Debian-based)
+$ sudo apt install autopsy
+
+# Launch
+$ autopsy
+
+# Web interface: http://localhost:9999
+
+# Autopsy Features:
+✓ Timeline analysis
+✓ Keyword search
+✓ File recovery
+✓ Registry analysis
+✓ Web artifact extraction
+✓ Hash lookup
+</TerminalWindow>
+
+### Sleuth Kit
+
+<TerminalWindow title="Sleuth Kit Commands">
+# List partitions
+$ mmls disk.img
+DOS Partition Table
+Offset    Start      End        Type
+000:000   0000000000 0000000063 Primary (0x27)
+001:000   0000000064 0020971519 Primary (0x07) NTFS
+
+# File system info
+$ fsstat -o 64 disk.img
+
+# List files
+$ fls -o 64 disk.img
+
+# List deleted files
+$ fls -o 64 -d disk.img
+
+# Recover specific file by inode
+$ icat -o 64 disk.img 12345 > recovered_file.exe
+
+# Search for strings
+$ strings -a disk.img | grep -i "password"
+</TerminalWindow>
+
+---
+
+## Windows-Specific Analysis
+
+### Registry Analysis
+
+<TerminalWindow title="Registry Forensics">
+# Extract registry hives from image
+# Located in: Windows/System32/config/
+
+# Tools: RegRipper, Registry Explorer
+
+# RegRipper usage
+$ rip.pl -r SYSTEM -p compname
+$ rip.pl -r NTUSER.DAT -p userassist
+
+# Key areas to examine:
+# Persistence:
+HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+HKLM\SYSTEM\CurrentControlSet\Services
+
+# User activity:
+HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs
+HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths
+
+# USB devices:
+HKLM\SYSTEM\CurrentControlSet\Enum\USBSTOR
+
+# Shimcache (executed programs):
+HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\AppCompatCache
+</TerminalWindow>
+
+### Prefetch Analysis
+
+<TerminalWindow title="Prefetch Forensics">
+# Prefetch shows program execution
+# Location: C:\Windows\Prefetch\
+
+# Format: PROGRAM.EXE-HASH.pf
+
+# Tools: PECmd.exe (Eric Zimmerman)
+> PECmd.exe -d C:\Windows\Prefetch --csv output.csv
+
+# Each prefetch file contains:
+- Program path
+- Run count
+- Last 8 execution times
+- Files/DLLs accessed
+</TerminalWindow>
+
+### MFT & Timeline Analysis
+
+<TerminalWindow title="MFT Analysis">
+# Extract MFT
+$ icat -o 64 disk.img 0 > $MFT
+
+# Parse with analyzeMFT
+$ analyzeMFT.py -f $MFT -o mft_output.csv
+
+# MFT provides:
+- All files (including deleted)
+- Creation/modification/access times
+- File paths
+- Parent directories
+
+# Create timeline (using plaso/log2timeline)
+$ log2timeline.py timeline.plaso disk.img
+$ psort.py -o l2tcsv timeline.plaso > timeline.csv
+</TerminalWindow>
+
+---
+
+## Evidence Analysis Workflow
+
+### 1. Initial Triage
+
+```
+1. Image the disk (maintain evidence integrity)
+2. Verify hash
+3. Mount read-only
+4. Gather quick wins:
+   - Event logs
+   - Prefetch
+   - Browser history
+   - Recent files
+```
+
+### 2. Deep Analysis
+
+```
+5. Create timeline (MFT + logs)
+6. Identify anomalies:
+   - Unusual execution times
+   - Modified system files
+   - New user accounts
+   - Suspicious services
+7. Follow the trail:
+   - Downloaded files
+   - Accessed documents
+   - Network artifacts
+```
+
+### 3. Reporting
+
+```
+8. Document findings
+9. Preserve evidence chain
+10. Create IOCs for detection
+```
+
+---
+
+## Practical Exercise
+
+<ChallengeBox 
+  title="Investigate the Compromise"
+  difficulty="hard"
+  points={250}
+>
+
+You're analyzing a forensic image from a compromised workstation. Initial findings from prefetch:
+
+```
+POWERSHELL.EXE-XXXXXXXX.pf
+  Last Run: 2026-01-14 14:32:18
+  Run Count: 1
+
+CMD.EXE-XXXXXXXX.pf
+  Last Run: 2026-01-14 14:32:45
+  Run Count: 47
+
+SVCHOST32.EXE-XXXXXXXX.pf    <-- Suspicious!
+  Last Run: 2026-01-14 14:33:00
+  Run Count: 1
+  Path: C:\Users\victim\AppData\Local\Temp\svchost32.exe
+```
+
+Registry shows new Run key:
+```
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+  "WindowsUpdate" = "C:\Users\victim\AppData\Local\Temp\svchost32.exe"
+```
+
+**Questions**:
+1. What's suspicious about "svchost32.exe"?
+2. What attack stage does this represent?
+3. What additional artifacts would you examine?
+
+<details>
+<summary>Answer</summary>
+
+**1. Suspicious Indicators**:
+- Real svchost.exe is in `C:\Windows\System32\`, not user temp folder
+- Name mimics legitimate process ("svchost32" vs "svchost")
+- Only run once (new malware, not legitimate)
+- Run immediately after PowerShell execution
+
+**2. Attack Stage**:
+- This represents **Persistence** (TA0003)
+- The attacker:
+  1. Executed malicious PowerShell (Initial Access/Execution)
+  2. Downloaded svchost32.exe to temp
+  3. Created Run key for persistence
+
+**3. Additional Artifacts**:
+- $MFT - When was svchost32.exe created?
+- USN Journal - What else changed at that time?
+- Browser history - Was drive-by download involved?
+- Event logs - Any security alerts?
+- Network connections - Where did it phone home?
+- File contents - Submit hash to VirusTotal
+
+```bash
+# Extract the malware
+$ icat image.img [inode] > svchost32.exe
+$ sha256sum svchost32.exe
+# Check VirusTotal for hash
+```
+
+</details>
+</ChallengeBox>
+
+---
+
+## Key Takeaways
+
+- **Image first, analyze second** - preserve evidence integrity
+- **Windows artifacts** are rich: Registry, Prefetch, MFT, Event Logs
+- Use **timeline analysis** to reconstruct events
+- Look for **anomalies**: wrong paths, unusual times, new entries
+- **Document everything** for legal and reporting purposes
+
+<Quiz
+  question="Which Windows artifact shows the history of executed programs with timestamps and run counts?"
+  options={[
+    "Registry Run keys",
+    "Event logs",
+    "Prefetch files",
+    "Browser history"
+  ]}
+  correctIndex={2}
+  explanation="Prefetch files (C:\\Windows\\Prefetch\\) contain program execution history including last 8 run times and total run count."
+/>

@@ -1,0 +1,72 @@
+
+# Legal Issues in Penetration Testing
+
+## The Thin Blue Line
+Penetration testers operate in a legal gray area. One wrong packet, one unauthorized access, or one leaked database can lead to felony charges or massive lawsuits. Understanding the law is as important as understanding the exploits.
+
+## 1. Computer Fraud and Abuse Act (CFAA) - USA
+The CFAA is the primary federal anti-hacking law in the United States. It criminalizes accessing a computer "without authorization" or "exceeding authorized access."
+
+### Key Provisions for Pentesters
+- **Access Without Authorization:** Hacking a system you have no permission to touch.
+- **Exceeding Authorized Access:** You have permission to test the **web app**, but you pivot to the **internal HR database**. You just "exceeded" your access.
+
+<Note type="warning">
+**The "Aaron Swartz" Precedent:** The CFAA is interpreted broadly. Changing a URL ID (IDOR) or downloading public data in bulk against Terms of Service *can* be prosecuted, though recent DOJ guidelines are softening on "good faith" research.
+</Note>
+
+## 2. General Data Protection Regulation (GDPR) - EU
+If your client has data on European citizens, GDPR applies, regardless of where the company is located.
+
+### Impact on Pentesting
+- **PII Handling:** You cannot just "download the database" to prove you can. That constitutes a data breach.
+- **Data Minimization:** Exfiltrate only what is absolutely necessary (e.g., `whoami`, `hostname`, or a single dummy record).
+- **Right to be Forgotten:** If you create test users or data, you **MUST** delete them after the engagement.
+
+## 3. Computer Misuse Act (CMA) 1990 - UK
+Similar to CFAA, but strictly prohibits:
+1.  Unauthorised access to computer material.
+2.  Unauthorised access with intent to commit further offences.
+3.  Unauthorised acts with intent to impair capabilities (DoS).
+
+## Operational Security (OpSec) & Evidence
+Legally, you must prove that **YOU** were the one who performed the actions during the agreed window, to distinguish your traffic from real attackers.
+
+### Best Practices
+*   **Source IP:** always perform tests from a static IP address authorized in the RoE.
+*   **Log Everything:** Keep logs of your terminal sessions.
+
+<TerminalSimulator 
+    cmd="script pentest_session_log.txt" 
+    output={`Script started, file is pentest_session_log.txt
+root@kali:~# nmap -sS target.com
+...
+Script done, file is pentest_session_log.txt`} 
+/>
+
+The `script` command records your entire session. This is your "Black Box" flight recorder in court.
+
+---
+
+<CodeBlock language="javascript" showLineNumbers code={`// Example: Sanitize PII in Proof of Concepts
+// BAD: Screenshots of real credit card numbers
+const stolenData = [
+  { user: "Alice", cc: "4111-2222-3333-4444" }, // FELONY RISK
+];
+
+// GOOD: Redacted data
+const proofOfConcept = [
+  { user: "Alice", cc: "4111-XXXX-XXXX-XXXX" }, // Evidence without exposure
+];
+`} />
+
+<Quiz 
+    question="You successfully exploit a SQL Injection and find the 'Users' table. What is the legally safest next step?" 
+    options={[
+        "Dump the entire database to a local file for analysis",
+        "Extract only the first username/version to prove access",
+        "Delete the table to show severity",
+        "Post the findings on Twitter to alert the public"
+    ]} 
+    answer="Extract only the first username/version to prove access" 
+/>

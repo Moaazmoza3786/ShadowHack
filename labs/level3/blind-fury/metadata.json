@@ -1,0 +1,9 @@
+{
+    "id": "ctf-blind-fury",
+    "name": "Blind Fury",
+    "difficulty": "hard",
+    "tier": 3,
+    "port": 80,
+    "category": "Web / SQLi",
+    "flag": "AG{bl1nd_sql_m4st3ry}"
+}

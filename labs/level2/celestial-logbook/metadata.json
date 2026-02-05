@@ -1,0 +1,10 @@
+{
+    "id": "ctf-celestial-logbook",
+    "name": "The Celestial Logbook",
+    "description": "Navigate the desert observatory's archives and find the hidden encryption keys.",
+    "difficulty": "medium",
+    "tier": 2,
+    "port": 80,
+    "category": "Web / LFI",
+    "flag": "AG{LFI_1n_th3_St4rs_8ce3}"
+}

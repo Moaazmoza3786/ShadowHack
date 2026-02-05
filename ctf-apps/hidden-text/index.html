@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to TechCorp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .hint {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .hint h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏢 Welcome to TechCorp</h1>
+
+        <p>
+            We are a leading technology company specializing in innovative solutions for modern businesses.
+            Our team of experts is dedicated to delivering cutting-edge products and services.
+        </p>
+
+        <div class="info-box">
+            <h3>🎯 Challenge Objective</h3>
+            <p>Find the hidden flag in this webpage. It's hidden somewhere in the HTML source code!</p>
+        </div>
+
+        <div class="hint">
+            <h4>💡 Hints</h4>
+            <ul style="margin-left: 20px;">
+                <li>Try viewing the page source (Ctrl+U or Right-click → View Page Source)</li>
+                <li>Look for HTML comments <code>&lt;!-- --&gt;</code></li>
+                <li>Check hidden elements</li>
+            </ul>
+        </div>
+
+        <p>
+            Our mission is to transform the digital landscape through innovation, creativity, and excellence.
+            Join us on this exciting journey!
+        </p>
+
+        <!-- DEBUG: Database connection string: mysql://admin:password@localhost/techcorp_db -->
+
+        <!-- TODO: Remove this before production -->
+        <!-- FLAG{h1dd3n_1n_pl41n_s1ght} -->
+
+        <div class="footer">
+            <p>&copy; 2024 TechCorp. All rights reserved.</p>
+            <p style="visibility: hidden; height: 0; overflow: hidden;">
+                Secret admin panel: /admin?token=abc123xyz789
+            </p>
+        </div>
+    </div>
+
+    <div style="display: none;">
+        <!-- Another hint: The flag format is FLAG{...} -->
+        <p>Hidden data: user_count=1337</p>
+        <p>Internal note: Remember to update the security policy</p>
+    </div>
+</body>
+
+</html>

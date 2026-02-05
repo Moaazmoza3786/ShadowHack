@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔎 OSINTHub - Intelligence Gathering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #22d3ee;
+        }
+
+        .header p {
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .card {
+            background: rgba(34, 211, 238, 0.05);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 16px;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 8px;
+            color: #22d3ee;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: rgba(34, 211, 238, 0.2);
+            border-color: #22d3ee;
+        }
+
+        .target-box {
+            background: #0c1929;
+            border: 1px solid #2d4a6f;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .target-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .target-value {
+            font-size: 1.2rem;
+            color: #22d3ee;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: #0c1929;
+            border: 1px solid #2d4a6f;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #22d3ee;
+        }
+
+        .search-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #22d3ee, #06b6d4);
+            color: #0c1929;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(34, 211, 238, 0.4);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tool-btn {
+            padding: 12px;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 8px;
+            color: #22d3ee;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .tool-btn:hover {
+            background: rgba(34, 211, 238, 0.2);
+        }
+
+        .tool-btn .icon {
+            font-size: 1.3rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .results {
+            background: #0c1929;
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 200px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #22d3ee;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-source {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .result-title {
+            color: #e2e8f0;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .result-data {
+            color: #22d3ee;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .success-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid #22c55e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-box h4 {
+            color: #22c55e;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #86efac;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔎 OSINTHub</h1>
+            <p>Open Source Intelligence Gathering</p>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" onclick="setTarget('username')">👤 Username</div>
+                <div class="tab" onclick="setTarget('email')">📧 Email</div>
+                <div class="tab" onclick="setTarget('domain')">🌐 Domain</div>
+            </div>
+
+            <div class="target-box">
+                <div class="target-label">Investigation Target</div>
+                <div class="target-value" id="targetValue">cyberh4ck3r2024</div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="Enter target...">
+                <button class="search-btn" onclick="investigate()">Investigate</button>
+            </div>
+
+            <div class="tools-grid">
+                <button class="tool-btn" onclick="runTool('sherlock')">
+                    <span class="icon">🕵️</span>
+                    Sherlock
+                </button>
+                <button class="tool-btn" onclick="runTool('whois')">
+                    <span class="icon">📋</span>
+                    WHOIS
+                </button>
+                <button class="tool-btn" onclick="runTool('hibp')">
+                    <span class="icon">💀</span>
+                    Breach Check
+                </button>
+                <button class="tool-btn" onclick="runTool('social')">
+                    <span class="icon">📱</span>
+                    Social Media
+                </button>
+                <button class="tool-btn" onclick="runTool('dns')">
+                    <span class="icon">🌍</span>
+                    DNS Lookup
+                </button>
+                <button class="tool-btn" onclick="runTool('all')">
+                    <span class="icon">🎯</span>
+                    Full Scan
+                </button>
+            </div>
+
+            <div class="results" id="results">
+                <p style="color:#64748b; text-align:center; padding:40px;">
+                    Select a tool to start investigating...
+                </p>
+            </div>
+
+            <div id="successArea"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentTarget = 'username';
+
+        const targets = {
+            username: {
+                value: 'cyberh4ck3r2024',
+                flag: 'FLAG{us3rn4m3_c0rr3l4t10n}',
+                data: {
+                    sherlock: [
+                        { source: 'GitHub', title: 'Profile Found', data: 'github.com/cyberh4ck3r2024 - Real name: John Smith' },
+                        { source: 'Twitter', title: 'Account Active', data: '@cyberh4ck3r2024 - Bio contains FLAG{us3rn4m3_c0rr3l4t10n}' },
+                        { source: 'LinkedIn', title: 'Profile Match', data: 'John Smith - Cybersecurity Analyst' }
+                    ],
+                    social: [
+                        { source: 'Instagram', title: 'Account Found', data: 'Private account - 127 followers' },
+                        { source: 'Reddit', title: 'Active User', data: 'u/cyberh4ck3r2024 - Posts in r/hacking' }
+                    ]
+                }
+            },
+            email: {
+                value: 'suspect2024@protonmail.com',
+                flag: 'FLAG{3m41l_1nv3st1g4t0r}',
+                data: {
+                    hibp: [
+                        { source: 'HaveIBeenPwned', title: 'Breach Found!', data: 'Exposed in: LinkedIn 2021 breach' },
+                        { source: 'Breach Data', title: 'Leaked Password', data: 'Password hint: FLAG{3m41l_1nv3st1g4t0r}' }
+                    ],
+                    social: [
+                        { source: 'Gravatar', title: 'Avatar Found', data: 'Profile picture available' }
+                    ]
+                }
+            },
+            domain: {
+                value: 'shadycorp.local',
+                flag: 'FLAG{d0m41n_1nt3ll1g3nc3}',
+                data: {
+                    whois: [
+                        { source: 'WHOIS', title: 'Registrant', data: 'John Doe - shadycorp@email.com' },
+                        { source: 'WHOIS', title: 'Nameservers', data: 'ns1.shadycorp.local, ns2.shadycorp.local' }
+                    ],
+                    dns: [
+                        { source: 'DNS A', title: 'IP Address', data: '192.168.1.100' },
+                        { source: 'DNS TXT', title: 'Hidden Record', data: 'FLAG{d0m41n_1nt3ll1g3nc3}' },
+                        { source: 'DNS MX', title: 'Mail Server', data: 'mail.shadycorp.local' }
+                    ]
+                }
+            }
+        };
+
+        function setTarget(type) {
+            currentTarget = type;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const target = targets[type];
+            document.getElementById('targetValue').textContent = target.value;
+            document.getElementById('searchInput').value = target.value;
+            document.getElementById('results').innerHTML = '<p style="color:#64748b; text-align:center; padding:40px;">Select a tool to start investigating...</p>';
+            document.getElementById('successArea').innerHTML = '';
+        }
+
+        function investigate() {
+            const input = document.getElementById('searchInput').value;
+            document.getElementById('targetValue').textContent = input;
+            runTool('all');
+        }
+
+        function runTool(tool) {
+            const target = targets[currentTarget];
+            const resultsDiv = document.getElementById('results');
+            let allResults = [];
+
+            if (tool === 'all') {
+                Object.values(target.data).forEach(arr => allResults.push(...arr));
+            } else if (target.data[tool]) {
+                allResults = target.data[tool];
+            } else {
+                resultsDiv.innerHTML = `<p style="color:#f87171; text-align:center; padding:40px;">No data found for this tool.</p>`;
+                return;
+            }
+
+            if (allResults.length === 0) {
+                resultsDiv.innerHTML = `<p style="color:#64748b; text-align:center; padding:40px;">No results found.</p>`;
+                return;
+            }
+
+            let html = '';
+            allResults.forEach(r => {
+                const hasFlag = r.data.includes('FLAG{');
+                html += `
+                    <div class="result-item" style="${hasFlag ? 'border-color:#22c55e;background:rgba(34,197,94,0.1);' : ''}">
+                        <div class="result-source">${r.source}</div>
+                        <div class="result-title">${r.title}</div>
+                        <div class="result-data" style="${hasFlag ? 'color:#22c55e;font-weight:bold;' : ''}">${r.data}</div>
+                    </div>
+                `;
+            });
+            resultsDiv.innerHTML = html;
+
+            // Check for flag
+            if (allResults.some(r => r.data.includes('FLAG{'))) {
+                document.getElementById('successArea').innerHTML = `
+                    <div class="success-box">
+                        <h4>🎯 Intelligence Gathered!</h4>
+                        <p>You found sensitive data about the target!</p>
+                        <div class="flag-display">🚩 ${target.flag}</div>
+                    </div>
+                `;
+
+                if (window.parent !== window) {
+                    try { window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: target.flag }, '*'); } catch (e) { }
+                }
+            }
+        }
+
+        // Initialize
+        document.getElementById('searchInput').value = targets.username.value;
+    </script>
+</body>
+
+</html>

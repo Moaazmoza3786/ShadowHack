@@ -1,0 +1,72 @@
+---
+title: "Grepping & Piping (Text Manipulation)"
+path: "Pre-Security"
+module: "Linux Fundamentals"
+difficulty: "Beginner"
+---
+
+# Grepping & Piping (Text Manipulation)
+
+In Linux, output from one command can be sent into another command. This is called **Piping**. Combined with powerful text search tools like **Grep**, it allows you to scan through thousands of lines of data in milliseconds.
+
+---
+
+## The Pipe Operator (`|`)
+
+The pipe operator `|` takes the output of the command on the left and passes it as the input to the command on the right.
+
+### Example: Finding a User
+If you want to see if the user `alice` exists in the system password file:
+<TerminalWindow cmd="cat /etc/passwd | grep alice" output="alice:x:1001:1001:Alice Smith,,,:/home/alice:/bin/bash" />
+
+---
+
+## Grep: The Global Regular Expression Print
+
+`grep` is used to search for specific patterns of text within files or output.
+
+### Common Flags:
+- `-i`: Case-insensitive search (finds 'Alice' or 'alice').
+- `-v`: Invert match (show everything EXCEPT the pattern).
+- `-r`: Recursive search (search through all files in a folder).
+- `-color`: Highlight the matching text.
+
+---
+
+## Other Essential Text Tools
+
+While grep is the king of search, these tools help you manipulate the output:
+
+### 1. `awk` (The Data Extractor)
+Used to print specific columns.
+<TerminalWindow cmd="ls -l | awk '{print $9}'" output="[Lists only the filenames, excluding permissions and owner]" />
+
+### 2. `sed` (Stream Editor)
+Used to find and replace text.
+`cat file.txt | sed 's/old/new/g'`
+
+### 3. `sort` & `uniq`
+Used to organize data and remove duplicates. Useful for processing wordlists or log files.
+`cat logs.txt | sort | uniq`
+
+---
+
+## The "Hacker's One-Liner"
+
+Imagine you have a massive log file and you want to see the 5 most frequent IP addresses that tried to log in:
+
+<TerminalWindow cmd="cat auth.log | grep 'Failed password' | awk '{print $11}' | sort | uniq -c | sort -nr | head -n 5" output="  152 192.168.1.10
+   87 10.0.0.5
+   42 172.16.0.12
+[!] Top Attackers Identified" />
+
+---
+
+## Knowledge Check
+
+<Quiz 
+  question="Which command would you use to find all occurrences of the word 'password' in a file, regardless of capitalization?"
+  options={["grep -v 'password'", "grep -i 'password'", "cat 'password'", "ls -p"]}
+  answer="grep -i 'password'"
+  explanation="The -i flag makes the search case-insensitive, matching 'Password', 'PASSWORD', or 'password'."
+/>

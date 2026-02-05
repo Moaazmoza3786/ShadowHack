@@ -1,0 +1,10 @@
+{
+  "id": "ctf-identity-paradox",
+  "name": "The Identity Paradox",
+  "description": "A communication link secured by a weak secret. Can you forge a high-level identity?",
+  "difficulty": "hard",
+  "tier": 4,
+  "port": 3000,
+  "category": "Web / JWT",
+  "flag": "AG{W34k_JWT_S3cr3ts_Cr4ck3d}"
+}

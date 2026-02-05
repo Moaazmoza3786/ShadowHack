@@ -1,0 +1,57 @@
+# DNS Enumeration
+
+Corporations are vast. You might hack `example.com`, but the real gold is at `dev.example.com` or `vpn.example.com`.
+Find the subdomains, find the forgotten servers.
+
+## Record Types
+
+*   **A:** IPv4 Address.
+*   **AAAA:** IPv6 Address.
+*   **CNAME:** Alias (points to another domain).
+*   **MX:** Mail Server (good for phishing targets).
+*   **TXT:** Arbitrary text (SPF records, verification tokens).
+
+## Subdomain Bruteforcing
+
+Tools like `gobuster` or `ffuf` guess subdomains using a wordlist.
+
+```bash
+gobuster dns -d target.com -w /usr/share/wordlists/subdomains.txt
+```
+
+## Lab: Zone Transfer
+
+Sometimes, a DNS server is misconfigured to give you *everything*.
+This is an AXFR (Zone Transfer) attack.
+
+<TerminalWindow 
+  cmd="dig axfr @ns1.target.com target.com" 
+  output="; <<>> DiG 9.16.1 <<>> axfr @ns1.target.com target.com
+target.com.     300 IN A 192.168.1.10
+www.target.com. 300 IN A 192.168.1.10
+admin.target.com. 300 IN A 192.168.1.50
+secret.target.com. 300 IN TXT 'BL{Z0n3_Tr4nsf3r_Succ3ss}'
+" 
+/>
+
+The server dumped its entire database, revealing the hidden `secret` subdomain.
+
+<Quiz 
+  question="What DNS record type often contains email server information?"
+  options={[
+    "A",
+    "MX",
+    "PTR",
+    "NS"
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag found in the Zone Transfer?"
+  options={[
+    "BL{Subd0ma1n_K1ng}",
+    "BL{Z0n3_Tr4nsf3r_Succ3ss}",
+    "admin.target.com",
+    "192.168.1.50"
+  ]}
+/>

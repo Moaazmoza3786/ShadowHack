@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏦 SecureBank - Online Banking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* Bank Card */
+        .bank-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .bank-header {
+            background: linear-gradient(135deg, #0f4c81 0%, #1a73e8 100%);
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        .bank-logo {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        .bank-name {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .bank-tagline {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .bank-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: #374151;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.15);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a73e8, #0f4c81);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 115, 232, 0.35);
+        }
+
+        /* Result Messages */
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-box.success {
+            display: block;
+            background: #d1fae5;
+            border: 1px solid #34d399;
+            color: #065f46;
+        }
+
+        .result-box.error {
+            display: block;
+            background: #fee2e2;
+            border: 1px solid #f87171;
+            color: #991b1b;
+        }
+
+        .result-box h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-box p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+
+        /* Query Display */
+        .query-box {
+            margin-top: 15px;
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            overflow-x: auto;
+        }
+
+        .query-box .label {
+            color: #64748b;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .query-box code {
+            color: #38bdf8;
+            word-break: break-all;
+        }
+
+        .query-box .injection {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.15);
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+
+        /* Footer */
+        .bank-footer {
+            padding: 15px 30px;
+            background: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="bank-card">
+            <div class="bank-header">
+                <div class="bank-logo">🏦</div>
+                <div class="bank-name">SecureBank</div>
+                <div class="bank-tagline">Online Banking Portal</div>
+            </div>
+
+            <div class="bank-body">
+                <form id="sqli-loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-input" id="sqli-username" placeholder="Enter your username"
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="sqli-password" placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn-login">
+                        Sign In
+                    </button>
+                </form>
+
+                <div id="result" class="result-box"></div>
+                <div id="queryDisplay" class="query-box" style="display: none;"></div>
+            </div>
+
+            <div class="bank-footer">
+                © 2024 SecureBank. All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated database
+        const database = {
+            users: [
+                { id: 1, username: 'admin', password: 'secret123', role: 'admin' },
+                { id: 2, username: 'john', password: 'john456', role: 'user' },
+                { id: 3, username: 'sarah', password: 'sarah789', role: 'user' }
+            ]
+        };
+
+        // Flag that matches CTFData
+        const FLAG = 'FLAG{sql_1nj3ct10n_b4s1c}';
+
+        document.getElementById('sqli-loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('sqli-username').value;
+            const password = document.getElementById('sqli-password').value;
+            const resultDiv = document.getElementById('result');
+            const queryDiv = document.getElementById('queryDisplay');
+
+            // Build and display the query
+            const query = `SELECT * FROM users WHERE username='${username}' AND password='${password}'`;
+            queryDiv.innerHTML = `
+                <div class="label">Executed SQL Query</div>
+                <code>${escapeHtml(query)}</code>
+            `;
+            queryDiv.style.display = 'block';
+
+            // Check for SQL injection patterns
+            const injectionPatterns = [
+                "' OR 1=1", "' OR '1'='1", "admin'--", "' OR 1=1--", "' OR 1=1#",
+                "admin' --", "admin'#", "' OR ''='", "1' OR '1'='1", "' OR 'x'='x",
+                "admin' OR '1'='1", "' OR 1=1 --", "'or'1'='1"
+            ];
+
+            const isInjection = injectionPatterns.some(p =>
+                username.toLowerCase().includes(p.toLowerCase())
+            ) || (username.includes("'") && (username.toLowerCase().includes("or") || username.includes("--") || username.includes("#")));
+
+            if (isInjection) {
+                // SQL Injection successful!
+                resultDiv.className = 'result-box success';
+                resultDiv.innerHTML = `
+                    <h4>✅ Login Successful!</h4>
+                    <p><strong>Welcome, Admin!</strong></p>
+                    <p>You successfully bypassed authentication using SQL Injection!</p>
+                    <div class="flag-display">🚩 ${FLAG}</div>
+                `;
+
+                // Notify parent if in iframe
+                if (window.parent !== window) {
+                    try {
+                        window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: FLAG }, '*');
+                    } catch (e) { }
+                }
+            } else if (username.includes("'")) {
+                // Partial injection - show SQL error hint
+                resultDiv.className = 'result-box error';
+                resultDiv.innerHTML = `
+                    <h4>❌ SQL Error</h4>
+                    <p>You have an error in your SQL syntax near '<strong>${escapeHtml(username)}</strong>'</p>
+                    <p style="margin-top: 8px; font-style: italic; opacity: 0.8;">💡 You're on the right track! Try completing the injection.</p>
+                `;
+            } else {
+                // Normal login check
+                const user = database.users.find(u =>
+                    u.username === username && u.password === password
+                );
+
+                if (user) {
+                    resultDiv.className = 'result-box success';
+                    resultDiv.innerHTML = `
+                        <h4>✅ Welcome, ${escapeHtml(user.username)}!</h4>
+                        <p>Role: ${user.role}</p>
+                    `;
+                } else {
+                    resultDiv.className = 'result-box error';
+                    resultDiv.innerHTML = `
+                        <h4>❌ Invalid Credentials</h4>
+                        <p>Username or password is incorrect.</p>
+                    `;
+                }
+            }
+        });
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+
+</html>

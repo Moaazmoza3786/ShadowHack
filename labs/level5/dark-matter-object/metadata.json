@@ -1,0 +1,10 @@
+{
+  "id": "ctf-dark-matter-object",
+  "name": "Dark Matter Object",
+  "description": "An unstable core processing raw serialized streams. Can you achieve total control?",
+  "difficulty": "insane",
+  "tier": 5,
+  "port": 5000,
+  "category": "Web / Deserialization",
+  "flag": "AG{D3s3r1al1z4t10n_1s_D3adly_RCE}"
+}

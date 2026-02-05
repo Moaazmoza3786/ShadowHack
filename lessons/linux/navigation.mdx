@@ -1,0 +1,46 @@
+---
+title: Terminal Navigation
+description: Moving around the Linux system.
+---
+
+# Terminal Navigation
+
+To be a hacker, you must be comfortable moving around the terminal. It's much faster than using a GUI.
+
+## Essential Commands
+
+### 1. `pwd` (Print Working Directory)
+Shows you exactly where you are in the filesystem.
+
+### 2. `ls` (List)
+Lists the files and folders in your current directory.
+- `ls -l`: Long format (shows permissions/size).
+- `ls -a`: Shows hidden files (starting with a dot `.`).
+
+### 3. `cd` (Change Directory)
+Moves you into a different directory.
+- `cd ..`: Move up one level.
+- `cd ~`: Go to your home directory.
+- `cd -`: Go back to the previous directory.
+
+<TerminalWindow 
+  title="Navigation Practice" 
+  command="cd /etc && pwd" 
+  output="/etc" 
+/>
+
+<InfoBox type="tip">
+Use the **Tab** key to auto-complete directory and file names. It saves time and prevents typos!
+</InfoBox>
+
+<Quiz 
+  question="Which command shows you your current directory path?" 
+  answer="pwd" 
+  hint="Print Working Directory." 
+/>
+
+<Quiz 
+  question="What flag for `ls` allows you to see hidden files?" 
+  answer="-a" 
+  hint="Short for 'all'." 
+/>

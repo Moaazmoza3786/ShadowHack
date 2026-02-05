@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Metadata Fetcher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="p-4 bg-light">
+    <div class="container" style="max-width: 800px;">
+        <h2>☁️ Cloud Instance Metadata</h2>
+        <p class="text-muted">Fetch metadata from cloud instances</p>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form id="metadataForm">
+                    <div class="mb-3">
+                        <label>Metadata Endpoint:</label>
+                        <input type="text" id="endpoint" class="form-control" placeholder="Enter metadata URL" required>
+                        <small class="text-muted">Example: http://169.254.169.254/latest/meta-data/</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Fetch Metadata</button>
+                </form>
+
+                <div id="result" class="mt-4"></div>
+            </div>
+        </div>
+
+        <div class="card mt-4 bg-dark text-white">
+            <div class="card-header">
+                <h6>💡 About Cloud Metadata</h6>
+            </div>
+            <div class="card-body">
+                <p>Cloud providers expose metadata at special IP addresses:</p>
+                <ul>
+                    <li><strong>AWS:</strong> 169.254.169.254</li>
+                    <li><strong>Azure:</strong> 169.254.169.254</li>
+                    <li><strong>GCP:</strong> metadata.google.internal</li>
+                </ul>
+                <p class="mb-0">This metadata can contain sensitive information like IAM credentials!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('metadataForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const endpoint = document.getElementById('endpoint').value;
+            const result = document.getElementById('result');
+
+            // Check for AWS metadata endpoint
+            if (endpoint.includes('169.254.169.254')) {
+                result.innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>🚨 Cloud Metadata Exposed!</strong><br>
+                        Endpoint: ${endpoint}<br>
+                        <hr>
+                        <strong>Simulated AWS Metadata Response:</strong><br>
+                        <pre>{
+  "instanceId": "i-0abc123def456789",
+  "region": "us-east-1",
+  "availabilityZone": "us-east-1a",
+  "privateIp": "10.0.1.42",
+  "iamRole": "web-server-role",
+  "credentials": {
+    "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+    "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "token": "AQoDYXdzEJr...",
+    "expiration": "2024-01-15T12:00:00Z"
+  }
+}
+
+FLAG{cloud_metadata_exposed}</pre>
+                    </div>
+                `;
+            } else if (endpoint.startsWith('http')) {
+                result.innerHTML = `
+                    <div class="alert alert-info">
+                        <strong>Fetching from:</strong> ${endpoint}<br>
+                        <small>Try the AWS metadata endpoint: 169.254.169.254</small>
+                    </div>
+                `;
+            } else {
+                result.innerHTML = '<div class="alert alert-danger">Invalid endpoint</div>';
+            }
+        });
+    </script>
+</body>
+
+</html>

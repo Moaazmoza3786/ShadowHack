@@ -1,0 +1,68 @@
+
+# Ethics and Rules of Engagement (RoE)
+
+## The Difference Between Hacking and Pentesting
+Technically, a black-hat hacker and a penetration tester use the exact same tools (`nmap`, `metasploit`, `burpsuite`). The **only** difference is **permission**.
+
+Without written permission, even a simple port scan is illegal in many jurisdictions. The **Rules of Engagement (RoE)** is the formal contract that defines how you are allowed to hack.
+
+## The RoE Document Structure
+A professional RoE is not just a "Get Out of Jail Free" card; it is a technical constraint document.
+
+<Mermaid chart={`
+graph LR
+    A[Client Request] --> B{Scoping Call}
+    B -- Agreed --> C[Draft RoE]
+    C --> D[Legal Review]
+    D --> E[Signed Contract]
+    E --> F[Testing Begins]
+    E --> G[White Card Issued]
+    style E fill:#22c55e,stroke:#fff,stroke-width:2px,color:#000
+    style G fill:#f59e0b,stroke:#fff,stroke-width:2px,color:#000
+`} />
+
+### Critical Components of an RoE
+1.  **IP Ranges / Domains:** Explicitly list what is in scope.
+2.  **Exclusions:** What is *forbidden*? (e.g., "Do not test the main production database server during business hours").
+3.  **Testing Window:** Specific dates and times (e.g., "Mon-Fri, 9 AM - 5 PM" or "Weekends only").
+4.  **Emergency Contact:** Who to call if you accidentally crash a server.
+
+## Ethical Hacking Principles
+1.  **Do No Harm:** Minimize risk to the client's operations. If you suspect an exploit might crash a service, **do not run it** without specific authorization and a fallback plan.
+2.  **Privacy:** You may encounter sensitive data (PII, credit cards). You are a professional; you do not look at, copy, or share this data unless necessary for the proof of concept.
+3.  **Transparency:** Do not hide your tracks from the client (unless it's a Red Team engagement). Report all findings honestly.
+
+## Practical Scenario: The "White Card"
+In a physical or intense Red Team engagement, if you are caught by security guards or police, you present your "White Card" (Authorization Letter).
+
+<Note type="warning">
+**Scenario:** You find a legacy server (192.168.1.15) that is vulnerable to *EternalBlue*. However, it is **not** in the list of IPs provided in the RoE.
+**Action:** YOU DO NOT TOUCH IT. You report it as a scope discrepancy to the client and ask for an amendment.
+</Note>
+
+## Code of Conduct Example
+When running a noisy scan, you might be asked to limit your rate to avoid triggering intrusion detection systems (IDS) or crashing fragile IoT devices.
+
+<TerminalSimulator 
+    cmd="nmap -T1 -p- 10.10.10.5" 
+    output={`Starting Nmap 7.93...
+Note: Timing level 1 (Sneaky) selected. Scans will be very slow.
+Scanning 10.10.10.5 [65535 ports]
+Discovered open port 80/tcp on 10.10.10.5
+...`} 
+/>
+
+Using `-T1` (Sneaky) ensures you are respecting potential bandwidth or stability constraints agreed upon in the RoE.
+
+---
+
+<Quiz 
+    question="You discover a critical vulnerability on a server that is NOT in your scope IP list. What do you do?" 
+    options={[
+        "Exploit it immediately to prove the risk",
+        "Scan it gently to confirm version",
+        "Ignore it and move on",
+        "Stop and contact the client for scope amendment"
+    ]} 
+    answer="Stop and contact the client for scope amendment" 
+/>

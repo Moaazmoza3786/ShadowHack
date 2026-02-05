@@ -1,0 +1,29 @@
+#,title,videoUrl,videoId,publishedAt,position
+1,احترف حمايه المواقع درس 1# مقدمه الي الكورس,https://www.youtube.com/watch?v=RbuLNDobNv8&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=1,RbuLNDobNv8,2017-05-01T02:19:23Z,0
+2,احترف حمايه المواقع درس 2# بعض المفاهيم  الامنيه التي يجب معرفتها,https://www.youtube.com/watch?v=lgZDTqSRjxs&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=2,lgZDTqSRjxs,2017-06-11T07:45:05Z,1
+3,احترف حمايه المواقع درس #3 بعض المفاهيم الامنيه التي يجب معرفتها الجزء الثاني,https://www.youtube.com/watch?v=ig04Q5nIdxM&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=3,ig04Q5nIdxM,2017-06-27T16:08:20Z,2
+4,احترف حمايه المواقع درس #4 Laravel Security,https://www.youtube.com/watch?v=DT8wUzqAJJs&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=4,DT8wUzqAJJs,2017-06-27T16:04:18Z,3
+5,احترف حمايه المواقع درس #5 :  ما هو ال SQL injection,https://www.youtube.com/watch?v=8H8VS54I-tk&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=5,8H8VS54I-tk,2017-06-11T05:52:53Z,4
+6,SQL Injection part 2,https://www.youtube.com/watch?v=HwOmTPrQfDg&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=6,HwOmTPrQfDg,2016-09-20T19:47:36Z,5
+7,SQL injection part 3,https://www.youtube.com/watch?v=jtL3O88JfvU&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=7,jtL3O88JfvU,2016-09-20T19:51:49Z,6
+8,XSS Part 1,https://www.youtube.com/watch?v=7ZYctg_qk70&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=8,7ZYctg_qk70,2016-09-20T19:50:50Z,7
+9,XSS part 2,https://www.youtube.com/watch?v=jEjwyTgGMS8&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=9,jEjwyTgGMS8,2016-09-20T19:47:47Z,8
+10,XSS part 3,https://www.youtube.com/watch?v=OF-nFJDKRAY&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=10,OF-nFJDKRAY,2016-09-20T19:50:46Z,9
+11,XSS  part 4,https://www.youtube.com/watch?v=dTFjVXskQqU&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=11,dTFjVXskQqU,2016-09-20T19:50:41Z,10
+12,XSS  part 5,https://www.youtube.com/watch?v=LiQyNv3wmmc&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=12,LiQyNv3wmmc,2016-09-20T19:50:36Z,11
+13,XSS part 6,https://www.youtube.com/watch?v=GIZgMsAetgQ&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=13,GIZgMsAetgQ,2016-09-20T19:50:33Z,12
+14,Cookies theft,https://www.youtube.com/watch?v=LkCFkNbKyxY&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=14,LkCFkNbKyxY,2016-09-20T19:52:35Z,13
+15,Weak Hashing,https://www.youtube.com/watch?v=s3dXPzqaKXM&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=15,s3dXPzqaKXM,2016-09-20T22:28:01Z,14
+16,File Inclusion Part 1,https://www.youtube.com/watch?v=yWeAkC0MjFE&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=16,yWeAkC0MjFE,2016-09-20T19:52:30Z,15
+17,File Inclusion Part 2,https://www.youtube.com/watch?v=hjgpqisPe2c&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=17,hjgpqisPe2c,2016-09-20T19:52:27Z,16
+18,Input Validation part 1,https://www.youtube.com/watch?v=g3Qubg3OntE&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=18,g3Qubg3OntE,2016-09-20T19:50:20Z,17
+19,Input Validation part 2,https://www.youtube.com/watch?v=1RwLM7tRWOQ&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=19,1RwLM7tRWOQ,2016-09-20T19:50:24Z,18
+20,Remote Code Execution,https://www.youtube.com/watch?v=5Jl3ApClGTc&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=20,5Jl3ApClGTc,2016-09-20T19:50:16Z,19
+21,File upload part 1,https://www.youtube.com/watch?v=e8lqV7ZgsR8&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=21,e8lqV7ZgsR8,2016-09-20T19:52:01Z,20
+22,File upload part 2,https://www.youtube.com/watch?v=NhP4b0ipRuc&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=22,NhP4b0ipRuc,2016-09-20T19:51:57Z,21
+23,Captcha,https://www.youtube.com/watch?v=3uHVy6ZFyzM&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=23,3uHVy6ZFyzM,2016-09-20T19:49:08Z,22
+24,Pro PHP Security IN Arabic : #21 Session Hijacking Part 1,https://www.youtube.com/watch?v=Ozit4sgLP_Q&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=24,Ozit4sgLP_Q,2017-04-28T15:21:43Z,23
+25,Session Hijacking part 2,https://www.youtube.com/watch?v=Xys3HCAssT0&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=25,Xys3HCAssT0,2016-09-20T19:51:53Z,24
+26,Session Hijacking part 3,https://www.youtube.com/watch?v=aL8x8RjaMHk&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=26,aL8x8RjaMHk,2016-09-20T19:51:41Z,25
+27,CSRF part 1,https://www.youtube.com/watch?v=lNIfwSfNBtU&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=27,lNIfwSfNBtU,2016-09-20T19:47:55Z,26
+28,CSRF part 2,https://www.youtube.com/watch?v=_eFEho_z8nI&list=PL7mt2FDjAkPfuS1Vt4AAqGAjHEuKEFAPB&index=28,_eFEho_z8nI,2016-09-20T19:51:38Z,27

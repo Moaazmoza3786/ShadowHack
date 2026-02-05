@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <!-- Essential Meta Tags -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <!-- SEO Meta Tags -->
+  <title>ShadowHack – منصة تعلم الاختراق الأخلاقي | Ethical Hacking Learning Platform</title>
+  <meta name="description"
+    content="ShadowHack - منصة شاملة لتعلم اختبار اختراق تطبيقات الويب من الصفر إلى الاحتراف. دروس، مختبرات، تحديات CTF، وأدوات عملية." />
+  <meta name="keywords"
+    content="اختبار اختراق, web penetration testing, cybersecurity, ethical hacking, OWASP, CTF, bug bounty, أمن سيبراني, تعلم الهكر الأخلاقي" />
+  <meta name="author" content="ShadowHack" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph Meta Tags (Facebook, LinkedIn) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ShadowHack – منصة تعلم الاختراق الأخلاقي" />
+  <meta property="og:description"
+    content="تعلم اختبار اختراق تطبيقات الويب من الصفر إلى الاحتراف مع دروس تفاعلية ومختبرات عملية" />
+  <meta property="og:image" content="assets/logo.png" />
+  <meta property="og:url" content="https://yourdomain.com" />
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ShadowHack – Ethical Hacking Learning Platform" />
+  <meta name="twitter:description"
+    content="Learn penetration testing from zero to hero with interactive lessons and practical labs" />
+  <meta name="twitter:image" content="assets/logo.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="apple-touch-icon" href="assets/logo.svg" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles.css?v=3.1" />
+
+  <link rel="stylesheet" href="skill-tree.css?v=3.0" />
+  <link rel="stylesheet" href="cyberpunk-navbar.css?v=3.0" />
+  <link rel="stylesheet" href="css/room-style.css?v=1.0" />
+  <link rel="stylesheet" href="dist-leaderboard/assets/index.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- xterm.js for Browser Terminal -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+
+  <!-- Fonts: Cairo (Arabic), JetBrains Mono (Code), Orbitron (Cyber) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cyber-black': '#0a0a0f',
+            'cyber-dark': '#12121a',
+            'cyber-card': '#1a1a2e',
+            'neon-green': '#22c55e',
+            'neon-purple': '#a855f7',
+            'neon-cyan': '#06b6d4',
+          },
+          fontFamily: {
+            'cairo': ['Cairo', 'sans-serif'],
+            'mono': ['JetBrains Mono', 'monospace'],
+            'cyber': ['Orbitron', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+
+  <!-- Preconnect for Performance -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <style>
+    /* Global Overrides */
+    [onclick*="loadPage('learningpaths')"],
+    [onclick*='loadPage("learningpaths")'] {
+      display: none !important;
+    }
+
+    /* Ultra Fast Loader Override */
+    .loading-bar-progress,
+    .hack-progress-bar {
+      animation-duration: 0.5s !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ENHANCED CYBERPUNK LOADING SCREEN -->
+  <div id="boot-screen">
+    <div class="scanline"></div>
+
+    <div class="cyber-loader-content">
+      <div class="cyber-logo-glitch" data-text="SHADOWHACK">
+        <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+        <span class="logo-text">SHADOWHACK</span>
+      </div>
+
+      <div class="loading-bar-container">
+        <div class="loading-bar-progress"></div>
+        <div class="loading-bar-glitch"></div>
+      </div>
+
+      <div class="terminal-footer">
+        <div class="terminal-content" id="boot-terminal">
+          <!-- Logs injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>document.addEventListener("DOMContentLoaded", () => {
+      const terminal = document.getElementById('boot-terminal');
+      const bootScreen = document.getElementById('boot-screen');
+
+      const logs = [{
+        msg: "Initializing kernel...", type: "info", delay: 100
+      }
+
+        ,
+      {
+        msg: "Loading core modules...", type: "info", delay: 300
+      }
+
+        ,
+      {
+        msg: "Verifying integrity...", type: "info", delay: 600
+      }
+
+        ,
+      {
+        msg: "Mounting file systems...", type: "info", delay: 800
+      }
+
+        ,
+      {
+        msg: "Access granted: Root privileges acquired", type: "success", delay: 1200
+      }
+
+        ,
+      {
+        msg: "Connecting to ShadowHack Network...", type: "warning", delay: 1500
+      }
+
+        ,
+      {
+        msg: "Establishing secure tunnel (TLS 1.3)...", type: "info", delay: 1900
+      }
+
+        ,
+      {
+        msg: "Connection Established.", type: "success", delay: 2400
+      }
+
+        ,
+      {
+        msg: "Welcome, Operative.", type: "success", delay: 2800
+      }
+
+        ,
+      ];
+
+      let delay = 0;
+      logs.forEach((log, index) => {
+        delay += Math.random() * 10 + 5; // Instant "Matrix" speed
+
+        setTimeout(() => {
+          const line = document.createElement('div');
+          line.className = `log-line ${log.type}`;
+          const time = new Date().toISOString().split('T')[1].slice(0, 8);
+          line.innerHTML = `<span class="timestamp">[${time}]</span> ${log.msg}`;
+          terminal.appendChild(line);
+          terminal.scrollTop = terminal.scrollHeight;
+
+          if (index === logs.length - 1) {
+            setTimeout(() => {
+              bootScreen.classList.add('fade-out');
+              setTimeout(() => {
+                bootScreen.style.display = 'none';
+              }, 300); // Super fast fade removal
+            }, 100); // Almost immediate trigger
+          }
+        }, delay);
+      });
+    });
+
+  </script>
+
+
+  <!-- Old Header - Hidden (Using MegaNavbar Instead) -->
+  <!-- Legacy Header Removed -->
+  <!-- Legacy Code Removed -->
+
+  <!-- Cyberpunk Navbar (Rendered by JS) -->
+  <div id="cyber-navbar-container"></div>
+
+  <!-- Main Layout with Top Navigation -->
+  <!-- Main Content -->
+  <main id="content" role="main"></main>
+
+  <!-- Offcanvas for Tool Options -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="optionsOffcanvas" aria-labelledby="optionsOffcanvasLabel"
+    role="dialog">
+    <div class="offcanvas-body" id="offcanvas-body">
+      <!-- Content loaded dynamically -->
+    </div>
+  </div>
+
+  <!-- External Scripts -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Data & Core Scripts -->
+  <script defer src="gamification.js?v=3.0"></script>
+  <script defer src="notification-system.js?v=3.0"></script>
+  <script defer src="tools-data.js?v=3.0"></script>
+  <script defer src="scenarios.js?v=3.0"></script>
+  <script defer src="hints-data.js?v=3.0"></script>
+  <script defer src="certificates-data.js?v=3.0"></script>
+
+  <script defer src="writeups-data.js?v=3.0"></script>
+  <script defer src="courses-data.js?v=3.0"></script>
+
+
+  <script defer src="quiz.js?v=3.0"></script>
+  <script defer src="bugbounty-data.js?v=3.0"></script>
+  <script defer src="security-tools.js?v=3.0"></script>
+
+
+  <!-- Feature Scripts -->
+  <script defer src="ctf-rooms.js?v=3.0"></script>
+  <script defer src="certificates.js?v=3.0"></script>
+  <script defer src="ai-hints.js?v=3.0"></script>
+  <script defer src="analytics.js?v=3.0"></script>
+  <script defer src="room-viewer.js?v=5.0"></script>
+  <script defer src="code-enhancer.js?v=3.0"></script>
+  <script defer src="attackbox.js?v=3.0"></script>
+  <script defer src="scoreboard.js?v=3.0"></script>
+
+  <script defer src="career-tracks-data.js?v=3.0"></script>
+  <script defer src="career-track-detail.js?v=3.0"></script>
+
+
+  <script defer src="platform-taxonomy.js?v=5.0"></script>
+  <!-- OLD DATA FILE DISABLED - Using Phase 3 curriculum-data.js instead -->
+  <!-- <script src="unified-learning-data.js?v=5.0"></script> -->
+  <script defer src="rooms-data.js?v=5.0"></script>
+  <script defer src="platform-data.js?v=4.0"></script>
+  <!-- platform-pages.js moved to load after pages.js -->
+  <script defer src="guidance-system.js?v=4.0"></script>
+  <script defer src="tools-center.js?v=4.0"></script>
+  <!-- machine-dock.js removed - file not found -->
+  <script defer src="missing-pages.js?v=4.0"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script defer src="owasp-education.js?v=2.0"></script>
+  <script defer src="shadow-world-data.js"></script>
+  <script defer src="data/curriculum-data.js?v=3.7"></script>
+  <script defer src="debug-data.js"></script>
+  <script defer src="unified-learning-ui.js?v=5.0"></script>
+  <script defer src="unified-ctf-data.js?v=5.0"></script>
+  <!-- Core Subsystems -->
+  <script defer src="api-client.js?v=6.0"></script>
+  <script defer src="progress.js?v=6.0"></script>
+  <script defer src="skill-tree.js?v=6.0"></script>
+  <script defer src="enrollment-system.js?v=6.0"></script>
+  <script defer src="celebration-system.js?v=6.0"></script>
+  <script defer src="subscription-system.js?v=6.0"></script>
+
+  <!-- UI Components & Pages -->
+  <script defer src="unified-practice-ui.js?v=6.0"></script>
+  <script defer src="gamification-dashboard.js?v=6.0"></script>
+  <script defer src="soc-simulator.js?v=6.0"></script>
+  <script defer src="tryhackme-pages.js?v=6.0"></script>
+  <script defer src="shadow-os.js?v=9.0"></script>
+  <script defer src="c2-simulator.js?v=6.0"></script>
+  <script defer src="owasp-simulator.js?v=7.1"></script>
+  <script defer src="threat-hunting.js?v=6.0"></script>
+  <script defer src="koth.js?v=6.0"></script>
+  <script defer src="payload-sandbox.js"></script>
+  <script defer src="red-team-ops.js"></script>
+  <script defer src="content-filler.js"></script>
+
+  <script defer src="modules-page.js?v=6.0"></script>
+  <script defer src="pages.js?v=7.1"></script>
+  <script defer src="platform-pages.js?v=6.0"></script>
+  <script defer src="ctf-page.js"></script>
+  <script defer src="ctf-challenge.js"></script>
+  <script defer src="leaderboard.js"></script>
+  <script defer src="achievements.js"></script>
+  <script defer src="daily-challenge.js"></script>
+  <script defer src="ui-enhancements.js"></script>
+  <script defer src="functional-pages.js?v=6.0"></script>
+  <script defer src="cyberpunk-components.js?v=6.4"></script>
+  <script defer src="second-brain-data.js"></script>
+  <script defer src="brain-ui.js"></script>
+  <script defer src="data/job-sim-data.js"></script>
+  <script defer src="ai-engine.js"></script>
+  <script defer src="job-sim-ui.js"></script>
+  <script defer src="learn-section-v6.js?v=23.0"></script>
+
+  <!-- Home Page (Must be late to override overrides) -->
+  <script defer src="home-page.js?v=6.0"></script>
+  <!-- BROKEN API FILE DISABLED -->
+  <!-- <script src="page_v2.js?v=6.2"></script> -->
+  <!-- <script src="room-viewer.js"></script> -->
+  <script defer src="daily-drill.js"></script>
+  <script defer src="analytics-dashboard.js"></script>
+  <script defer src="hardware-lab.js"></script>
+  <script defer src="report-generator.js"></script>
+  <script defer src="blue-team-ops.js"></script>
+  <script defer src="utility-belt.js"></script>
+  <script defer src="bug-bounty-hub.js"></script>
+  <script defer src="ad-lab.js"></script>
+  <script defer src="cloud-lab.js"></script>
+  <script defer src="api-lab.js"></script>
+  <script defer src="mitre-attack.js"></script>
+  <script defer src="malware-lab.js"></script>
+  <script defer src="network-analyzer.js"></script>
+  <script defer src="crypto-lab.js"></script>
+  <script defer src="stego-lab.js"></script>
+  <script defer src="forensics-lab.js"></script>
+  <script defer src="osint-lab.js"></script>
+  <script defer src="password-lab.js"></script>
+  <script defer src="social-eng-lab.js"></script>
+  <script defer src="web-exploit-lab.js"></script>
+  <script defer src="privesc-lab.js"></script>
+  <script defer src="recon-lab.js"></script>
+  <script defer src="api-hack-lab.js"></script>
+
+  <script defer src="bugbounty-dash.js"></script>
+  <script defer src="payload-gen.js"></script>
+  <script defer src="command-reference.js"></script>
+  <script defer src="ai-assistant.js"></script>
+  <script defer src="cve-watch.js"></script>
+  <script defer src="finding-reporter.js"></script>
+  <script defer src="recon-dashboard.js"></script>
+  <script defer src="stealth-lab.js"></script>
+
+  <script defer src="code-review.js"></script>
+  <script defer src="lateral-movement.js"></script>
+  <script defer src="unified-stats.js"></script>
+  <script defer src="bug-bounty-simulator.js"></script>
+  <script defer src="attack-vector-builder.js"></script>
+  <script defer src="cve-museum.js"></script>
+
+  <script defer src="persona-factory.js"></script>
+
+  <script defer src="js-monitor.js"></script>
+  <script defer src="encoder-tool.js"></script>
+  <script defer src="exfiltration-lab.js"></script>
+  <script defer src="infra-monitor.js"></script>
+  <script defer src="osint-monitor.js"></script>
+  <script defer src="vuln-manager.js"></script>
+  <script defer src="malware-sandbox.js"></script>
+  <script defer src="ad-lab-pro.js"></script>
+  <script defer src="zero-trust-lab.js"></script>
+  <script defer src="devsecops-lab.js"></script>
+  <script defer src="ir-playbook.js"></script>
+  <script defer src="security-awareness.js"></script>
+  <script defer src="app.js"></script>
+  <!-- AI Chatbot removed -->
+  <script defer src="core-pages-v6.js?v=15.0"></script>
+  <script defer src="loading-v6.js?v=15.0"></script>
+  <script defer src="youtube-data-gen.js"></script>
+  <script defer src="youtube-courses.js?v=1.1"></script>
+
+
+  <!-- Missing Features -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <script type="module" src="dist-leaderboard/assets/leaderboard.js"></script>
+
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Render Cyberpunk Navbar
+      // Note: renderCyberNavbar appends directly to body, so we don't need to assign it to a container
+      if (typeof renderCyberNavbar === 'function') {
+        renderCyberNavbar();
+      }
+
+      // Load the Home page as default page
+      if (typeof loadPage === 'function') {
+        loadPage('home');
+      }
+      if (typeof LoadingPageV6 !== 'undefined') {
+        setTimeout(function () {
+          LoadingPageV6.hide();
+        }, 10); // Instant handoff
+      }
+    });
+  </script>
+</body>
+
+</html>

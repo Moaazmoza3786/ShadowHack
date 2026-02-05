@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📄 XMLParser - Data Processing API</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #f97316;
+        }
+
+        .header p {
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .card {
+            background: rgba(249, 115, 22, 0.05);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            color: #f97316;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .xml-input {
+            width: 100%;
+            background: #0c0c0c;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            color: #22d3ee;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 180px;
+        }
+
+        .xml-input:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+
+        .parse-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 15px 0;
+            transition: all 0.3s;
+        }
+
+        .parse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(249, 115, 22, 0.4);
+        }
+
+        .templates {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .template-btn {
+            padding: 8px 16px;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            border-radius: 6px;
+            color: #fb923c;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .template-btn:hover {
+            background: rgba(249, 115, 22, 0.2);
+        }
+
+        .result-section {
+            margin-top: 20px;
+            background: #0c0c0c;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .result-header {
+            background: #1e293b;
+            padding: 12px 15px;
+            font-size: 12px;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .result-body {
+            padding: 15px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 13px;
+            color: #94a3b8;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .xml-tag {
+            color: #f97316;
+        }
+
+        .xml-attr {
+            color: #a78bfa;
+        }
+
+        .xml-value {
+            color: #34d399;
+        }
+
+        .sensitive {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .success-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid #22c55e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-box h4 {
+            color: #22c55e;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #86efac;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 XMLParser</h1>
+            <p>XML Data Processing API</p>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Quick Templates</div>
+            <div class="templates">
+                <button class="template-btn" onclick="loadTemplate('normal')">Normal XML</button>
+                <button class="template-btn" onclick="loadTemplate('xxe')">XXE Payload</button>
+                <button class="template-btn" onclick="loadTemplate('xxe-passwd')">Read /etc/passwd</button>
+            </div>
+
+            <div class="section-title">XML Input</div>
+            <textarea class="xml-input" id="xmlInput"><?xml version="1.0"?>
+<user>
+  <name>John Doe</name>
+  <email>john@example.com</email>
+</user></textarea>
+
+            <button class="parse-btn" onclick="parseXML()">Parse XML</button>
+
+            <div class="result-section" id="resultSection" style="display: none;">
+                <div class="result-header">
+                    <span>Parsed Result</span>
+                    <span id="resultStatus"></span>
+                </div>
+                <div class="result-body" id="resultBody"></div>
+            </div>
+
+            <div id="successArea"></div>
+        </div>
+    </div>
+
+    <script>
+        const FLAG = 'FLAG{XX3_F1L3_D1SCL0SUR3}';
+
+        const templates = {
+            normal: `<?xml version="1.0"?>
+<user>
+  <name>John Doe</name>
+  <email>john@example.com</email>
+</user>`,
+            xxe: `<?xml version="1.0"?>
+<!DOCTYPE foo [
+  <!ENTITY xxe SYSTEM "file:///etc/hostname">
+]>
+<user>
+  <name>&xxe;</name>
+</user>`,
+            'xxe-passwd': `<?xml version="1.0"?>
+<!DOCTYPE foo [
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<user>
+  <name>&xxe;</name>
+</user>`
+        };
+
+        const fileContents = {
+            '/etc/passwd': `root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+admin:x:1000:1000:${FLAG}:/home/admin:/bin/bash`,
+            '/etc/hostname': 'xmlparser-server',
+            '/etc/hosts': `127.0.0.1 localhost
+127.0.0.1 xmlparser-server`,
+            '/var/www/config.php': `<?php
+$db_pass = "secret_password";
+$flag = "${FLAG}";
+?>`
+        };
+
+        function loadTemplate(name) {
+            document.getElementById('xmlInput').value = templates[name];
+        }
+
+        function parseXML() {
+            const xml = document.getElementById('xmlInput').value;
+            const resultSection = document.getElementById('resultSection');
+            const resultBody = document.getElementById('resultBody');
+            const resultStatus = document.getElementById('resultStatus');
+            const successArea = document.getElementById('successArea');
+
+            resultSection.style.display = 'block';
+
+            // Check for XXE patterns
+            const hasDoctype = xml.includes('<!DOCTYPE');
+            const hasEntity = xml.includes('<!ENTITY');
+            const hasSystemFile = xml.toLowerCase().includes('system') && xml.includes('file://');
+            const entityMatch = xml.match(/<!ENTITY\s+(\w+)\s+SYSTEM\s+["']file:\/\/([^"']+)["']/i);
+
+            if (hasDoctype && hasEntity && hasSystemFile && entityMatch) {
+                const entityName = entityMatch[1];
+                const filePath = entityMatch[2];
+
+                // Check if file exists in our simulated filesystem
+                let fileContent = fileContents[filePath];
+
+                if (!fileContent) {
+                    // Try partial matches
+                    for (const [path, content] of Object.entries(fileContents)) {
+                        if (filePath.includes(path) || path.includes(filePath.replace(/^\/+/, ''))) {
+                            fileContent = content;
+                            break;
+                        }
+                    }
+                }
+
+                if (fileContent) {
+                    resultStatus.innerHTML = '<span style="color:#22c55e;">XXE Successful!</span>';
+
+                    // Replace entity reference with file content
+                    let output = xml.replace(new RegExp(`&${entityName};`, 'g'), fileContent);
+                    resultBody.innerHTML = highlightXML(output);
+
+                    if (fileContent.includes(FLAG)) {
+                        successArea.innerHTML = `
+                            <div class="success-box">
+                                <h4>🎯 XXE Attack Successful!</h4>
+                                <p>You read sensitive server files using XML External Entity!</p>
+                                <p style="margin-top:8px;">File accessed: ${filePath}</p>
+                                <div class="flag-display">🚩 ${FLAG}</div>
+                            </div>
+                        `;
+
+                        if (window.parent !== window) {
+                            try { window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: FLAG }, '*'); } catch (e) { }
+                        }
+                    } else {
+                        successArea.innerHTML = `
+                            <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;padding:15px;border-radius:10px;margin-top:15px;color:#fbbf24;">
+                                💡 XXE works! You read: ${filePath}<br>
+                                Try reading <code>/etc/passwd</code> to find the flag!
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultStatus.innerHTML = '<span style="color:#f59e0b;">File not found</span>';
+                    resultBody.textContent = `Error: Cannot read file "${filePath}"\n\nAvailable files to try:\n- /etc/passwd\n- /etc/hostname\n- /var/www/config.php`;
+                    successArea.innerHTML = '';
+                }
+            } else if (hasDoctype || hasEntity) {
+                resultStatus.innerHTML = '<span style="color:#60a5fa;">Parsing...</span>';
+                resultBody.innerHTML = `Entity declaration detected!\n\nTo exploit XXE, you need:\n1. <!DOCTYPE> declaration\n2. <!ENTITY name SYSTEM "file:///path">\n3. Use &name; in XML content`;
+                successArea.innerHTML = '';
+            } else {
+                // Normal XML parsing
+                try {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(xml, 'text/xml');
+
+                    if (doc.querySelector('parsererror')) {
+                        resultStatus.innerHTML = '<span style="color:#ef4444;">Parse Error</span>';
+                        resultBody.textContent = 'XML parsing failed. Check your syntax.';
+                    } else {
+                        resultStatus.innerHTML = '<span style="color:#22c55e;">Parsed OK</span>';
+                        resultBody.innerHTML = highlightXML(xml);
+                    }
+                    successArea.innerHTML = '';
+                } catch (e) {
+                    resultStatus.innerHTML = '<span style="color:#ef4444;">Error</span>';
+                    resultBody.textContent = e.message;
+                    successArea.innerHTML = '';
+                }
+            }
+        }
+
+        function highlightXML(xml) {
+            return escapeHtml(xml)
+                .replace(/(&lt;\/?[\w-]+)/g, '<span class="xml-tag">$1</span>')
+                .replace(/(\w+)=/g, '<span class="xml-attr">$1</span>=')
+                .replace(/(FLAG\{[^}]+\})/g, '<span class="sensitive">$1</span>');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+
+</html>

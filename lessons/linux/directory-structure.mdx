@@ -1,0 +1,43 @@
+---
+title: Linux Directory Structure
+description: Understanding where everything lives in Linux.
+---
+
+# Linux Directory Structure
+
+Linux follows a hierarchical structure that is very different from Windows.
+
+## The Filesystem Hierarchy Standard (FHS)
+
+Everything starts from the root directory: `/`.
+
+- `/bin`: Essential user binaries (ls, cp, mv, ping).
+- `/sbin`: System binaries, usually for the administrator (iptables, fdisk).
+- `/etc`: Configuration files for the system and apps.
+- `/home`: Personal directories for users.
+- `/root`: The home directory for the superuser (root).
+- `/tmp`: Temporary files (often cleared on reboot).
+- `/var`: Variable files like logs (`/var/log`) and mail.
+- `/dev`: Device files (everything is a file in Linux!).
+
+<InfoBox type="important">
+Pentesters often check `/etc/passwd` to see a list of users and `/tmp` for a place to hide tools.
+</InfoBox>
+
+<TerminalWindow 
+  title="Listing Root Contents" 
+  command="ls -F /" 
+  output="bin/  boot/ dev/  etc/  home/ lib/  mnt/  opt/  proc/ root/ sbin/ tmp/  usr/  var/" 
+/>
+
+<Quiz 
+  question="Which directory contains the system's configuration files?" 
+  answer="/etc" 
+  hint="It rhymes with 'setc'." 
+/>
+
+<Quiz 
+  question="Where are user log files usually stored?" 
+  answer="/var/log" 
+  hint="It's inside the variable directory." 
+/>

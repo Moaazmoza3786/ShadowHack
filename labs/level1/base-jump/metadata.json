@@ -1,0 +1,9 @@
+{
+    "id": "ctf-base-jump",
+    "name": "Base Jump",
+    "difficulty": "easy",
+    "tier": 1,
+    "port": 80,
+    "category": "Crypto / Warmup",
+    "flag": "AG{lunar_transm1ssion_dec0ded}"
+}

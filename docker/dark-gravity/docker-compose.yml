@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  dark-gravity:
+    build: .
+    container_name: dark-gravity-ctf
+    ports:
+      - "8888:80"
+      - "2222:22"
+    restart: unless-stopped
+    labels:
+      - "com.antigravity.lab=dark-gravity"
+      - "com.antigravity.difficulty=medium"
+      - "com.antigravity.category=ctf"

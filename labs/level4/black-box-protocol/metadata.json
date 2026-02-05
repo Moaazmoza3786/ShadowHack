@@ -1,0 +1,9 @@
+{
+    "id": "ctf-black-box-protocol",
+    "name": "Black Box Protocol",
+    "difficulty": "insane",
+    "tier": 4,
+    "port": 80,
+    "category": "Pivoting / Malware",
+    "flag": "AG{s4t3llit3_r3cl4im3d}"
+}

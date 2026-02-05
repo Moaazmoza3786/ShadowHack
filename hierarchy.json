@@ -1,0 +1,1074 @@
+UnifiedLearningData loaded with 21 paths and 92 modules.
+[
+  {
+    "track_name": "Penetration Tester",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Fundamentals",
+        "courses": [
+          {
+            "course_title": "Ethics & Legal Issues",
+            "description": "",
+            "difficulty": "easy",
+            "type": "mdx"
+          },
+          {
+            "course_title": "PT Methodologies",
+            "description": "",
+            "difficulty": "easy",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Reporting & Documentation",
+            "description": "",
+            "difficulty": "medium",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Lab Setup Guide",
+            "description": "",
+            "difficulty": "easy",
+            "type": "mdx"
+          }
+        ]
+      },
+      {
+        "path_name": "Reconnaissance",
+        "courses": [
+          {
+            "course_title": "Passive Recon",
+            "description": "",
+            "difficulty": "easy",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Active Recon (Nmap)",
+            "description": "",
+            "difficulty": "medium",
+            "type": "mdx"
+          },
+          {
+            "course_title": "DNS Enumeration",
+            "description": "",
+            "difficulty": "medium",
+            "type": "mdx"
+          },
+          {
+            "course_title": "OSINT Frameworks",
+            "description": "",
+            "difficulty": "medium",
+            "type": "mdx"
+          }
+        ]
+      },
+      {
+        "path_name": "Vulnerability Assessment",
+        "courses": [
+          {
+            "course_title": "Scanning Theory",
+            "description": "",
+            "difficulty": "easy",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Nessus Essentials",
+            "description": "",
+            "difficulty": "medium",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Manual Validation",
+            "description": "",
+            "difficulty": "hard",
+            "type": "mdx"
+          },
+          {
+            "course_title": "CVSS Scoring",
+            "description": "",
+            "difficulty": "medium",
+            "type": "mdx"
+          }
+        ]
+      },
+      {
+        "path_name": "Web Application Pentesting",
+        "courses": [
+          {
+            "course_title": "SQL Injection",
+            "description": "",
+            "difficulty": "hard",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Cross-Site Scripting",
+            "description": "",
+            "difficulty": "medium",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Broken Auth",
+            "description": "",
+            "difficulty": "hard",
+            "type": "mdx"
+          },
+          {
+            "course_title": "IDOR",
+            "description": "",
+            "difficulty": "medium",
+            "type": "mdx"
+          }
+        ]
+      },
+      {
+        "path_name": "Network Penetration Testing",
+        "courses": [
+          {
+            "course_title": "Privilege Escalation",
+            "description": "",
+            "difficulty": "hard",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Active Directory (Kerberoasting)",
+            "description": "",
+            "difficulty": "hard",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Pivoting & Tunneling",
+            "description": "",
+            "difficulty": "hard",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Metasploit Deep Dive",
+            "description": "",
+            "difficulty": "medium",
+            "type": "mdx"
+          }
+        ]
+      },
+      {
+        "path_name": "Advanced Topics & Career",
+        "courses": [
+          {
+            "course_title": "Buffer Overflows",
+            "description": "",
+            "difficulty": "insane",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Antivirus Evasion",
+            "description": "",
+            "difficulty": "hard",
+            "type": "mdx"
+          },
+          {
+            "course_title": "C2 Frameworks",
+            "description": "",
+            "difficulty": "hard",
+            "type": "mdx"
+          },
+          {
+            "course_title": "Career Path & Certs",
+            "description": "",
+            "difficulty": "easy",
+            "type": "mdx"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Pre Security",
+    "type": "skill",
+    "paths": [
+      {
+        "path_name": "Intro to Cyber",
+        "courses": [
+          {
+            "course_title": "Welcome to BreachLabs",
+            "description": "",
+            "difficulty": "easy",
+            "type": "info"
+          },
+          {
+            "course_title": "Cyber Careers",
+            "description": "",
+            "difficulty": "easy",
+            "type": "info"
+          },
+          {
+            "course_title": "Lab Setup",
+            "description": "",
+            "difficulty": "easy",
+            "type": "info"
+          }
+        ]
+      },
+      {
+        "path_name": "Linux Fundamentals",
+        "courses": [
+          {
+            "course_title": "Linux Fundamentals 1",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "Linux Fundamentals 2",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "Linux Fundamentals 3",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Network Basics",
+        "courses": [
+          {
+            "course_title": "OSI Model",
+            "description": "",
+            "difficulty": "easy",
+            "type": "theory"
+          },
+          {
+            "course_title": "TCP/IP Protocol",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "DNS & HTTP",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Windows Basics",
+        "courses": [
+          {
+            "course_title": "Windows CMD",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "PowerShell Intro",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "Windows Registry",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Tools Intro",
+        "courses": [
+          {
+            "course_title": "Kali Linux Overview",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "Virtualization",
+            "description": "",
+            "difficulty": "easy",
+            "type": "theory"
+          },
+          {
+            "course_title": "Recon Tools",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Cyber Security 101",
+    "type": "skill",
+    "paths": [
+      {
+        "path_name": "Security Principles",
+        "courses": [
+          {
+            "course_title": "CIA Triad",
+            "description": "",
+            "difficulty": "easy",
+            "type": "theory"
+          },
+          {
+            "course_title": "AAA Security",
+            "description": "",
+            "difficulty": "easy",
+            "type": "theory"
+          },
+          {
+            "course_title": "Defense in Depth",
+            "description": "",
+            "difficulty": "easy",
+            "type": "theory"
+          }
+        ]
+      },
+      {
+        "path_name": "Attack Vectors",
+        "courses": [
+          {
+            "course_title": "Phishing Attacks",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "Malware Types",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Web Fundamentals",
+    "type": "skill",
+    "paths": [
+      {
+        "path_name": "HTTP Protocol",
+        "courses": [
+          {
+            "course_title": "Requests & Headers",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "Cookies & Sessions",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Web Tech",
+        "courses": [
+          {
+            "course_title": "DOM Manipulation",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "JavaScript for Hackers",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Browser Security",
+        "courses": [
+          {
+            "course_title": "Same Origin Policy",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "DevTools Mastery",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Linux Fundamentals",
+    "type": "skill",
+    "paths": [
+      {
+        "path_name": "Command Line Basics",
+        "courses": [
+          {
+            "course_title": "Navigation & Files",
+            "description": "File System NavigationIn Linux, everything is a file. Use `ls` to list files and `cd` to change dire...",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "Grep & Pipes",
+            "description": "Power of PipesCombine commands using the pipe `|` operator. Use `grep` to search within output.$ cat...",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Permissions & Users",
+        "courses": [
+          {
+            "course_title": "Chmod & Chown",
+            "description": "Understanding PermissionsLinux permissions are read (r), write (w), and execute (x).$ chmod +x scrip...",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Network Fundamentals",
+    "type": "skill",
+    "paths": [
+      {
+        "path_name": "Architecture (Pro)",
+        "courses": [
+          {
+            "course_title": "BreachLabs Core",
+            "description": "Infiltrate the core network. Pivot from the web server to the internal database.",
+            "difficulty": "hard",
+            "type": "network"
+          }
+        ]
+      },
+      {
+        "path_name": "OSI & TCP/IP",
+        "courses": [
+          {
+            "course_title": "The OSI Model",
+            "description": "",
+            "difficulty": "easy",
+            "type": "theory"
+          },
+          {
+            "course_title": "Wireshark Intro",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Protocols",
+        "courses": [
+          {
+            "course_title": "TCP & UDP",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "ICMP & ARP",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Addressing",
+        "courses": [
+          {
+            "course_title": "Subnetting",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Network Devices",
+        "courses": [
+          {
+            "course_title": "Firewalls",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "SOC Level 1",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "SOC Fundamentals",
+        "courses": [
+          {
+            "course_title": "SOC Structure",
+            "description": "",
+            "difficulty": "easy",
+            "type": "info"
+          }
+        ]
+      },
+      {
+        "path_name": "SIEM Basics",
+        "courses": [
+          {
+            "course_title": "Splunk Intro",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "KQL Basics",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Log Analysis",
+        "courses": [
+          {
+            "course_title": "Windows Event Logs",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "Syslog Analysis",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Incident Response",
+        "courses": [
+          {
+            "course_title": "IR Lifecycle",
+            "description": "",
+            "difficulty": "easy",
+            "type": "theory"
+          },
+          {
+            "course_title": "Incident Triage",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Web Application Pentesting",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Reconnaissance",
+        "courses": [
+          {
+            "course_title": "Subdomain Enum",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          },
+          {
+            "course_title": "Tech Stack ID",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Injection Attacks",
+        "courses": [
+          {
+            "course_title": "SQL Injection",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          },
+          {
+            "course_title": "Command Injection",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "XSS & Client Side",
+        "courses": [
+          {
+            "course_title": "Reflected XSS",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "Stored XSS",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Broken Authentication",
+        "courses": [
+          {
+            "course_title": "Brute Force",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "JWT Attacks",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Jr Penetration Tester",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Scanning & Enum",
+        "courses": [
+          {
+            "course_title": "Nmap Mastery",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "Vuln Scanning",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Exploitation",
+        "courses": [
+          {
+            "course_title": "Metasploit",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "Manual Exploitation",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Privilege Escalation",
+        "courses": [
+          {
+            "course_title": "Linux PrivEsc",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "Windows PrivEsc",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Offensive Pentesting",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Buffer Overflows",
+        "courses": [
+          {
+            "course_title": "Stack Overflow",
+            "description": "",
+            "difficulty": "insane",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Active Directory",
+        "courses": [
+          {
+            "course_title": "AD Enumeration",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          },
+          {
+            "course_title": "Kerberoasting",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Red Teaming",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "C2 Infrastructure",
+        "courses": [
+          {
+            "course_title": "C2 Setup",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Defense Evasion",
+        "courses": [
+          {
+            "course_title": "AV Evasion",
+            "description": "",
+            "difficulty": "insane",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "SOC Level 2",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Threat Hunting",
+        "courses": [
+          {
+            "course_title": "Hunting Methodology",
+            "description": "",
+            "difficulty": "medium",
+            "type": "theory"
+          },
+          {
+            "course_title": "Elastic Hunting",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Malware Analysis",
+        "courses": [
+          {
+            "course_title": "Static Analysis",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          },
+          {
+            "course_title": "Dynamic Analysis",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Cloud Security Profile",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "AWS Security",
+        "courses": [
+          {
+            "course_title": "IAM PrivEsc",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "S3 Buckets",
+            "description": "",
+            "difficulty": "easy",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Azure Security",
+        "courses": [
+          {
+            "course_title": "Azure AD",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "DevSecOps",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Container Security",
+        "courses": [
+          {
+            "course_title": "Docker Breakouts",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Kubernetes",
+        "courses": [
+          {
+            "course_title": "Attacking K8s",
+            "description": "",
+            "difficulty": "insane",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Mobile Application Security",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Android",
+        "courses": [
+          {
+            "course_title": "ADB & Smali",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          },
+          {
+            "course_title": "APK Reversing",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "iOS",
+        "courses": [
+          {
+            "course_title": "Jailbreak Detection",
+            "description": "",
+            "difficulty": "hard",
+            "type": "theory"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "IoT & Hardware Hacking",
+    "type": "skill",
+    "paths": [
+      {
+        "path_name": "Firmware",
+        "courses": [
+          {
+            "course_title": "Extraction",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Radio (SDR)",
+        "courses": [
+          {
+            "course_title": "Replay Attacks",
+            "description": "",
+            "difficulty": "medium",
+            "type": "theory"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Malware Analysis",
+    "type": "skill",
+    "paths": [
+      {
+        "path_name": "Basic Analysis",
+        "courses": [
+          {
+            "course_title": "Strings & Packing",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Advanced RE",
+        "courses": [
+          {
+            "course_title": "x86 Assembly",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Security Engineering",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Architecture",
+        "courses": [
+          {
+            "course_title": "Zero Trust",
+            "description": "",
+            "difficulty": "medium",
+            "type": "theory"
+          }
+        ]
+      },
+      {
+        "path_name": "Hardening",
+        "courses": [
+          {
+            "course_title": "Linux Hardening",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "GRC & Auditing",
+    "type": "skill",
+    "paths": [
+      {
+        "path_name": "Standards",
+        "courses": [
+          {
+            "course_title": "ISO 27001",
+            "description": "",
+            "difficulty": "easy",
+            "type": "theory"
+          },
+          {
+            "course_title": "GDPR",
+            "description": "",
+            "difficulty": "easy",
+            "type": "theory"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Digital Forensics",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Disk Forensics",
+        "courses": [
+          {
+            "course_title": "NTFS Artifacts",
+            "description": "",
+            "difficulty": "medium",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Memory Forensics",
+        "courses": [
+          {
+            "course_title": "Volatility Advanced",
+            "description": "",
+            "difficulty": "hard",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "track_name": "Exploit Development",
+    "type": "career",
+    "paths": [
+      {
+        "path_name": "Shellcoding",
+        "courses": [
+          {
+            "course_title": "Windows Shellcode",
+            "description": "",
+            "difficulty": "insane",
+            "type": "lab"
+          }
+        ]
+      },
+      {
+        "path_name": "Kernel Exploitation",
+        "courses": [
+          {
+            "course_title": "Driver Exploitation",
+            "description": "",
+            "difficulty": "insane",
+            "type": "lab"
+          }
+        ]
+      }
+    ]
+  }
+]

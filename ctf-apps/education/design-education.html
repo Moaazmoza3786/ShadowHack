@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OWASP Education - Insecure Design</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0a0e27;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .theory-section {
+            background: #1a1f3a;
+            padding: 30px;
+            height: 100vh;
+            overflow-y: auto;
+            border-left: 3px solid #667eea;
+        }
+
+        .lab-section {
+            background: #0f1729;
+            padding: 30px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background: #252b4a;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-right: 4px solid #666;
+        }
+
+        .task-item.completed {
+            border-right-color: #00ff88;
+        }
+
+        .task-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+        }
+
+        .hint-btn {
+            background: #ff9500;
+            border: none;
+            margin: 5px;
+        }
+
+        .hint-content {
+            background: #2a3150;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .flag-input {
+            background: #1a1f3a;
+            border: 2px solid #667eea;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .btn-submit {
+            background: #00ff88;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .product-card {
+            background: #1a1f3a;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+
+        .code-block {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+
+        h2,
+        h3 {
+            color: #667eea;
+        }
+
+        .badge-task {
+            background: #667eea;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+
+        .price {
+            font-size: 2em;
+            color: #00ff88;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5 theory-section">
+                <h2><i class="fas fa-brain"></i> النظرية: تصميم غير آمن</h2>
+                <p class="lead">Insecure Design & Logic Flaws</p>
+
+                <div class="mb-4">
+                    <h3>🧠 ما هي الثغرات المنطقية؟</h3>
+                    <p>هي ليست أخطاء في الكود (Syntax Errors)، بل أخطاء في <strong>طريقة التفكير</strong>! المبرمج كتب
+                        الكود بشكل صحيح، لكنه لم يتوقع كيف سيستخدمه الهاكر.</p>
+                </div>
+
+                <div class="mb-4">
+                    <h3>🛒 مثال الكوبون اللانهائي</h3>
+                    <div class="alert alert-info">
+                        <p class="mb-0">
+                            تخيل متجراً يعطيك خصم <strong>10%</strong>. <br>
+                            المبرمج فكر: "المستخدم سيضغط الزر مرة واحدة". <br>
+                            الهاكر فكر: "ماذا لو ضغطت الزر <strong>100 مرة</strong>؟" 🤔
+                        </p>
+                    </div>
+                    <div class="code-block text-center">
+                        $1000 - 10% = $900 <br>
+                        $900 - 10% = $810 <br>
+                        ... <br>
+                        $0.01 - 10% = $0.00 🤑
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>🛠️ الكود: المصاب vs الآمن</h3>
+                    <div class="card bg-dark border-danger mb-3">
+                        <div class="card-header bg-danger text-white">
+                            <i class="fas fa-times-circle"></i> كود مصاب (Vulnerable)
+                        </div>
+                        <div class="card-body code-block my-0">
+                            // يخصم من السعر الحالي في كل مرة!<br>
+                            function applyCoupon() {<br>
+                            &nbsp;&nbsp;currentPrice = currentPrice * 0.90;<br>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card bg-dark border-success mb-3">
+                        <div class="card-header bg-success text-white">
+                            <i class="fas fa-check-circle"></i> كود آمن (Secure)
+                        </div>
+                        <div class="card-body code-block my-0">
+                            // يحسب الخصم من السعر الأصلي مرة واحدة<br>
+                            function applyCoupon() {<br>
+                            &nbsp;&nbsp;if (!couponUsed) {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;finalPrice = originalPrice * 0.90;<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;couponUsed = true;<br>
+                            &nbsp;&nbsp;}<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>✅ المهام المطلوبة</h3>
+                    <div class="task-item" id="task1">
+                        <input type="checkbox" id="check1">
+                        <label><span class="badge-task">1</span> جرب تطبيق كوبون الخصم مرة واحدة</label>
+                    </div>
+                    <div class="task-item" id="task2">
+                        <input type="checkbox" id="check2">
+                        <label><span class="badge-task">2</span> استغل الثغرة للحصول على المنتج مجاناً ($0)</label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>💡 التلميحات</h3>
+                    <div class="d-flex gap-2">
+                        <button class="btn hint-btn flex-grow-1" onclick="showHint(1)">تلميح 1</button>
+                        <button class="btn hint-btn flex-grow-1" onclick="showHint(2)">الحل</button>
+                    </div>
+                    <div class="hint-content" id="hint1">
+                        💡 لا يوجد حد لعدد مرات استخدام الكوبون. استمر في الضغط!
+                    </div>
+                    <div class="hint-content" id="hint2">
+                        🎯 الحل: اضغط على زر "تطبيق الخصم" حوالي 60-70 مرة حتى يصبح السعر 0، ثم اضغط "الدفع".
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>🎯 أدخل الـ Flag</h3>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text bg-dark text-light border-primary"><i
+                                class="fas fa-flag"></i></span>
+                        <input type="text" class="form-control flag-input" id="flagInput" placeholder="FLAG{...}">
+                    </div>
+                    <button class="btn btn-submit w-100" onclick="checkFlag()">تحقق</button>
+                    <div id="flagResult" class="mt-2"></div>
+                </div>
+
+                <div class="mb-4">
+                    <h3>🛡️ كيف تحمي نفسك؟</h3>
+                    <ul>
+                        <li>🤔 <strong>Threat Modeling:</strong> توقع كيف يمكن إساءة استخدام نظامك.</li>
+                        <li>✅ <strong>Server-Side Validation:</strong> لا تعتمد على الواجهة الأمامية أبداً في الحسابات
+                            المالية.</li>
+                        <li>🚫 <strong>Rate Limiting:</strong> امنع تكرار الطلبات بشكل جنوني.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-7 lab-section">
+                <h2><i class="fas fa-flask"></i> اللاب العملي</h2>
+                <div class="product-card mt-4">
+                    <h3 class="text-center">💻 Super Laptop Pro</h3>
+                    <div class="text-center my-4">
+                        <div class="price" id="price">$2000.00</div>
+                        <p class="text-muted">السعر الأصلي: <del>$2000.00</del></p>
+                    </div>
+
+                    <div class="alert alert-warning text-center">
+                        <i class="fas fa-ticket-alt"></i> عرض خاص! استخدم الكوبون <strong>SAVE10</strong> لخصم 10%
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control flag-input" value="SAVE10" readonly>
+                            <button class="btn btn-warning" onclick="applyDiscount()">
+                                <i class="fas fa-tag"></i> تطبيق الخصم
+                            </button>
+                        </div>
+                        <small class="text-muted" id="discountCountMsg">عدد مرات الخصم: 0</small>
+                    </div>
+
+                    <hr>
+
+                    <button class="btn btn-success w-100 btn-lg" onclick="checkout()">
+                        <i class="fas fa-shopping-cart"></i> إتمام الشراء والدفع
+                    </button>
+                    <div id="message" class="mt-3"></div>
+                </div>
+                <button class="btn btn-secondary mt-3" onclick="resetLab()">إعادة تعيين</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPrice = 2000;
+        let discountCount = 0;
+        let tasks = [false, false];
+
+        function applyDiscount() {
+            // Vulnerable Logic: Applies discount to the CURRENT price repeatedly
+            discountCount++;
+            currentPrice = currentPrice * 0.9;
+
+            // Rounding issue simulation
+            if (currentPrice < 0.01) currentPrice = 0;
+
+            document.getElementById('price').textContent = '$' + currentPrice.toFixed(2);
+            document.getElementById('discountCountMsg').textContent = `عدد مرات الخصم: ${discountCount}`;
+
+            if (!tasks[0]) {
+                tasks[0] = true;
+                document.getElementById('task1').classList.add('completed');
+                document.getElementById('check1').checked = true;
+            }
+        }
+
+        function checkout() {
+            const msgDiv = document.getElementById('message');
+
+            if (currentPrice <= 0) {
+                msgDiv.innerHTML = `
+                    <div class="alert alert-success border-success">
+                        <h4><i class="fas fa-gift"></i> مبروك!</h4>
+                        <p>لقد حصلت على اللابتوب مجاناً! المبرمج يبكي الآن 😭</p>
+                        <div class="code-block mt-2 fs-5">FLAG{logic_flaw_exploited}</div>
+                    </div>
+                `;
+                if (!tasks[1]) {
+                    tasks[1] = true;
+                    document.getElementById('task2').classList.add('completed');
+                    document.getElementById('check2').checked = true;
+                }
+            } else {
+                msgDiv.innerHTML = `
+                    <div class="alert alert-info">
+                        جاري الانتقال للدفع... المبلغ المطلوب: <strong>$${currentPrice.toFixed(2)}</strong>
+                        <br><small>(حاول جعل السعر 0 للحصول على الـ Flag)</small>
+                    </div>
+                `;
+            }
+        }
+
+        function showHint(n) { document.getElementById('hint' + n).style.display = 'block'; }
+
+        function checkFlag() {
+            const input = document.getElementById('flagInput').value.trim();
+            const result = document.getElementById('flagResult');
+            if (input === 'FLAG{logic_flaw_exploited}') {
+                result.innerHTML = '<div class="alert alert-success"><i class="fas fa-trophy"></i> صحيح! 🎉</div>';
+            } else if (input) {
+                result.innerHTML = '<div class="alert alert-danger">خطأ!</div>';
+            }
+        }
+
+        function resetLab() {
+            currentPrice = 2000;
+            discountCount = 0;
+            tasks = [false, false];
+            document.getElementById('price').textContent = '$2000.00';
+            document.getElementById('discountCountMsg').textContent = 'عدد مرات الخصم: 0';
+            document.getElementById('message').innerHTML = '';
+            document.querySelectorAll('.task-item').forEach(t => t.classList.remove('completed'));
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+            document.querySelectorAll('.hint-content').forEach(h => h.style.display = 'none');
+            document.getElementById('flagInput').value = '';
+            document.getElementById('flagResult').innerHTML = '';
+        }
+    </script>
+</body>
+
+</html>

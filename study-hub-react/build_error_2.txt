@@ -1,0 +1,29 @@
+
+> study-hub-react@0.0.0 build
+> vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 2339 modules transformed.
+Γ£ù Build failed in 3.81s
+error during build:
+src/pages/tools/CVERadar.jsx (5:4): "Sync" is not exported by "node_modules/lucide-react/dist/esm/lucide-react.js", imported by "src/pages/tools/CVERadar.jsx".
+file: C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/src/pages/tools/CVERadar.jsx:5:4
+
+3: import {
+4:     Radio, Zap, Skull, Code, Search,
+5:     Sync, ExternalLink, ChevronRight,
+       ^
+6:     Shield, AlertCircle, Terminal,
+7:     FileCode, Cpu, Globe, ArrowRight,
+
+    at getRollupError (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/parseAst.js:400:41)
+    at error (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/parseAst.js:396:42)
+    at Module.error (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/node-entry.js:17036:16)
+    at Module.traceVariable (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/node-entry.js:17448:29)
+    at ModuleScope.findVariable (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/node-entry.js:15066:39)
+    at ReturnValueScope.findVariable (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/node-entry.js:5673:38)
+    at FunctionBodyScope.findVariable (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/node-entry.js:5673:38)
+    at Identifier.bind (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/node-entry.js:5447:40)
+    at CallExpression.bind (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/node-entry.js:2825:28)
+    at CallExpression.bind (file:///C:/Users/mmoza/Desktop/Study-hub3/study-hub-react/node_modules/rollup/dist/es/shared/node-entry.js:12179:15)

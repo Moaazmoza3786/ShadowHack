@@ -1,0 +1,10 @@
+{
+  "id": "ctf-intern-mistake",
+  "name": "The Intern's Mistake",
+  "description": "An intern forgot to scrub the notes. Can you find the secrets in the source?",
+  "difficulty": "easy",
+  "tier": 1,
+  "port": 80,
+  "category": "Web / Source Code",
+  "flag": "AG{Y0u_F0und_7h3_C0mm3n7}"
+}

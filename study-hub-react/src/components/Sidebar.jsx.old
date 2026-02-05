@@ -1,0 +1,110 @@
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import {
+    LayoutDashboard,
+    BookOpen,
+    Terminal,
+    Flag,
+    Trophy,
+    Settings,
+    Cpu,
+    Shield,
+    ChevronRight,
+    Zap,
+    History,
+    Info
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const SidebarLink = ({ to, icon: Icon, label, badge }) => (
+    <NavLink
+        to={to}
+        className={({ isActive }) => `
+            group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300
+            ${isActive
+                ? 'bg-primary-500/10 text-primary-500 border border-primary-500/20'
+                : 'text-gray-400 hover:bg-white/5 hover:text-gray-100'}
+        `}
+    >
+        <div className="flex items-center gap-3">
+            <Icon size={20} className="group-hover:scale-110 transition-transform" />
+            <span className="font-medium tracking-wide uppercase text-xs">{label}</span>
+        </div>
+        {badge && (
+            <span className="px-1.5 py-0.5 rounded-md bg-accent-500/20 text-accent-500 text-[10px] font-bold border border-accent-500/20 uppercase">
+                {badge}
+            </span>
+        )}
+        <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+    </NavLink>
+);
+
+const Sidebar = () => {
+    return (
+        <aside className="w-64 h-screen sticky top-0 bg-dark-900 border-r border-white/5 flex flex-col pt-8 pb-4 scrollbar-cyber overflow-y-auto">
+            <div className="px-6 mb-10 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center neon-glow-primary">
+                    <Shield className="text-dark-900 fill-dark-900" size={24} />
+                </div>
+                <div>
+                    <h1 className="text-xl font-black italic tracking-tighter leading-none">STUDY<span className="text-primary-500">HUB</span></h1>
+                    <p className="text-[10px] text-primary-500/60 font-mono uppercase tracking-[0.2em]">Offensive v3.0</p>
+                </div>
+            </div>
+
+            <nav className="flex-1 px-4 space-y-2">
+                <div className="mb-4">
+                    <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Main Menu</p>
+                    <SidebarLink to="/" icon={LayoutDashboard} label="Dashboard" />
+                    <SidebarLink to="/courses" icon={BookOpen} label="Courses" />
+                    <SidebarLink to="/labs" icon={Terminal} label="Labs" badge="New" />
+                    <SidebarLink to="/ctf" icon={Flag} label="CTF Arena" />
+                </div>
+
+                <div className="mb-4 pt-4 border-t border-white/5">
+                    <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Education</p>
+                    <SidebarLink to="/youtube-hub" icon={BookOpen} label="YouTube Hub" />
+                    <SidebarLink to="/owasp-range" icon={Shield} label="OWASP Range" />
+                </div>
+
+                <div className="mb-4 pt-4 border-t border-white/5">
+                    <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Career & Knowledge</p>
+                    <SidebarLink to="/career-hub" icon={Zap} label="Career pathways" />
+                    <SidebarLink to="/second-brain" icon={Cpu} label="Second Brain" />
+                </div>
+
+                <div className="mb-4 pt-4 border-t border-white/5">
+                    <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Legacy & Archive</p>
+                    <SidebarLink to="/legacy-tracks" icon={History} label="Legacy Tracks" />
+                    <SidebarLink to="/specs" icon={Info} label="Infrastructure Specs" />
+                </div>
+
+                <div className="mb-4 pt-4 border-t border-white/5">
+                    <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Advanced</p>
+                    <SidebarLink to="/shadow-os" icon={Cpu} label="ShadowOS" badge="Pro" />
+                    <SidebarLink to="/tools" icon={Zap} label="Tools Hub" />
+                    <SidebarLink to="/achievements" icon={Trophy} label="Achievements" />
+                </div>
+            </nav>
+
+            <div className="px-4 mt-auto">
+                <SidebarLink to="/settings" icon={Settings} label="Settings" />
+
+                <div className="mt-4 p-4 rounded-2xl bg-gradient-to-br from-primary-500/5 to-accent-500/5 border border-white/5 relative overflow-hidden group">
+                    <div className="relative z-10">
+                        <p className="text-[10px] font-bold text-primary-500 uppercase mb-1">Join Premium</p>
+                        <p className="text-xs text-gray-400 mb-3">Get access to all Pro Labs & specialized tracks.</p>
+                        <button className="w-full py-2 bg-primary-500 text-dark-900 text-[10px] font-black uppercase rounded-lg hover:bg-primary-600 transition-colors">
+                            Upgrade Now
+                        </button>
+                    </div>
+                    <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500 rotate-12">
+                        <Zap size={80} />
+                    </div>
+                </div>
+            </div>
+        </aside>
+    );
+};
+
+export default Sidebar;

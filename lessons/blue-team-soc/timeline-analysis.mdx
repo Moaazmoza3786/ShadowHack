@@ -1,0 +1,336 @@
+---
+title: "Timeline Analysis"
+description: "Master timeline creation and analysis techniques for digital forensics investigations."
+difficulty: "Advanced"
+estimatedTime: "45 minutes"
+tags: ["blue-team", "forensics", "timeline", "dfir", "log2timeline"]
+---
+
+# Timeline Analysis
+
+<InfoBox type="tip" title="The Big Picture">
+Timeline analysis combines **all artifacts** into a single chronological view. It's the most powerful technique for understanding an incident from start to finish.
+</InfoBox>
+
+## What is Timeline Analysis?
+
+Timeline analysis aggregates timestamps from multiple sources:
+- File system metadata (MFT, inodes)
+- Event logs
+- Browser history
+- Registry modifications
+- Prefetch files
+- And more...
+
+Into a single, searchable, chronological view.
+
+---
+
+## Why Timelines Matter
+
+| Without Timeline | With Timeline |
+|------------------|---------------|
+| Scattered artifacts | Unified view |
+| Hours of manual correlation | Minutes to see patterns |
+| Miss connections | See cause and effect |
+| "When did X happen?" takes hours | Instant answer |
+
+---
+
+## Timeline Tools
+
+### Log2Timeline (Plaso)
+
+Most powerful open-source timeline tool.
+
+<TerminalWindow title="Log2Timeline Installation">
+# Install plaso (Ubuntu/Debian)
+$ sudo add-apt-repository ppa:gift/stable
+$ sudo apt update
+$ sudo apt install plaso-tools
+
+# Or via pip
+$ pip install plaso
+
+# Verify installation
+$ log2timeline.py --version
+$ psort.py --version
+</TerminalWindow>
+
+### Creating a Timeline
+
+<TerminalWindow title="Log2Timeline Workflow">
+# Step 1: Parse evidence into plaso format
+$ log2timeline.py --storage-file timeline.plaso evidence.img
+
+# This can take hours for large disks!
+# Add --parsers for specific sources:
+$ log2timeline.py --parsers "mft,prefetch,winevt,chrome_history" \
+    --storage-file timeline.plaso evidence.img
+
+# Step 2: Export to human-readable format
+$ psort.py -o l2tcsv timeline.plaso > timeline.csv
+
+# Step 3: Filter by time range
+$ psort.py -o l2tcsv timeline.plaso \
+    "date > '2026-01-14 14:00:00' AND date < '2026-01-14 16:00:00'" \
+    > incident_window.csv
+</TerminalWindow>
+
+### Available Parsers
+
+<TerminalWindow title="Common Log2Timeline Parsers">
+# List all parsers
+$ log2timeline.py --parsers list
+
+# Key Windows parsers:
+mft          - NTFS Master File Table
+prefetch     - Prefetch files
+winevt       - Windows Event Logs
+winreg       - Windows Registry
+chrome_*     - Chrome browser artifacts
+firefox_*    - Firefox artifacts
+recycle_bin  - Recycle Bin
+lnk          - Shortcut files
+usnjrnl      - USN Journal
+
+# Key Linux parsers:
+apt_history  - APT package manager
+bash_history - Bash command history
+syslog       - System logs
+utmp         - Login records
+</TerminalWindow>
+
+---
+
+## Timeline Output Format
+
+<TerminalWindow title="L2tcsv Output Columns">
+# Standard columns in l2tcsv format:
+
+date,time,timezone,MACB,source,sourcetype,type,user,host,short,desc,version,filename,inode,notes,format,extra
+
+# Key columns:
+date/time   - When the event occurred
+MACB        - Modified/Accessed/Changed/Birth
+source      - Evidence source (FILE, LOG, REG, etc.)
+sourcetype  - Specific parser
+short       - Brief description
+desc        - Full description
+filename    - Associated file
+</TerminalWindow>
+
+### MACB Timestamps
+
+| Letter | Meaning | Description |
+|--------|---------|-------------|
+| **M** | Modified | Content changed |
+| **A** | Accessed | File was read |
+| **C** | Changed | Metadata changed (NTFS: MFT change) |
+| **B** | Birth | File created |
+
+---
+
+## Timeline Analysis Techniques
+
+### 1. Pivot Point Method
+
+Start from a known event and work outward:
+
+<TerminalWindow title="Pivot Point Analysis">
+# Known: Malware executed at 2026-01-14 14:32:18
+# Find events 30 minutes before and after
+
+$ grep "2026-01-14 14" timeline.csv | \
+    awk -F, '$2 >= "14:00:00" && $2 <= "15:00:00"' | \
+    sort -t, -k2
+
+# Look for:
+# - What happened just before? (download, email opened)
+# - What did the malware do? (file creates, registry mods)
+# - Lateral movement? (network connections)
+</TerminalWindow>
+
+### 2. Anomaly Detection
+
+Look for events outside normal patterns:
+
+- Activity during off-hours
+- System file modifications
+- New executables in user folders
+- Multiple failed logins followed by success
+
+### 3. Correlation Across Sources
+
+<TerminalWindow title="Multi-Source Correlation">
+# Scenario: Trace a phishing attack
+
+14:30:05 - Chrome: Visited mail.company.com
+14:30:42 - Chrome: Downloaded invoice.pdf.exe
+14:30:45 - File: Created C:\Users\victim\Downloads\invoice.pdf.exe
+14:30:48 - Prefetch: First run of invoice.pdf.exe
+14:30:49 - Registry: New Run key created
+14:30:52 - File: Created C:\Users\victim\AppData\Local\Temp\beacon.exe
+14:31:00 - DNS: Resolved evil-c2.net
+14:31:05 - Network: Connection to 185.220.101.45:443
+
+# Clear attack chain visible!
+</TerminalWindow>
+
+---
+
+## Practical Timeline Filters
+
+<TerminalWindow title="Useful Timeline Queries">
+# Find all .exe creations
+$ grep "\.exe" timeline.csv | grep ",FILE," | grep "Birth"
+
+# Find PowerShell activity
+$ grep -i "powershell" timeline.csv
+
+# Find registry Run key modifications
+$ grep -i "currentversion.*run" timeline.csv
+
+# Find downloaded files
+$ grep "Downloads" timeline.csv | grep ",FILE,"
+
+# Find USB device connections
+$ grep -i "usbstor" timeline.csv
+
+# Find successful logins (Event 4624)
+$ grep "4624" timeline.csv
+
+# Exclude system noise
+$ grep -v "SYSTEM" timeline.csv | grep -v "TrustedInstaller"
+</TerminalWindow>
+
+---
+
+## Timeline Visualization
+
+### Excel/LibreOffice
+
+<TerminalWindow title="Timeline in Spreadsheets">
+1. Import timeline.csv
+2. Enable filters on all columns
+3. Create date/time columns
+4. Sort by date/time
+5. Use conditional formatting:
+   - Red: .exe creations outside system folders
+   - Orange: Registry modifications
+   - Yellow: Network events to external IPs
+6. Create pivot table for source breakdown
+</TerminalWindow>
+
+### Timesketch (Advanced)
+
+<TerminalWindow title="Timesketch Web UI">
+# Install Timesketch (Docker recommended)
+$ git clone https://github.com/google/timesketch.git
+$ cd timesketch
+$ docker-compose up -d
+
+# Import plaso file
+$ tsctl import --file timeline.plaso --timeline "Incident 2026-01"
+
+# Features:
+✓ Web-based analysis
+✓ Multiple analysts
+✓ Sigma rule integration
+✓ Saved searches
+✓ Annotations and tags
+</TerminalWindow>
+
+---
+
+## Practical Exercise
+
+<ChallengeBox 
+  title="Build and Analyze a Timeline"
+  difficulty="hard"
+  points={200}
+>
+
+Given this timeline excerpt, reconstruct the attack:
+
+```csv
+date,time,MACB,source,short,filename
+2026-01-14,14:28:12,B,FILE,Created,C:\Users\admin\Downloads\update.exe
+2026-01-14,14:28:15,M,REG,Modified,HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+2026-01-14,14:28:18,B,PREFETCH,First Run,UPDATE.EXE-XXXXXX.pf
+2026-01-14,14:28:20,B,FILE,Created,C:\Windows\Temp\sys32.dll
+2026-01-14,14:28:22,M,LOG,Event 4624,Security.evtx (LogonType 10 from 10.0.0.50)
+2026-01-14,14:28:25,B,FILE,Created,C:\Users\admin\Documents\*.docx.encrypted
+2026-01-14,14:28:30,M,LOG,Event 4688,cmd.exe spawned vssadmin.exe
+2026-01-14,14:28:32,M,LOG,Event 4688,vssadmin delete shadows /all
+```
+
+**Questions**:
+1. What type of attack is this?
+2. Identify each stage of the attack
+3. What was the initial access vector?
+
+<details>
+<summary>Answer</summary>
+
+**1. Attack Type**: Ransomware attack (files encrypted, shadows deleted)
+
+**2. Attack Stages**:
+| Time | Event | Stage |
+|------|-------|-------|
+| 14:28:12 | update.exe downloaded | Delivery |
+| 14:28:15 | Run key created | Persistence |
+| 14:28:18 | update.exe first run | Execution |
+| 14:28:20 | sys32.dll dropped | Payload deployment |
+| 14:28:22 | RDP logon from 10.0.0.50 | Lateral movement (or initial vector) |
+| 14:28:25 | .docx.encrypted created | Ransomware encryption |
+| 14:28:30-32 | Shadow copies deleted | Impact (anti-recovery) |
+
+**3. Initial Access**:
+The LogonType 10 (RDP) from 10.0.0.50 at 14:28:22 suggests:
+- Either RDP was the initial access (compromised credentials)
+- Or the attacker moved laterally via RDP after initial compromise
+
+The quick timeline (12 seconds from delivery to execution) suggests automation or pre-staged attack.
+
+</details>
+</ChallengeBox>
+
+---
+
+## Best Practices
+
+<InfoBox type="warning" title="Timeline Tips">
+- Always document your **time zone**
+- Note that **malware can manipulate timestamps**
+- Use **multiple sources** to verify events
+- **Save your queries** for the report
+</InfoBox>
+
+1. **Start broad, then narrow** - Scan the full timeline, then focus on suspicious windows
+2. **Use bookmarks** - Mark interesting events for later
+3. **Document as you go** - Take notes on findings
+4. **Validate with multiple sources** - Cross-reference file events with logs
+5. **Export filtered views** - Create separate files for reporting
+
+---
+
+## Key Takeaways
+
+- Timeline analysis **unifies all artifacts** into one view
+- **Log2timeline (plaso)** is the industry standard tool
+- Start from a **pivot point** and work outward
+- Look for **anomalies** and **correlations**
+- **Document everything** - timelines tell the story
+
+<Quiz
+  question="In the MACB timestamp format, what does 'B' represent?"
+  options={[
+    "Backup timestamp",
+    "Birth (creation) timestamp",
+    "Binary access time",
+    "Blocked access time"
+  ]}
+  correctIndex={1}
+  explanation="In MACB format, 'B' represents the Birth or creation timestamp - when the file was originally created."
+/>

@@ -1,0 +1,21 @@
+#,title,videoUrl,videoId,publishedAt,position
+1,Learn PTS In Arabic #01 - Introduction and What is PTS? [بالعربي],https://www.youtube.com/watch?v=snH9NTE4BoI&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=1,snH9NTE4BoI,2020-12-31T18:30:11Z,0
+2,Learn PTS In Arabic #02  LABS PTS FREE [ بالعربي],https://www.youtube.com/watch?v=mM4wFoWrxhY&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=2,mM4wFoWrxhY,2021-01-01T13:15:09Z,1
+3,[بالعربي] Learn PTS In Arabic #03  Installing our Penetration Testing Lab OS,https://www.youtube.com/watch?v=tXz45MuZLwc&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=3,tXz45MuZLwc,2021-01-02T18:30:09Z,2
+4,[بالعربي] Learn PTS In Arabic #04  Basic command kali linux,https://www.youtube.com/watch?v=16myZH0Tuv4&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=4,16myZH0Tuv4,2021-01-03T18:30:11Z,3
+5,[ بالعربي ] Learn PTS In Arabic #05  Web Basic-Burpsuite part 1,https://www.youtube.com/watch?v=qDrrplEsEiA&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=5,qDrrplEsEiA,2021-01-04T18:30:10Z,4
+6,Learn PTS In Arabic #06 -Web Basic - Burp Suite part 2  [بالعربي],https://www.youtube.com/watch?v=-O0BiS4zESs&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=6,-O0BiS4zESs,2021-01-05T18:30:12Z,5
+7,[ بالعربي ] Learn PTS In Arabic #07  Web Basic-Burp Suite (foxy proxy) part 3,https://www.youtube.com/watch?v=7mwQLFrWJPM&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=7,7mwQLFrWJPM,2021-01-06T18:30:09Z,6
+8,Learn PTS In Arabic #08  Web Basic -Burp Suite (CTF) part 4,https://www.youtube.com/watch?v=Sf0OJITevPo&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=8,Sf0OJITevPo,2021-01-07T18:30:11Z,7
+9,Learn PTS In Arabic #09 Footprinting and Scanning and Vulnerability Assessments part 1,https://www.youtube.com/watch?v=BRHnNUdNdTE&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=9,BRHnNUdNdTE,2021-01-08T18:30:10Z,8
+10,Learn PTS In Arabic #10 Footprinting and Scanning and Vulnerability Assessments (nmap) part 2,https://www.youtube.com/watch?v=Hl4D80qG2s4&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=10,Hl4D80qG2s4,2021-01-09T18:30:11Z,9
+11,Learn PTS In Arabic #11 Footprinting and Scanning and Vulnerability Assessments (Nessus)  part 3,https://www.youtube.com/watch?v=TiHE6gl144o&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=11,TiHE6gl144o,2021-01-10T18:30:09Z,10
+12,(بالعربي )Learn PTS In Arabic #13  System Attack  part 1,https://www.youtube.com/watch?v=sYX_luq-UXc&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=12,sYX_luq-UXc,2021-01-18T18:30:10Z,11
+13,Learn PTS In Arabic #14  System Attack  part 2,https://www.youtube.com/watch?v=ZOlJp4Wbeic&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=13,ZOlJp4Wbeic,2021-01-26T18:30:12Z,12
+14,Learn PTS In Arabic #12 Footprinting and Scanning and Vulnerability Assessments (Metasploit)  part 4,https://www.youtube.com/watch?v=QHDAr6sVH_M&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=14,QHDAr6sVH_M,2021-01-17T18:30:25Z,13
+15,Learn PTS In Arabic #15  System Attack  part 3,https://www.youtube.com/watch?v=-SWiVH8IeOo&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=15,-SWiVH8IeOo,2021-02-01T00:30:12Z,14
+16,Learn PTS In Arabic #16-Network Attack,https://www.youtube.com/watch?v=dmD5Pz3bDyw&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=16,dmD5Pz3bDyw,2021-02-05T18:30:26Z,15
+17,Learn PTS In Arabic #17 - Web Attack part 1,https://www.youtube.com/watch?v=zJHNfBK1Skc&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=17,zJHNfBK1Skc,2021-02-15T12:50:22Z,16
+18,Learn PTS In Arabic #18  Web Attack XSS part 2,https://www.youtube.com/watch?v=rTWEXSCTLeY&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=18,rTWEXSCTLeY,2021-03-02T10:00:15Z,17
+19,Learn PTS In Arabic #19 - Web Attack (SQL Injection) part 3,https://www.youtube.com/watch?v=uSg5mJfl270&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=19,uSg5mJfl270,2021-03-08T18:45:15Z,18
+20,Learn PTS In Arabic #20 - Web Attack (BurpSuite-brute force) part 4,https://www.youtube.com/watch?v=JwwS3IdI-7E&list=PLxfR7vYuDV2VctHrrq7hC2H3DQ4iW3m1N&index=20,JwwS3IdI-7E,2021-03-15T18:30:16Z,19

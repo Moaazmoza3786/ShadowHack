@@ -1,0 +1,61 @@
+# C2 Frameworks
+
+Command and Control (C2).
+You don't manage 100 infected machines with 100 Netcat listeners.
+You use a C2 framework.
+
+## The Big Players
+
+*   **Cobalt Strike:** The gold standard. Expensive.
+*   **Sliver:** Open source, Go-based. Powerful.
+*   **Covenant:** .NET based C2.
+*   **Empire:** PowerShell focused (Legacy but active).
+
+## Architecture
+
+```mermaid
+graph TD
+    Operator[Attacker Team] -->|Team Server| C2[C2 Server]
+    C2 -->|HTTP/HTTPS/DNS| Agent1[Victim 1]
+    C2 -->|SMB Pipe| Agent2[Victim 2 (Internal)]
+    
+    style Operator fill:#f44336,stroke:#333
+    style C2 fill:#ff9800,stroke:#333
+    style Agent1 fill:#2196f3,stroke:#333
+    style Agent2 fill:#00bcd4,stroke:#333
+```
+
+## Lab: Beacong
+
+We have an agent checking in every 10 seconds (Jitter).
+Execute a command on the agent.
+
+<TerminalWindow 
+  cmd="Sliver > use session 1" 
+  output="[*] Active session 1 (DESKTOP-USER)
+Sliver (session) > shell
+[*] Tasked session 1 to run shell (ID: 1f3a...)
+[+] Task 1f3a completed.
+C:\Users\User> type flag.txt
+BL{C2_Infra_Mast3r}" 
+/>
+
+<Quiz 
+  question="What is 'Jitter' in C2 communications?"
+  options={[
+    "Randomizing the check-in interval to evade detection.",
+    "The speed of the exploit.",
+    "The number of agents connected.",
+    "The latency of the server."
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag retrieved via the C2 session?"
+  options={[
+    "BL{C2_Infra_Mast3r}",
+    "BL{C0balt_Str1k3}",
+    "Sliver_Agent",
+    "shell_exec"
+  ]}
+/>

@@ -1,0 +1,34 @@
+#,title,videoUrl,videoId,publishedAt,position
+1,Cross Site Scripting (XSS) هتفهمها بنسبة 100% | Bug Bounty - شرح XSS,https://www.youtube.com/watch?v=G6XOKfkWGSg&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=1,G6XOKfkWGSg,2024-05-27T10:05:46Z,0
+2,Types of Cross site scripting (XSS) | شرح XSS - Bug Bounty,https://www.youtube.com/watch?v=sW2OYqxWOI4&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=2,sW2OYqxWOI4,2024-05-28T08:49:14Z,1
+3,Reflected XSS into HTML context | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=IdUej-3554s&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=3,IdUej-3554s,2024-05-29T21:44:13Z,2
+4,Stored XSS into HTML context | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=w20ywrGUF90&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=4,w20ywrGUF90,2024-05-30T11:49:48Z,3
+5,DOM XSS in document.write sink | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=YF6KGwepMro&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=5,YF6KGwepMro,2024-06-01T11:00:35Z,4
+6,DOM XSS in innerHTML | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=x6dkvIyBoas&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=6,x6dkvIyBoas,2024-06-17T12:46:57Z,5
+7,DOM XSS in jQuery anchor href attribute | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=8aJLj6DQ824&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=7,8aJLj6DQ824,2024-06-20T18:00:09Z,6
+8,DOM XSS in jQuery selector | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=XLPW_0VtFOI&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=8,XLPW_0VtFOI,2024-06-25T18:00:16Z,7
+9,Reflected XSS into attribute | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=OPi8p67g-bw&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=9,OPi8p67g-bw,2024-06-26T16:44:21Z,8
+10,Stored XSS into anchor href attribute | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=6Rh0Oxntw3U&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=10,6Rh0Oxntw3U,2024-06-27T19:11:03Z,9
+11,Reflected XSS into a JavaScript string | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=eOF4R5wwsHM&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=11,eOF4R5wwsHM,2024-06-29T18:59:24Z,10
+12,DOM XSS in Select Element | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=eq8SinMYLhs&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=12,eq8SinMYLhs,2024-07-14T18:00:27Z,11
+13,DOM XSS in AngularJS expression | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=L68V3DrbbIo&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=13,L68V3DrbbIo,2024-07-25T16:30:06Z,12
+14,Reflected DOM XSS | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=L-l4eGQvqwE&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=14,L-l4eGQvqwE,2024-08-23T15:00:07Z,13
+15,Stored DOM XSS | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=ffkMUk1iw1k&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=15,ffkMUk1iw1k,2024-08-24T16:00:07Z,14
+16,Reflected XSS most tags & attributes blocked | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=6-21VqDlGpU&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=16,6-21VqDlGpU,2024-09-09T16:07:23Z,15
+17,Reflected XSS all tags blocked except custom ones | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=0qmxwzIl7Ig&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=17,0qmxwzIl7Ig,2024-09-11T15:00:07Z,16
+18,Reflected XSS with some SVG markup allowed | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=qpFemIRfcDc&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=18,qpFemIRfcDc,2024-09-12T15:00:07Z,17
+19,Reflected XSS in canonical link tag | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=PUIf6pSPs20&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=19,PUIf6pSPs20,2024-09-13T15:00:07Z,18
+20,Reflected XSS into a JavaScript string | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=QadBfHheFOE&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=20,QadBfHheFOE,2024-09-14T14:00:32Z,19
+21,Reflected XSS into JavaScript string  | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=2n-Ae42Ih_M&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=21,2n-Ae42Ih_M,2024-09-15T13:00:07Z,20
+22,Stored XSS into onclick event | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=qz_Y914Jzxo&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=22,qz_Y914Jzxo,2024-09-16T14:00:06Z,21
+23,Reflected XSS into a template literal | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=NNL-VrleuBs&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=23,NNL-VrleuBs,2024-09-17T15:00:07Z,22
+24,Blind XSS to steal cookies | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=T8p-WJhCohk&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=24,T8p-WJhCohk,2024-09-20T18:00:07Z,23
+25,Blind XSS to capture passwords | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=89avjhiD7tI&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=25,89avjhiD7tI,2024-09-22T18:00:17Z,24
+26,Exploiting XSS to perform CSRF | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=_GUz6ZDlJx0&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=26,_GUz6ZDlJx0,2024-09-23T18:00:28Z,25
+27,Reflected XSS with AngularJS sandbox | شرح ثغرة XSS - Portwsigger,https://www.youtube.com/watch?v=jdMSnxs_0Ns&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=27,jdMSnxs_0Ns,2024-09-25T17:00:31Z,26
+28,Reflected XSS with AngularJS sandbox and CSP | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=UyTpW2Hhqu0&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=28,UyTpW2Hhqu0,2024-09-28T18:15:21Z,27
+29,Reflected XSS event handlers & href blocked | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=48mX7Z102fU&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=29,48mX7Z102fU,2024-09-29T17:00:22Z,28
+30,Reflected XSS in a JavaScript URL | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=zZwacYyEbhs&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=30,zZwacYyEbhs,2024-10-02T15:00:32Z,29
+31,Reflected XSS (CSP) + Dangling markup attack | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=-GbNFcgNdtE&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=31,-GbNFcgNdtE,2024-10-10T18:00:06Z,30
+32,Reflected XSS (CSP) with CSP bypass | شرح ثغرة XSS - Portswigger,https://www.youtube.com/watch?v=OardxUlrWD0&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=32,OardxUlrWD0,2024-11-25T19:00:06Z,31
+33,اخترق المواقع علي Hackerone للمبتدئين (شرح عملي 2025) ☣️ | Bug Bounty,https://www.youtube.com/watch?v=X7Zib1zn24s&list=PLX621demLUSaeP8x6tbt8H1Wfee5UH_hi&index=33,X7Zib1zn24s,2024-12-15T19:00:06Z,32

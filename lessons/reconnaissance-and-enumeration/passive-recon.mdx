@@ -1,0 +1,116 @@
+
+# Passive Reconnaissance: OSINT & Google Dorking
+
+## The Art of Electronic Warfare
+Before you ever touch a target's server with a packet, you can often compromise them using only public information. This is **Open Source Intelligence (OSINT)**.
+
+In this phase, we do **not** touch the target's infrastructure. We query third-party sources (Google, Shodan, LinkedIn, DNS Registrars).
+
+<Mermaid chart={`
+graph TD
+    A[Target Domain: example.com] --> B[Whois & DNS]
+    A --> C[Search Engines]
+    A --> D[Social Media]
+    A --> E[Source Code Repos]
+    
+    B --> B1[Registrar Info]
+    B --> B2[Mail Servers MX]
+    
+    C --> C1[Google Dorks]
+    C --> C2[Pastebin Leaks]
+    
+    D --> D1[Employee Names]
+    D --> D2[Badges / ID Photos]
+    
+    E --> E1[Hardcoded API Keys]
+    E --> E2[Dev Comments]
+    
+    style A fill:#b91c1c,stroke:#fff,stroke-width:2px,color:#fff
+`} />
+
+## 1. Google Dorking (Google Hacking)
+Google indexes everything, including sensitive files that admins accidentally exposed. "Dorking" is the use of advanced search operators.
+
+### Critical Operators
+- `site:` - Limit results to a specific domain.
+- `filetype:` - Look for specific extensions (pdf, xlsx, docx, config).
+- `intitle:` - Search for text in the page title.
+- `inurl:` - Search for text in the URL structure.
+
+### Practical Dorks
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="card bg-gray-900 p-4 border border-gray-700">
+        <h4 className="text-red-400 font-bold">Files Containing Passwords</h4>
+        <code className="block mt-2 text-sm text-green-400">site:target.com filetype:xlsx "password"</code>
+    </div>
+    <div className="card bg-gray-900 p-4 border border-gray-700">
+        <h4 className="text-red-400 font-bold">Exposed Config Files</h4>
+        <code className="block mt-2 text-sm text-green-400">site:target.com ext:xml | ext:conf | ext:cnf | ext:reg | ext:inf</code>
+    </div>
+    <div className="card bg-gray-900 p-4 border border-gray-700">
+        <h4 className="text-red-400 font-bold">Directory Listing</h4>
+        <code className="block mt-2 text-sm text-green-400">site:target.com intitle:"index of"</code>
+    </div>
+    <div className="card bg-gray-900 p-4 border border-gray-700">
+        <h4 className="text-red-400 font-bold">Login Portals</h4>
+        <code className="block mt-2 text-sm text-green-400">site:target.com inurl:login | inurl:admin</code>
+    </div>
+</div>
+
+<Note type="warning">
+**Warning:** Automated dorking (using scripts to query Google thousands of times) will get your IP banned by Google. Do this manually or use APIs.
+</Note>
+
+## 2. Automated OSINT Tools: TheHarvester
+TheHarvester is a classic tool to gather emails, subdomains, hosts, employee names, open ports, and banners from different public sources.
+
+<TerminalSimulator 
+    cmd="theHarvester -d tesla.com -l 500 -b google,linkedin" 
+    output={`*******************************************************************
+*  _   _                                            _             *
+* | |_| |__   ___    /\  /\__ _ _ ____   _____  ___| |_ ___ _ __  *
+* | __| '_ \ / _ \  / /_/ / _' | '__\ \ / / _ \/ __| __/ _ \ '__| *
+* | |_| | | |  __/ / __  / (_| | |   \ V /  __/\__ \ ||  __/ |    *
+*  \__|_| |_|\___| \/ /_/ \__,_|_|    \_/ \___||___/\__\___|_|    *
+*******************************************************************
+[*] Target: tesla.com
+[*] Searching Google:
+    - traffic.tesla.com
+    - energy.tesla.com
+    - ir.tesla.com
+
+[*] Searching LinkedIn:
+    - Elon Musk - CEO
+    - John Doe - Senior Security Engineer
+    
+[+] Total unique emails: 12
+[+] Total unique hosts: 8
+`} 
+/>
+
+## 3. The Danger of GitHub
+Developers often push code with hardcoded secrets (AWS keys, Database credentials).
+Tool: `TruffleHog` or manual search.
+
+**Query:** `org:TargetCompany "AWS_ACCESS_KEY_ID"`
+
+<CodeBlock language="javascript" showLineNumbers code={`// Example of what we look for in GitHub repos
+const config = {
+    apiKey: "AIzaSyD-....", // <--- THE GOLD
+    dbHost: "192.168.1.50",
+    debug: true
+};
+`} />
+
+---
+
+<Quiz 
+    question="You find a PDF document labeled 'Confidential - Network Diagram' on the target company's public website via Google Dorking. Is downloading this document illegal?" 
+    options={[
+        "Yes, because it is labeled Confidential",
+        "No, because it is publicly hosted and indexed by Google",
+        "Yes, unless you have an RoE signed",
+        "No, but you cannot read it"
+    ]} 
+    answer="No, because it is publicly hosted and indexed by Google" 
+/>

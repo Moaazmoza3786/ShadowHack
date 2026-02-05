@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Lab - Security Training</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2ecc71;
+            /* Green for File Upload */
+            --secondary-color: #2c3e50;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #2ecc71, #1abc9c);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            height: calc(100vh - 100px);
+            position: sticky;
+            top: 80px;
+        }
+
+        .scenario-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .scenario-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .scenario-item:hover {
+            background-color: #f8f9fa;
+            padding-left: 25px;
+        }
+
+        .scenario-item.active {
+            background-color: #e8f8f5;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .scenario-status {
+            font-size: 0.8rem;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            min-height: calc(100vh - 100px);
+            padding: 30px;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: #f0fdf4;
+        }
+
+        .file-preview {
+            background: #2d3436;
+            color: #dfe6e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: monospace;
+            display: none;
+        }
+
+        .server-logs {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            font-family: 'Consolas', monospace;
+            border-radius: 5px;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .flag-display {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hint-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark mb-4">
+        <div class="container-fluid px-4">
+            <span class="navbar-brand mb-0 h1">
+                <i class="fa-solid fa-upload me-2"></i> File Upload Lab <span
+                    class="badge bg-light text-dark ms-2">v1.0</span>
+            </span>
+            <div class="text-white">
+                <span id="xp-display">XP: 0</span> |
+                <span id="progress-display">0/4 Completed</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <div class="p-3 border-bottom bg-light">
+                        <h5 class="mb-0 text-secondary">Scenarios</h5>
+                    </div>
+                    <ul class="scenario-list" id="scenario-list">
+                        <!-- Scenarios will be injected here -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="main-content">
+                    <div id="scenario-content">
+                        <!-- Content will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hint Button -->
+    <button class="btn btn-warning hint-btn" onclick="showHint()">
+        <i class="fa-solid fa-lightbulb fa-lg"></i>
+    </button>
+
+    <!-- Hint Modal -->
+    <div class="modal fade" id="hintModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">💡 Hint</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="hint-text">
+                    <!-- Hint content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Lab State
+        const state = {
+            currentScenario: 0,
+            xp: 0,
+            completed: [false, false, false, false]
+        };
+
+        // Scenarios Data
+        const scenarios = [
+            {
+                id: 0,
+                title: "Unrestricted Upload",
+                difficulty: "Easy",
+                description: "The server allows any file type to be uploaded. Upload a PHP shell to execute commands and get the flag.",
+                flag: "FLAG{unr3str1ct3d_upl04d_succ3ss}",
+                hints: [
+                    "Create a file named shell.php",
+                    "Content: <?php system($_GET['cmd']); ?>",
+                    "There are no filters."
+                ]
+            },
+            {
+                id: 1,
+                title: "Extension Blacklist",
+                difficulty: "Medium",
+                description: "The server blocks files ending with <code>.php</code>. Can you bypass this restriction to upload your shell?",
+                flag: "FLAG{ext3ns10n_byp4ss_m4st3r}",
+                hints: [
+                    "Try alternative PHP extensions.",
+                    "Examples: .php5, .phtml, .php7",
+                    "The server might still execute these."
+                ]
+            },
+            {
+                id: 2,
+                title: "MIME Type Bypass",
+                difficulty: "Hard",
+                description: "The server checks the <code>Content-Type</code> header. It only allows <code>image/jpeg</code> or <code>image/png</code>. Bypass this check.",
+                flag: "FLAG{m1m3_typ3_sp00f1ng}",
+                hints: [
+                    "You need to intercept the request (simulated here).",
+                    "Change Content-Type from application/x-php to image/jpeg.",
+                    "The file extension can still be .php"
+                ]
+            },
+            {
+                id: 3,
+                title: "Magic Bytes Bypass",
+                difficulty: "Expert",
+                description: "The server checks the file content for magic bytes (file signature). It expects an image. Trick it into accepting your PHP shell.",
+                flag: "FLAG{m4g1c_byt3s_inj3ct10n}",
+                hints: [
+                    "Add GIF89a to the beginning of your file.",
+                    "This makes the file look like a GIF image.",
+                    "Content: GIF89a<?php system('ls'); ?>"
+                ]
+            }
+        ];
+
+        // Initialize
+        function init() {
+            renderSidebar();
+            loadScenario(0);
+            updateStats();
+        }
+
+        // Render Sidebar
+        function renderSidebar() {
+            const list = document.getElementById('scenario-list');
+            list.innerHTML = scenarios.map((s, index) => `
+                <li class="scenario-item ${state.currentScenario === index ? 'active' : ''}" onclick="loadScenario(${index})">
+                    <div>
+                        <div class="fw-bold">${s.title}</div>
+                        <div class="scenario-status text-muted">
+                            ${state.completed[index] ? '<i class="fa-solid fa-check text-success"></i> Completed' : '<i class="fa-regular fa-circle"></i> In Progress'}
+                        </div>
+                    </div>
+                    <span class="badge ${getBadgeClass(s.difficulty)}">${s.difficulty}</span>
+                </li>
+            `).join('');
+        }
+
+        function getBadgeClass(difficulty) {
+            switch (difficulty) {
+                case 'Easy': return 'bg-success';
+                case 'Medium': return 'bg-warning text-dark';
+                case 'Hard': return 'bg-danger';
+                case 'Expert': return 'bg-dark';
+                default: return 'bg-secondary';
+            }
+        }
+
+        // Load Scenario
+        function loadScenario(index) {
+            state.currentScenario = index;
+            renderSidebar();
+            const scenario = scenarios[index];
+
+            const content = document.getElementById('scenario-content');
+            content.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>${scenario.title}</h2>
+                    <span class="badge ${getBadgeClass(scenario.difficulty)} fs-6">${scenario.difficulty}</span>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fa-solid fa-info-circle me-2"></i> ${scenario.description}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <i class="fa-solid fa-file-code me-2"></i> Create Malicious File
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Filename</label>
+                                    <input type="text" class="form-control" id="filename" value="shell.php">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">File Content</label>
+                                    <textarea class="form-control font-monospace" id="filecontent" rows="5"><?php system('cat /flag'); ?></textarea>
+                                </div>
+                                
+                                ${scenario.id === 2 ? `
+                                <div class="mb-3">
+                                    <label class="form-label text-danger"><i class="fa-solid fa-bug"></i> Intercepted Content-Type</label>
+                                    <select class="form-select" id="mimeType">
+                                        <option value="application/x-php">application/x-php</option>
+                                        <option value="image/jpeg">image/jpeg</option>
+                                        <option value="image/png">image/png</option>
+                                        <option value="text/plain">text/plain</option>
+                                    </select>
+                                </div>
+                                ` : ''}
+
+                                <button class="btn btn-primary w-100" onclick="uploadFile()">
+                                    <i class="fa-solid fa-upload me-2"></i> Upload File
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-dark text-white">
+                                <i class="fa-solid fa-terminal me-2"></i> Server Logs
+                            </div>
+                            <div class="card-body bg-dark p-0">
+                                <div class="server-logs d-block h-100 m-0 rounded-0" id="serverLogs">
+                                    <span class="text-muted">// Server logs will appear here...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flag-display" id="flagDisplay"></div>
+            `;
+        }
+
+        function log(message, type = 'info') {
+            const logs = document.getElementById('serverLogs');
+            const color = type === 'error' ? 'text-danger' : (type === 'success' ? 'text-success' : 'text-info');
+            const timestamp = new Date().toLocaleTimeString();
+            logs.innerHTML += `<div class="${color}">[${timestamp}] ${message}</div>`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        function uploadFile() {
+            const filename = document.getElementById('filename').value.trim();
+            const content = document.getElementById('filecontent').value;
+            const scenario = scenarios[state.currentScenario];
+            const mimeType = document.getElementById('mimeType') ? document.getElementById('mimeType').value : 'application/x-php';
+
+            // Clear previous logs
+            document.getElementById('serverLogs').innerHTML = '';
+            document.getElementById('flagDisplay').style.display = 'none';
+
+            log(`Receiving file: ${filename}...`);
+            log(`Size: ${content.length} bytes`);
+
+            if (scenario.id === 2) {
+                log(`Content-Type: ${mimeType}`);
+            }
+
+            setTimeout(() => {
+                validateUpload(filename, content, mimeType, scenario);
+            }, 1000);
+        }
+
+        function validateUpload(filename, content, mimeType, scenario) {
+            let isSuccess = false;
+            let errorMsg = "";
+
+            // Scenario 0: Unrestricted
+            if (scenario.id === 0) {
+                if (filename.endsWith('.php')) {
+                    isSuccess = true;
+                } else {
+                    // Even if not .php, it accepts it, but we want them to upload a shell
+                    if (content.includes('<?php')) {
+                        isSuccess = true;
+                    } else {
+                        log("File uploaded, but it doesn't look like a shell.", "warning");
+                        return;
+                    }
+                }
+            }
+
+            // Scenario 1: Extension Blacklist
+            else if (scenario.id === 1) {
+                if (filename.endsWith('.php')) {
+                    errorMsg = "Error: File extension .php is not allowed.";
+                } else if (filename.endsWith('.php5') || filename.endsWith('.phtml') || filename.endsWith('.php7')) {
+                    isSuccess = true;
+                } else {
+                    log("File uploaded, but extension is not executable.", "warning");
+                    return;
+                }
+            }
+
+            // Scenario 2: MIME Type
+            else if (scenario.id === 2) {
+                if (mimeType !== 'image/jpeg' && mimeType !== 'image/png') {
+                    errorMsg = "Error: Invalid Content-Type. Only images allowed.";
+                } else {
+                    if (filename.endsWith('.php')) {
+                        isSuccess = true;
+                    } else {
+                        log("File uploaded as image, but we need a PHP shell.", "warning");
+                        return;
+                    }
+                }
+            }
+
+            // Scenario 3: Magic Bytes
+            else if (scenario.id === 3) {
+                if (!content.startsWith('GIF89a') && !content.startsWith('\xff\xd8\xff')) {
+                    errorMsg = "Error: File signature mismatch. Not a valid image.";
+                } else {
+                    if (filename.endsWith('.php') || filename.endsWith('.phtml')) {
+                        isSuccess = true;
+                    } else {
+                        log("File uploaded, but extension not executable.", "warning");
+                        return;
+                    }
+                }
+            }
+
+            if (errorMsg) {
+                log(errorMsg, "error");
+            } else if (isSuccess) {
+                log("Upload Successful!", "success");
+                log("Executing file...", "info");
+                setTimeout(() => {
+                    log(`Output: ${scenario.flag}`, "success");
+                    showFlag(scenario.flag);
+                }, 800);
+            }
+        }
+
+        function showFlag(flag) {
+            const display = document.getElementById('flagDisplay');
+            display.style.display = 'block';
+            display.innerHTML = `<strong>🎉 Congratulations!</strong> You executed the shell and got the flag: <code>${flag}</code>`;
+
+            if (!state.completed[state.currentScenario]) {
+                state.completed[state.currentScenario] = true;
+                state.xp += 100;
+                updateStats();
+                renderSidebar();
+                localStorage.setItem('fileupload_lab_progress', JSON.stringify(state));
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('xp-display').innerText = `XP: ${state.xp}`;
+            const completedCount = state.completed.filter(c => c).length;
+            document.getElementById('progress-display').innerText = `${completedCount}/4 Completed`;
+        }
+
+        function showHint() {
+            const hints = scenarios[state.currentScenario].hints;
+            const hintText = hints.map(h => `<li>${h}</li>`).join('');
+            document.getElementById('hint-text').innerHTML = `<ul>${hintText}</ul>`;
+            new bootstrap.Modal(document.getElementById('hintModal')).show();
+        }
+
+        // Load saved progress
+        const saved = localStorage.getItem('fileupload_lab_progress');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            state.xp = parsed.xp;
+            state.completed = parsed.completed;
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

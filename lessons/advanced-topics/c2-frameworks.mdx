@@ -1,0 +1,85 @@
+
+# Command & Control (C2) Frameworks
+
+## The Puppet Master
+A "Reverse Shell" is fine for hacking one machine. But what if you are hacking a company with 500 Compromised Hosts?
+You need a **Command & Control (C2)** framework to manage them all.
+
+## 1. C2 Architecture
+A C2 is not just a tool; it's an infrastructure.
+-   **Team Server:** The brain. It stores data, hosts credentials, and manages agents.
+-   **Client (GUI):** The interface hackers use to connect to the Team Server.
+-   **Agent (Beacon):** The malware running on the victim's computer. It "calls home" to the Team Server.
+-   **Listener:** The port on the Team Server waiting for agents.
+
+<Mermaid chart={`
+graph TD
+    Hacker1[Hacker A] -->|Connects to| TeamServer[Team Server]
+    Hacker2[Hacker B] -->|Connects to| TeamServer
+    TeamServer -->|Wait for Beacon| Internet
+    Victim1[Victim PC 1] -->|Beacon| Internet
+    Victim2[Victim PC 2] -->|Beacon| Internet
+    
+    style TeamServer fill:#b91c1c,stroke:#fff,stroke-width:2px,color:#fff
+`} />
+
+## 2. Beacons vs Interactive Shells
+In movies, hackers type `ls` and get an instant result. In real C2s, we use **Asynchronous Beacons**.
+1.  Malware goes to sleep for 60 minutes (`sleep 3600`).
+2.  It wakes up, asks: "Got any tasks for me?"
+3.  Team Server says: "Yes, run `whoami`".
+4.  Malware runs `whoami`, sends result, and sleeps again.
+
+**Why?** To hide from Network Traffic Analysis. Constant traffic looks suspicious.
+
+## 3. Top C2 Frameworks
+
+### Cobalt Strike (The Industry Standard)
+Commercial tool ($3k/year).
+-   **Feature:** Malleable C2 profiles (Make traffic look like Amazon or jQuery).
+-   **Feature:** Beacon Object Files (BOF) to run tools in memory without dropping .exe.
+
+### Sliver (The Open Source King)
+Written in Golang by BishopFox.
+-   Replaces Cobalt Strike for many teams.
+-   Supports Mutual TLS (mTLS), WireGuard, and HTTP(S).
+-   <TerminalSimulator 
+    cmd="./sliver-server" 
+    output={`    . . . . . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . . . . . 
+            S  L  I  V  E  R
+
+[*] Server listening on 0.0.0.0:8888
+[*] Jobs:
+    ID   Name      Protocol   Port
+    --   ----      --------   ----
+    1    http      http       8080
+    2    mtls      mtls       8888
+
+sliver > sessions
+ID      Transport   Remote Address      Hostname     Username
+--      ---------   --------------      --------     --------
+19a3    mtls        10.10.10.5:49202    DESKTOP-1    admin
+`} 
+/>
+
+### PowerShell Empire
+Focused on "Living off the Land" using PowerShell. (Note: PowerShell is heavily monitored now, so Empire is less popular than it used to be).
+
+## 4. Redirectors
+Never expose your Team Server directly to the internet. If Blue Team detects it, they blacklist the IP, and you lose everything.
+Use a **Redirector** (Dumb Proxy) in front.
+`Victim -> AWS Redirector (NGINX) -> Team Server`
+
+---
+
+<Quiz 
+    question="Why do advanced C2 Agents 'sleep' for long periods between check-ins?" 
+    options={[
+        "To save battery on the victim's laptop",
+        "To wait for the hacker to wake up",
+        "To evade Network Traffic Analysis (Heartbeat detection) by Blue Teams",
+        "Because the CPU is busy"
+    ]} 
+    answer="To evade Network Traffic Analysis (Heartbeat detection) by Blue Teams" 
+/>

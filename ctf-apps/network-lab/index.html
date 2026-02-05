@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 NetScanner - Network Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #a855f7;
+        }
+
+        .header p {
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .card {
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 16px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #a855f7;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+
+        .target-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .target-input input {
+            flex: 1;
+            padding: 14px 16px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #a855f7;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .target-input input:focus {
+            outline: none;
+            border-color: #a855f7;
+        }
+
+        .scan-btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .scan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(168, 85, 247, 0.4);
+        }
+
+        .terminal {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red {
+            background: #ff5f56;
+        }
+
+        .terminal-dot.yellow {
+            background: #ffbd2e;
+        }
+
+        .terminal-dot.green {
+            background: #27ca40;
+        }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .terminal-body {
+            padding: 15px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            min-height: 250px;
+            max-height: 350px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .port-open {
+            color: #22c55e;
+        }
+
+        .port-closed {
+            color: #64748b;
+        }
+
+        .port-filtered {
+            color: #f59e0b;
+        }
+
+        .flag-found {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.1);
+            font-weight: bold;
+        }
+
+        .success-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid #22c55e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-box h4 {
+            color: #22c55e;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #86efac;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 NetScanner</h1>
+            <p>Network Analysis & Enumeration</p>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" onclick="setTool('portscan')">🔍 Port Scan</div>
+                <div class="tab" onclick="setTool('dns')">🌍 DNS Lookup</div>
+                <div class="tab" onclick="setTool('ftp')">📁 FTP Connect</div>
+                <div class="tab" onclick="setTool('banner')">📜 Banner Grab</div>
+            </div>
+
+            <div class="target-input">
+                <input type="text" id="targetInput" value="192.168.1.100" placeholder="Target IP or hostname">
+                <button class="scan-btn" onclick="runScan()">Scan</button>
+            </div>
+
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                    <div class="terminal-title">Terminal Output</div>
+                </div>
+                <div class="terminal-body" id="terminalOutput">
+                    $ Ready. Enter target and select scan type...
+                </div>
+            </div>
+
+            <div id="successArea"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentTool = 'portscan';
+
+        const scanResults = {
+            portscan: {
+                flag: 'FLAG{p0rt_sc4n_m4st3r}',
+                output: `$ nmap -sV 192.168.1.100
+
+Starting Nmap scan...
+Scanning 192.168.1.100 [1000 ports]
+
+PORT     STATE    SERVICE     VERSION
+<span class="port-open">21/tcp   open     ftp         vsftpd 3.0.3</span>
+<span class="port-open">22/tcp   open     ssh         OpenSSH 8.2</span>
+<span class="port-open">80/tcp   open     http        Apache/2.4.41</span>
+<span class="port-closed">443/tcp  closed   https</span>
+<span class="port-open">3306/tcp open     mysql       MySQL 5.7.32</span>
+<span class="port-open">8080/tcp open     http-proxy  </span>
+<span class="port-filtered">8443/tcp filtered https-alt</span>
+
+<span class="flag-found">Banner on 8080: FLAG{p0rt_sc4n_m4st3r}</span>
+
+Nmap done: 1 IP address scanned in 3.42 seconds`
+            },
+            dns: {
+                flag: 'FLAG{dns_txt_r3c0rd}',
+                output: `$ dig ANY ctf-challenge.local
+
+; <<>> DiG 9.16.1 <<>> ANY ctf-challenge.local
+;; ANSWER SECTION:
+ctf-challenge.local.  3600  IN  A      192.168.1.100
+ctf-challenge.local.  3600  IN  MX     10 mail.ctf-challenge.local.
+ctf-challenge.local.  3600  IN  NS     ns1.ctf-challenge.local.
+<span class="flag-found">ctf-challenge.local.  3600  IN  TXT    "FLAG{dns_txt_r3c0rd}"</span>
+
+;; Query time: 23 msec`
+            },
+            ftp: {
+                flag: 'FLAG{4n0nym0us_ftp_4cc3ss}',
+                output: `$ ftp 192.168.1.100
+Connected to 192.168.1.100.
+220 Welcome to FTP Server
+
+Name: <span style="color:#22d3ee;">anonymous</span>
+331 Please specify password.
+Password: <span style="color:#22d3ee;">anonymous@</span>
+230 Login successful.
+
+ftp> ls
+drwxr-xr-x   2 ftp ftp   4096 Jan 01 00:00 pub
+-rw-r--r--   1 ftp ftp     42 Jan 01 00:00 flag.txt
+-rw-r--r--   1 ftp ftp   1024 Jan 01 00:00 readme.txt
+
+ftp> get flag.txt
+<span class="flag-found">FLAG{4n0nym0us_ftp_4cc3ss}</span>
+
+ftp> bye`
+            },
+            banner: {
+                flag: 'FLAG{b4nn3r_gr4bb1ng}',
+                output: `$ nc -v 192.168.1.100 80
+Connection to 192.168.1.100 80 port [tcp/http] succeeded!
+
+GET / HTTP/1.1
+Host: 192.168.1.100
+
+HTTP/1.1 200 OK
+Server: Apache/2.4.41 (Ubuntu)
+<span class="flag-found">X-Secret-Flag: FLAG{b4nn3r_gr4bb1ng}</span>
+Content-Type: text/html
+
+<html>
+<head><title>Welcome</title></head>
+...`
+            }
+        };
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('terminalOutput').innerHTML = '$ Ready. Click Scan to run ' + tool + '...';
+            document.getElementById('successArea').innerHTML = '';
+        }
+
+        function runScan() {
+            const target = document.getElementById('targetInput').value;
+            const terminal = document.getElementById('terminalOutput');
+            const successArea = document.getElementById('successArea');
+
+            // Show loading
+            terminal.innerHTML = `$ Running ${currentTool} on ${target}...\n\n<span style="color:#a855f7;">Scanning...</span>`;
+
+            setTimeout(() => {
+                const result = scanResults[currentTool];
+                terminal.innerHTML = result.output;
+
+                successArea.innerHTML = `
+                    <div class="success-box">
+                        <h4>🎯 Scan Complete!</h4>
+                        <p>Found sensitive information in ${currentTool} results!</p>
+                        <div class="flag-display">🚩 ${result.flag}</div>
+                    </div>
+                `;
+
+                if (window.parent !== window) {
+                    try { window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: result.flag }, '*'); } catch (e) { }
+                }
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>

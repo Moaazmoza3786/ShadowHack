@@ -1,0 +1,10 @@
+{
+  "id": "ctf-ghost-archive",
+  "name": "The Ghost Archive",
+  "description": "A legacy retrieval system with a pathing flaw. Can you ghost the files?",
+  "difficulty": "medium",
+  "tier": 2,
+  "port": 80,
+  "category": "Web / LFI",
+  "flag": "AG{LFI_Tr4v3rs4l_M4st3r_2026}"
+}

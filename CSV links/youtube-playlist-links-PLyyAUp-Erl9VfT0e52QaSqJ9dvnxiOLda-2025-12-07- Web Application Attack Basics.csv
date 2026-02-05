@@ -1,0 +1,6 @@
+#,title,videoUrl,videoId,publishedAt,position
+1,What is  | Burp Suite,https://www.youtube.com/watch?v=7c6AC0dfQaE&list=PLyyAUp-Erl9VfT0e52QaSqJ9dvnxiOLda&index=1,7c6AC0dfQaE,2022-10-25T13:31:09Z,0
+2,What is | Dirbuster,https://www.youtube.com/watch?v=0UP-GKK8FV0&list=PLyyAUp-Erl9VfT0e52QaSqJ9dvnxiOLda&index=2,0UP-GKK8FV0,2022-10-29T06:34:58Z,1
+3,What is | cookie,https://www.youtube.com/watch?v=TI6_dA6mIWI&list=PLyyAUp-Erl9VfT0e52QaSqJ9dvnxiOLda&index=3,TI6_dA6mIWI,2022-11-01T14:10:12Z,2
+4,What is | XSS,https://www.youtube.com/watch?v=PIMSE3LtAJM&list=PLyyAUp-Erl9VfT0e52QaSqJ9dvnxiOLda&index=4,PIMSE3LtAJM,2022-11-05T06:14:29Z,3
+5,What is | XSS (2),https://www.youtube.com/watch?v=_lRL1LxdRzE&list=PLyyAUp-Erl9VfT0e52QaSqJ9dvnxiOLda&index=5,_lRL1LxdRzE,2022-11-18T18:06:48Z,4

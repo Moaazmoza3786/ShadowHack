@@ -1,0 +1,175 @@
+---
+title: "Incident Lifecycle (NIST Framework)"
+description: "Understanding the complete incident response lifecycle according to NIST SP 800-61."
+difficulty: "Intermediate"
+estimatedTime: "45 minutes"
+tags: ["blue-team", "incident-response", "nist", "soc"]
+---
+
+# Incident Response Lifecycle
+
+<InfoBox type="tip" title="Why This Matters">
+As a SOC Analyst, understanding the incident lifecycle is your **foundation**. Every alert you investigate follows this framework, whether it's a phishing attempt or a full-scale breach.
+</InfoBox>
+
+## The NIST Incident Response Framework
+
+The **National Institute of Standards and Technology (NIST)** Special Publication 800-61 defines a four-phase approach to incident handling:
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   Preparation   │ ──▶ │   Detection &   │ ──▶ │  Containment,   │ ──▶ │ Post-Incident   │
+│                 │     │   Analysis      │     │  Eradication &  │     │    Activity     │
+│                 │     │                 │     │   Recovery      │     │                 │
+└─────────────────┘     └─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+---
+
+## Phase 1: Preparation
+
+This is **before** the incident happens. Think of it as building your arsenal.
+
+### Key Activities:
+- **Build the IR Team**: Define roles (Incident Handler, Forensics, Legal, PR)
+- **Create Playbooks**: Step-by-step runbooks for common incidents
+- **Deploy Tools**: SIEM, EDR, Network Monitoring
+- **Establish Communication**: Secure channels, escalation paths
+- **Conduct Training**: Tabletop exercises, red team drills
+
+<TerminalWindow title="Example: IR Team Structure">
+┌─────────────────────────────────────────────────────────────┐
+│ INCIDENT RESPONSE TEAM STRUCTURE                            │
+├─────────────────────────────────────────────────────────────┤
+│ IR Manager          │ Overall coordination                  │
+│ Tier 1 Analyst      │ Initial triage, alert handling       │
+│ Tier 2 Analyst      │ Deep analysis, threat hunting        │
+│ Tier 3 / Forensics  │ Malware analysis, disk/memory        │
+│ Legal Counsel       │ Regulatory, evidence handling         │
+│ Communications      │ Internal/external messaging           │
+└─────────────────────────────────────────────────────────────┘
+</TerminalWindow>
+
+---
+
+## Phase 2: Detection & Analysis
+
+This is where you **identify** and **understand** the incident.
+
+### Detection Sources:
+| Source | Examples |
+|--------|----------|
+| **SIEM Alerts** | Failed logins, suspicious processes |
+| **EDR** | Malware detection, behavioral anomalies |
+| **User Reports** | Phishing emails, unusual activity |
+| **Threat Intel** | IOC matches, dark web mentions |
+| **Network Tools** | IDS/IPS alerts, DNS anomalies |
+
+### Analysis Steps:
+1. **Triage**: Is this a true positive or false positive?
+2. **Scope**: How many systems are affected?
+3. **Attribution**: What type of threat actor?
+4. **Timeline**: When did it start?
+
+<InfoBox type="warning" title="Common Mistake">
+Don't rush to containment! Incomplete analysis can mean you miss the attacker's persistence mechanisms.
+</InfoBox>
+
+---
+
+## Phase 3: Containment, Eradication & Recovery
+
+### Containment
+Stop the bleeding **without tipping off the attacker** (if possible).
+
+- **Short-term**: Isolate affected systems, block IPs
+- **Long-term**: Rebuild from clean images, patch vulnerabilities
+
+<TerminalWindow title="Example: Network Isolation">
+# Block malicious IP at firewall
+$ sudo iptables -A INPUT -s 185.220.101.45 -j DROP
+
+# Isolate host from network (Windows)
+> netsh advfirewall set allprofiles state on
+> netsh advfirewall firewall add rule name="Block All" dir=in action=block
+
+# EDR Isolation (CrowdStrike example)
+$ falconctl -g --aid | xargs -I {} curl -X POST "api/hosts/{}/contain"
+</TerminalWindow>
+
+### Eradication
+Remove the threat completely:
+- Delete malware files
+- Remove persistence (scheduled tasks, registry keys)
+- Revoke compromised credentials
+- Patch exploited vulnerabilities
+
+### Recovery
+Return to normal operations:
+- Restore from clean backups
+- Monitor closely for re-infection
+- Validate system integrity
+- Gradually restore network access
+
+---
+
+## Phase 4: Post-Incident Activity
+
+<InfoBox type="tip" title="The Most Neglected Phase">
+This is where organizations **learn and improve**. Skip this, and you'll fight the same battles repeatedly.
+</InfoBox>
+
+### Key Deliverables:
+1. **Incident Report**: Timeline, actions taken, impact
+2. **Lessons Learned**: What worked? What failed?
+3. **Playbook Updates**: Improve runbooks based on findings
+4. **Metrics**: Mean Time to Detect (MTTD), Mean Time to Respond (MTTR)
+
+---
+
+## Practical Exercise
+
+<ChallengeBox 
+  title="Incident Classification"
+  difficulty="easy"
+  points={50}
+>
+Given the following alert, classify it according to NIST severity levels:
+
+**Alert**: Multiple failed SSH login attempts from IP 203.0.113.42 targeting the production database server. 50 attempts in 5 minutes.
+
+**Question**: Which phase of the incident lifecycle should you be in right now?
+
+<details>
+<summary>Answer</summary>
+
+**Phase**: Detection & Analysis
+
+**Next Steps**:
+1. Check if the IP is in your threat intel feeds
+2. Review if any login succeeded
+3. Check for other targets from the same IP
+4. Determine if this is automated scanning or targeted attack
+</details>
+</ChallengeBox>
+
+---
+
+## Key Takeaways
+
+- The NIST framework provides a **structured approach** to incident handling
+- **Preparation** is the foundation – invest in it before incidents occur
+- **Analysis** before action prevents incomplete remediation
+- **Post-incident review** drives continuous improvement
+
+<Quiz
+  question="Which phase of the NIST IR lifecycle focuses on preventing future incidents through lessons learned?"
+  options={[
+    "Preparation",
+    "Detection & Analysis", 
+    "Containment, Eradication & Recovery",
+    "Post-Incident Activity"
+  ]}
+  correctIndex={3}
+  explanation="Post-Incident Activity is where teams document findings, update playbooks, and improve defenses based on lessons learned."
+/>

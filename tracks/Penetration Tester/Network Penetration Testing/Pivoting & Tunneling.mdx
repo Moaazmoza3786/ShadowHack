@@ -1,0 +1,63 @@
+# Pivoting & Tunneling
+
+You compromised the Web Server. But the Database is on an internal network (`192.168.20.x`).
+You cannot reach it directly.
+You must **tunnel** through the Web Server.
+
+## Visualization
+
+```mermaid
+graph LR
+    Attacker[You] -->|Internet| WebServer[Compromised Web Server]
+    WebServer -->|Internal LAN| DB[Database Server]
+    
+    style Attacker fill:#f44336,stroke:#333
+    style WebServer fill:#ff9800,stroke:#333
+    style DB fill:#4caf50,stroke:#333
+```
+
+## Tools
+
+1.  **SSH Tunneling:** The classic. `ssh -D 9050 user@pivot`.
+2.  **Chisel:** Fast TCP/UDP tunnel over HTTP/SSH.
+3.  **Ligolo-ng:** Modern, fully featured tunneling interface.
+
+## Lab: The SSH Pivot
+
+You have SSH access to the jump host (`10.10.10.5`).
+Create a dynamic SOCKS proxy on port 9050.
+
+Command: `ssh -D 9050 user@10.10.10.5`
+
+Now configure ProxyChains (`/etc/proxychains4.conf`) to use `socks5 127.0.0.1 9050`.
+
+Run Nmap through the chain.
+
+<TerminalWindow 
+  cmd="proxychains nmap -p 3306 192.168.20.10" 
+  output="[proxychains] DLL init: proxychains-ng 4.14
+[proxychains] Dynamic chain  ...  127.0.0.1:9050  ...  192.168.20.10:3306  ...  OK
+PORT     STATE SERVICE
+3306/tcp open  mysql
+Banner: BL{P1v0t_Lik3_A_Pr0}" 
+/>
+
+<Quiz 
+  question="Which tool allows you to route tool traffic (like Nmap) through a SOCKS proxy?"
+  options={[
+    "ProxyChains",
+    "Netcat",
+    "Burp Suite",
+    "Wireshark"
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag found on the internal MySQL server?"
+  options={[
+    "BL{P1v0t_Lik3_A_Pr0}",
+    "BL{SSH_Tunn3l}",
+    "socks5",
+    "192.168.20.10"
+  ]}
+/>

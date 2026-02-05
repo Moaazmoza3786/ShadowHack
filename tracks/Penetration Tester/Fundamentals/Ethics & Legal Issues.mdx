@@ -1,0 +1,50 @@
+# Ethics & Legal Issues
+
+Before you touch a keyboard, you must understand the rules of engagement.
+Penetration Testing is authorized hacking. Without authorization, it is a crime.
+
+## The Difference Between White Hat and Black Hat
+
+*   **White Hat (Ethical Hacker):** Has permission. Goals: Improve security.
+*   **Black Hat (Malicious Hacker):** No permission. Goals: Gain, damage, or fun.
+*   **Gray Hat:** Ambiguous. Often hacks first, asks later. **Illegal in most jurisdictions.**
+
+## Legal Frameworks
+
+### 1. CMA (Computer Misuse Act - UK)
+*   **Section 1:** Unauthorized access to computer material.
+*   **Section 3:** Unauthorized acts with intent to impair operation (Denial of Service).
+
+### 2. CFAA (Computer Fraud and Abuse Act - US)
+The primary federal anti-hacking statute in the US.
+
+## Rules of Engagement (RoE)
+
+The contract that saves you from jail.
+It **must** specify:
+1.  **Scope:** What IPs/URLs are fair game?
+2.  **Timeline:** When can we test? (e.g., 9 AM - 5 PM)
+3.  **Emergency Contact:** Who do we call if we break production?
+
+> [!IMPORTANT]
+> **Never** go out of scope. If you find a vulnerability on a system not in the list, **stop** and report it immediately. Do not exploit it.
+
+<Quiz 
+  question="You find a vulnerability on a server that is NOT in your Scope. What do you do?"
+  options={[
+    "Exploit it to prove impact.",
+    "Stop, document it, and report it to the client.",
+    "Ignore it completely.",
+    "Ask a friend to check it."
+  ]}
+/>
+
+<Quiz 
+  question="Which document authorizes the penetration test?"
+  options={[
+    "The Invoice",
+    "Rules of Engagement (RoE)",
+    "Nmap Scan Report",
+    "The Bash History"
+  ]}
+/>

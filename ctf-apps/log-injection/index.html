@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Logs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark text-white p-4">
+    <div class="container">
+        <h2>📋 System Log Viewer</h2>
+
+        <div class="card bg-secondary mt-4">
+            <div class="card-header">
+                <h5>User Activity Logger</h5>
+            </div>
+            <div class="card-body">
+                <form id="logForm">
+                    <div class="mb-3">
+                        <label>Username:</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Action:</label>
+                        <input type="text" id="action" class="form-control" placeholder="What did you do?" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Log Activity</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card bg-dark mt-4">
+            <div class="card-header">
+                <h6>Recent Logs</h6>
+            </div>
+            <div class="card-body">
+                <pre id="logs" style="max-height: 300px; overflow-y: auto; font-size: 0.85rem;"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const logs = [];
+
+        document.getElementById('logForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const action = document.getElementById('action').value;
+
+            // Vulnerable: No input sanitization
+            const timestamp = new Date().toISOString();
+            const logEntry = `[${timestamp}] User: ${user} | Action: ${action}`;
+
+            logs.push(logEntry);
+            displayLogs();
+
+            // Check for log injection
+            if (action.includes('\n') || action.includes('admin')) {
+                setTimeout(() => {
+                    alert('FLAG{sanitize_log_inputs}');
+                }, 500);
+            }
+        });
+
+        function displayLogs() {
+            document.getElementById('logs').textContent = logs.join('\n');
+        }
+
+        // Add some initial logs
+        logs.push('[2024-01-15T10:00:00Z] User: john | Action: Login successful');
+        logs.push('[2024-01-15T10:05:00Z] User: admin | Action: Changed settings');
+        displayLogs();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 ForensicsLab - Digital Investigation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0c1929 0%, #1a365d 100%);
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #60a5fa;
+        }
+
+        .header p {
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .card {
+            background: rgba(96, 165, 250, 0.05);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 16px;
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 8px;
+            color: #60a5fa;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: #60a5fa;
+        }
+
+        .evidence-box {
+            background: #0c1929;
+            border: 1px solid #2d4a6f;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .evidence-title {
+            font-size: 14px;
+            color: #60a5fa;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hex-dump {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 11px;
+            color: #94a3b8;
+            background: #0a0f1a;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        .hex-dump .offset {
+            color: #64748b;
+        }
+
+        .hex-dump .data {
+            color: #22d3ee;
+        }
+
+        .hex-dump .ascii {
+            color: #10b981;
+        }
+
+        .hex-dump .flag {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.2);
+        }
+
+        .analysis-tools {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tool-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .findings {
+            background: #0a0f1a;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 13px;
+            color: #94a3b8;
+            min-height: 100px;
+        }
+
+        .finding-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .finding-item:last-child {
+            border-bottom: none;
+        }
+
+        .finding-label {
+            color: #60a5fa;
+        }
+
+        .finding-value {
+            color: #22d3ee;
+        }
+
+        .success-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid #22c55e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-box h4 {
+            color: #22c55e;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #86efac;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+        }
+
+        .strings-output {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 ForensicsLab</h1>
+            <p>Digital Evidence Analysis</p>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" onclick="setEvidence('memory')">Memory Dump</div>
+                <div class="tab" onclick="setEvidence('file')">File Analysis</div>
+                <div class="tab" onclick="setEvidence('network')">Network Capture</div>
+            </div>
+
+            <div class="evidence-box">
+                <div class="evidence-title">📁 Evidence: <span id="evidenceName">memory_dump.bin</span></div>
+                <div class="hex-dump" id="hexDump"></div>
+            </div>
+
+            <div class="analysis-tools">
+                <button class="tool-btn" onclick="runStrings()">🔤 Strings</button>
+                <button class="tool-btn" onclick="runFileSignature()">📋 File Signature</button>
+                <button class="tool-btn" onclick="runSearch()">🔍 Search FLAG</button>
+                <button class="tool-btn" onclick="runDecode()">🔓 Decode Hidden</button>
+            </div>
+
+            <div class="findings" id="findings">
+                <p style="color:#64748b;">Use the analysis tools above to investigate the evidence...</p>
+            </div>
+
+            <div id="successArea"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentEvidence = 'memory';
+
+        const evidenceData = {
+            memory: {
+                name: 'memory_dump.bin',
+                flag: 'FLAG{m3m0ry_f0r3ns1cs}',
+                hexDump: `<span class="offset">00000000</span>  <span class="data">4D 5A 90 00 03 00 00 00</span>  <span class="ascii">MZ......  </span>
+<span class="offset">00000008</span>  <span class="data">04 00 00 00 FF FF 00 00</span>  <span class="ascii">........  </span>
+<span class="offset">00000010</span>  <span class="data">B8 00 00 00 00 00 00 00</span>  <span class="ascii">........  </span>
+<span class="offset">00000100</span>  <span class="data">55 53 45 52 4E 41 4D 45</span>  <span class="ascii">USERNAME  </span>
+<span class="offset">00000108</span>  <span class="data">3A 61 64 6D 69 6E 00 00</span>  <span class="ascii">:admin..  </span>
+<span class="offset">00000200</span>  <span class="data">50 41 53 53 57 4F 52 44</span>  <span class="ascii">PASSWORD  </span>
+<span class="offset">00000208</span>  <span class="data">3A 73 33 63 72 33 74 21</span>  <span class="ascii">:s3cr3t!  </span>
+<span class="offset">00000300</span>  <span class="data flag">46 4C 41 47 7B 6D 33 6D</span>  <span class="ascii flag">FLAG{m3m  </span>
+<span class="offset">00000308</span>  <span class="data flag">30 72 79 5F 66 30 72 33</span>  <span class="ascii flag">0ry_f0r3  </span>
+<span class="offset">00000310</span>  <span class="data flag">6E 73 31 63 73 7D 00 00</span>  <span class="ascii flag">ns1cs}..  </span>`,
+                strings: ['MZ', 'USERNAME:admin', 'PASSWORD:s3cr3t!', 'FLAG{m3m0ry_f0r3ns1cs}', 'kernel32.dll', 'ntdll.dll'],
+                signature: 'MZ - Windows Executable (PE)'
+            },
+            file: {
+                name: 'hidden_image.png',
+                flag: 'FLAG{st3g0_h1dd3n}',
+                hexDump: `<span class="offset">00000000</span>  <span class="data">89 50 4E 47 0D 0A 1A 0A</span>  <span class="ascii">.PNG....  </span>
+<span class="offset">00000008</span>  <span class="data">00 00 00 0D 49 48 44 52</span>  <span class="ascii">....IHDR  </span>
+<span class="offset">00000010</span>  <span class="data">00 00 00 64 00 00 00 64</span>  <span class="ascii">...d...d  </span>
+<span class="offset">00001000</span>  <span class="data">49 45 4E 44 AE 42 60 82</span>  <span class="ascii">IEND.B..  </span>
+<span class="offset">00001008</span>  <span class="data">2D 2D 48 49 44 44 45 4E</span>  <span class="ascii">--HIDDEN  </span>
+<span class="offset">00001010</span>  <span class="data flag">46 4C 41 47 7B 73 74 33</span>  <span class="ascii flag">FLAG{st3  </span>
+<span class="offset">00001018</span>  <span class="data flag">67 30 5F 68 31 64 64 33</span>  <span class="ascii flag">g0_h1dd3  </span>
+<span class="offset">00001020</span>  <span class="data flag">6E 7D 00 00 00 00 00 00</span>  <span class="ascii flag">n}......  </span>`,
+                strings: ['PNG', 'IHDR', 'IEND', '--HIDDEN', 'FLAG{st3g0_h1dd3n}'],
+                signature: 'PNG - Portable Network Graphics (89 50 4E 47)'
+            },
+            network: {
+                name: 'capture.pcap',
+                flag: 'FLAG{p4ck3t_c4ptur3}',
+                hexDump: `<span class="offset">00000000</span>  <span class="data">D4 C3 B2 A1 02 00 04 00</span>  <span class="ascii">........  </span>
+<span class="offset">00000018</span>  <span class="data">45 00 00 3C 00 00 40 00</span>  <span class="ascii">E..<..@.  </span>
+<span class="offset">00000020</span>  <span class="data">40 06 00 00 C0 A8 01 01</span>  <span class="ascii">@.......  </span>
+<span class="offset">00000100</span>  <span class="data">47 45 54 20 2F 66 6C 61</span>  <span class="ascii">GET /fla  </span>
+<span class="offset">00000108</span>  <span class="data">67 2E 74 78 74 20 48 54</span>  <span class="ascii">g.txt HT  </span>
+<span class="offset">00000200</span>  <span class="data flag">46 4C 41 47 7B 70 34 63</span>  <span class="ascii flag">FLAG{p4c  </span>
+<span class="offset">00000208</span>  <span class="data flag">6B 33 74 5F 63 34 70 74</span>  <span class="ascii flag">k3t_c4pt  </span>
+<span class="offset">00000210</span>  <span class="data flag">75 72 33 7D 00 00 00 00</span>  <span class="ascii flag">ur3}....  </span>`,
+                strings: ['GET /flag.txt HTTP/1.1', 'Host: 192.168.1.1', 'FLAG{p4ck3t_c4ptur3}', 'Content-Type: text/plain'],
+                signature: 'PCAP - Network Packet Capture (D4 C3 B2 A1)'
+            }
+        };
+
+        function setEvidence(type) {
+            currentEvidence = type;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const evidence = evidenceData[type];
+            document.getElementById('evidenceName').textContent = evidence.name;
+            document.getElementById('hexDump').innerHTML = evidence.hexDump;
+            document.getElementById('findings').innerHTML = '<p style="color:#64748b;">Use the analysis tools above to investigate the evidence...</p>';
+            document.getElementById('successArea').innerHTML = '';
+        }
+
+        function runStrings() {
+            const evidence = evidenceData[currentEvidence];
+            let html = '<div class="strings-output">';
+            evidence.strings.forEach(s => {
+                const isFlag = s.includes('FLAG{');
+                html += `<div class="finding-item" style="${isFlag ? 'color:#f87171;font-weight:bold;' : ''}">${s}</div>`;
+            });
+            html += '</div>';
+            document.getElementById('findings').innerHTML = html;
+
+            if (evidence.strings.some(s => s.includes('FLAG{'))) {
+                showSuccess(evidence.flag);
+            }
+        }
+
+        function runFileSignature() {
+            const evidence = evidenceData[currentEvidence];
+            document.getElementById('findings').innerHTML = `
+                <div class="finding-item">
+                    <span class="finding-label">File Type:</span> 
+                    <span class="finding-value">${evidence.signature}</span>
+                </div>
+            `;
+        }
+
+        function runSearch() {
+            const evidence = evidenceData[currentEvidence];
+            document.getElementById('findings').innerHTML = `
+                <div class="finding-item">
+                    <span class="finding-label">Search Result:</span> 
+                    <span class="finding-value" style="color:#22c55e;">Found FLAG at offset 0x300!</span>
+                </div>
+                <div class="finding-item">
+                    <span style="color:#f87171;font-weight:bold;">${evidence.flag}</span>
+                </div>
+            `;
+            showSuccess(evidence.flag);
+        }
+
+        function runDecode() {
+            const evidence = evidenceData[currentEvidence];
+            document.getElementById('findings').innerHTML = `
+                <div class="finding-item">
+                    <span class="finding-label">Decoded Data:</span>
+                </div>
+                <div class="finding-item" style="color:#22d3ee;">
+                    ${evidence.flag}
+                </div>
+            `;
+            showSuccess(evidence.flag);
+        }
+
+        function showSuccess(flag) {
+            document.getElementById('successArea').innerHTML = `
+                <div class="success-box">
+                    <h4>🎯 Evidence Analyzed!</h4>
+                    <p>You found hidden data in the ${evidenceData[currentEvidence].name}!</p>
+                    <div class="flag-display">🚩 ${flag}</div>
+                </div>
+            `;
+
+            if (window.parent !== window) {
+                try { window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: flag }, '*'); } catch (e) { }
+            }
+        }
+
+        // Initialize
+        setEvidence('memory');
+    </script>
+</body>
+
+</html>

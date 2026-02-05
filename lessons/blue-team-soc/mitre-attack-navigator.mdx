@@ -1,0 +1,248 @@
+---
+title: "MITRE ATT&CK Navigator"
+description: "Master the MITRE ATT&CK framework and Navigator tool for threat mapping and detection coverage."
+difficulty: "Intermediate"
+estimatedTime: "40 minutes"
+tags: ["blue-team", "mitre-attack", "threat-intelligence", "soc"]
+---
+
+# MITRE ATT&CK Navigator
+
+<InfoBox type="tip" title="Industry Standard">
+MITRE ATT&CK is the **universal language** for describing adversary behavior. Every security vendor, every threat report, and every mature SOC uses it.
+</InfoBox>
+
+## What is MITRE ATT&CK?
+
+**ATT&CK** stands for **Adversarial Tactics, Techniques, and Common Knowledge**.
+
+It's a knowledge base of adversary behavior based on real-world observations:
+- **14 Tactics** (adversary goals)
+- **200+ Techniques** (methods to achieve goals)
+- **500+ Sub-techniques** (specific implementations)
+- **100+ Groups** (threat actors)
+- **500+ Software** (malware and tools)
+
+---
+
+## The ATT&CK Matrix
+
+<TerminalWindow title="Enterprise ATT&CK Tactics (Left to Right)">
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│ Recon → Resource → Initial → Execution → Persistence → Priv Esc → Defense Evasion│
+│                Dev   Access                                                        │
+├───────────────────────────────────────────────────────────────────────────────────┤
+│ Credential → Discovery → Lateral → Collection → C2 → Exfiltration → Impact       │
+│ Access                   Movement                                                  │
+└───────────────────────────────────────────────────────────────────────────────────┘
+</TerminalWindow>
+
+### Tactics Overview
+
+| # | Tactic | Goal | Example Techniques |
+|---|--------|------|-------------------|
+| 1 | **Reconnaissance** | Gather info | Active Scanning, Search Victim |
+| 2 | **Resource Development** | Build infrastructure | Acquire Infrastructure, Develop Capabilities |
+| 3 | **Initial Access** | Get into the network | Phishing, Valid Accounts, Exploit Public Apps |
+| 4 | **Execution** | Run malicious code | PowerShell, Command Line, WMI |
+| 5 | **Persistence** | Maintain access | Registry Run Keys, Scheduled Tasks |
+| 6 | **Privilege Escalation** | Get higher permissions | UAC Bypass, Exploitation |
+| 7 | **Defense Evasion** | Avoid detection | Obfuscation, Disable Security Tools |
+| 8 | **Credential Access** | Steal credentials | Mimikatz, Keylogging, Brute Force |
+| 9 | **Discovery** | Learn the environment | Network Scan, Account Discovery |
+| 10 | **Lateral Movement** | Move to other systems | RDP, SMB, WinRM |
+| 11 | **Collection** | Gather target data | Data from Local System, Screen Capture |
+| 12 | **Command & Control** | Communicate with implants | HTTP/S, DNS, Web Service |
+| 13 | **Exfiltration** | Steal data | Exfil Over C2, Cloud Storage |
+| 14 | **Impact** | Destroy or manipulate | Ransomware, Data Destruction |
+
+---
+
+## Using the ATT&CK Navigator
+
+The **ATT&CK Navigator** is a web-based tool for visualizing and working with the matrix.
+
+<InfoBox type="info" title="Access Navigator">
+🔗 https://mitre-attack.github.io/attack-navigator/
+</InfoBox>
+
+### Key Features
+
+1. **Create Layers** - Custom views of the matrix
+2. **Color Techniques** - Highlight based on your criteria
+3. **Score Techniques** - Rate coverage or priority
+4. **Add Metadata** - Notes, links, comments
+5. **Compare Layers** - Overlay multiple views
+
+---
+
+## Common Use Cases
+
+### 1. Detection Coverage Analysis
+
+Map your current detections to ATT&CK:
+
+<TerminalWindow title="Detection Coverage Layer">
+# Example: Rate each technique by detection capability
+
+Score Legend:
+0 = No detection
+1 = Partial/Low confidence detection
+2 = Good detection, manual analysis needed
+3 = High confidence, automated alert
+4 = Full coverage with context/enrichment
+
+Example Scores:
+T1059.001 (PowerShell): 3 - ScriptBlock logging enabled
+T1003.001 (LSASS Memory): 2 - Sysmon Event 10 detection
+T1021.002 (SMB Shares): 1 - Network logs only
+T1486 (Data Encrypted): 0 - No ransomware detection
+</TerminalWindow>
+
+### 2. Threat Actor Mapping
+
+Visualize which techniques a specific group uses:
+
+<TerminalWindow title="APT29 (Cozy Bear) Techniques">
+Initial Access:
+✓ T1566.001 - Spearphishing Attachment
+✓ T1566.002 - Spearphishing Link
+
+Execution:
+✓ T1059.001 - PowerShell
+✓ T1059.003 - Windows Command Shell
+✓ T1204.002 - Malicious File
+
+Defense Evasion:
+✓ T1027 - Obfuscated Files
+✓ T1055 - Process Injection
+✓ T1070.004 - File Deletion
+
+Credential Access:
+✓ T1003.001 - LSASS Memory
+✓ T1003.003 - NTDS
+
+Command and Control:
+✓ T1071.001 - Web Protocols
+✓ T1071.004 - DNS
+</TerminalWindow>
+
+### 3. Gap Analysis
+
+Compare threat actor techniques against your detection coverage:
+
+```
+Your Coverage Layer    +    APT29 Layer    =    Gap Analysis
+(Green = Covered)           (Red = Used)        (Red on White = RISK)
+```
+
+---
+
+## Practical Navigator Exercise
+
+<ChallengeBox 
+  title="Build a Coverage Layer"
+  difficulty="medium"
+  points={100}
+>
+
+Create an ATT&CK Navigator layer for a SOC with these detection capabilities:
+
+**Available Detections**:
+1. Sysmon installed (Events 1, 3, 7, 10, 11)
+2. PowerShell ScriptBlock logging enabled
+3. Windows Security Event logs (4624, 4625, 4648, 4672)
+4. Network IDS (Suricata)
+5. EDR with behavioral detection
+
+**Task**: List 5 techniques you SHOULD be able to detect and 5 techniques you probably CANNOT detect.
+
+<details>
+<summary>Answer</summary>
+
+**CAN Detect (Score 2-3)**:
+1. T1059.001 (PowerShell) - ScriptBlock logging
+2. T1003.001 (LSASS Memory) - Sysmon Event 10
+3. T1547.001 (Registry Run Keys) - Sysmon Event 13
+4. T1021.001 (RDP) - Event 4624 Type 10
+5. T1055 (Process Injection) - Sysmon Event 8
+
+**CANNOT Detect (Score 0-1)**:
+1. T1027.002 (Software Packing) - No unpacking capability
+2. T1071.004 (DNS C2) - No DNS monitoring
+3. T1048 (Exfiltration Over Alternative Protocol) - Limited network visibility
+4. T1134 (Token Manipulation) - Requires advanced kernel logging
+5. T1550.002 (Pass the Hash) - Hard without advanced correlation
+
+</details>
+</ChallengeBox>
+
+---
+
+## Navigator Layer JSON Structure
+
+<TerminalWindow title="Layer JSON Example">
+{
+  "name": "SOC Detection Coverage",
+  "version": "4.4",
+  "domain": "enterprise-attack",
+  "description": "Current detection capabilities",
+  "techniques": [
+    {
+      "techniqueID": "T1059.001",
+      "tactic": "execution",
+      "color": "#00ff00",
+      "comment": "ScriptBlock logging enabled",
+      "score": 3
+    },
+    {
+      "techniqueID": "T1003.001",
+      "tactic": "credential-access",
+      "color": "#ffff00",
+      "comment": "Sysmon Event 10 - needs tuning",
+      "score": 2
+    }
+  ],
+  "gradient": {
+    "colors": ["#ff0000", "#ffff00", "#00ff00"],
+    "minValue": 0,
+    "maxValue": 3
+  }
+}
+</TerminalWindow>
+
+---
+
+## Best Practices
+
+1. **Start with threat actors** relevant to your industry
+2. **Focus on high-frequency techniques** (PowerShell, Command Line, etc.)
+3. **Update regularly** as you add new detections
+4. **Share with your team** - Navigator layers are portable
+5. **Use for tabletop exercises** - Walk through attack chains
+
+<InfoBox type="warning" title="Don't Aim for 100%">
+No organization can detect everything. Prioritize based on **threat relevance** and **business risk**.
+</InfoBox>
+
+---
+
+## Key Takeaways
+
+- MITRE ATT&CK is the **industry standard** for adversary behavior
+- The **Navigator** visualizes your detection coverage
+- Use it for **gap analysis** against relevant threat actors
+- **Prioritize** techniques based on your threat landscape
+- ATT&CK enables **common language** across all security teams
+
+<Quiz
+  question="What is the primary purpose of creating an ATT&CK Navigator layer?"
+  options={[
+    "To run automated scans against your network",
+    "To visualize and analyze technique coverage or threat actor behavior",
+    "To automatically generate detection rules",
+    "To block malicious IP addresses"
+  ]}
+  correctIndex={1}
+  explanation="The ATT&CK Navigator is a visualization tool for mapping techniques. It helps analyze detection coverage, threat actor TTPs, and identify gaps."
+/>

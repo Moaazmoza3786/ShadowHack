@@ -1,0 +1,3 @@
+Vercel CLI 50.9.6
+Fetching deployment "study-hub-react-dpwqwzzzz-moaazs-projects-54139cd3.vercel.app" in moaazs-projects-54139cd3
+Error: Deployment not ready. Currently: ΓùÅ Error.

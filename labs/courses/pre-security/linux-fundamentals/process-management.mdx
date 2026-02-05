@@ -1,0 +1,71 @@
+---
+title: "Process Management & Services (systemctl)"
+path: "Pre-Security"
+module: "Linux Fundamentals"
+difficulty: "Beginner"
+---
+
+# Process Management & Services (systemctl)
+
+Linux is a multitasking environment. Multiple users can run multiple programs at the same time. Each running program is called a **Process**. As a hacker, you need to know how to list, manage, and terminate processes to hide your tracks or maintain persistence.
+
+---
+
+## Viewing Running Processes
+
+Every process has a unique identifier called a **PID (Process ID)**.
+
+### 1. `ps` (Process Status)
+Shows a snapshot of current processes.
+- `ps aux`: Shows all processes for all users.
+
+<TerminalWindow cmd="ps aux | grep sshd" output="root       842  0.0  0.1  15816  7252 ?        Ss   12:00   0:00 /usr/sbin/sshd -D
+[!] SSH Daemon detected with PID 842" />
+
+### 2. `top` or `htop`
+Provides a live, interactive view of the system's resource usage (CPU, RAM, Processes).
+
+---
+
+## Terminating Processes
+
+Sometimes a program hangs, or you need to kill a security service. Use the `kill` command followed by the PID.
+
+- `kill -9 12347`: Forcefully kill process 12347 (SIGKILL).
+- `killall nmap`: Kill all running instances of nmap.
+
+---
+
+## Services & Systemd
+
+Most modern Linux systems use **Systemd** to manage "Services" (programs that run in the background). We use the `systemctl` command to manage them.
+
+### Common Service Commands:
+- `systemctl status ssh`: Check if the SSH service is running.
+- `systemctl start apache2`: Start the web server.
+- `systemctl stop ufw`: Stop the firewall (Useful during testing!).
+- `systemctl enable/disable`: Set a service to start (or not) on boot.
+
+<InfoBox type="tip">
+If you gain access to a server and want your backdoors to survive a reboot, you might try to create a new systemd service that starts your malicious listener automatically.
+</InfoBox>
+
+---
+
+## Interactive Exercise
+
+Try to identify the status of the web server in the terminal.
+
+<TerminalWindow cmd="systemctl is-active apache2" output="active
+[!] Web Server is ONLINE" />
+
+---
+
+## Knowledge Check
+
+<Quiz 
+  question="What is the name of the unique identifier assigned to every running process in Linux?"
+  options={["GID", "UID", "PID", "FHS"]}
+  answer="PID"
+  explanation="PID stands for Process ID, a unique number that kernel uses to identify and manage each process."
+/>

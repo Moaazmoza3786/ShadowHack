@@ -1,0 +1,43 @@
+---
+title: SQL Injection (SQLi)
+description: Attacking the database.
+---
+
+# SQL Injection (SQLi)
+
+SQL Injection is a vulnerability where an attacker can interfere with the queries that an application makes to its database.
+
+## How it Works
+
+When an app takes user input and puts it directly into a SQL query without sanitizing it first.
+
+### Simple Auth Bypass
+Input: `admin' --`
+Resulting Query: `SELECT * FROM users WHERE username = 'admin' --' AND password = '...';`
+
+The `--` comments out the rest of the query, logging you in as admin without a password!
+
+<InfoBox type="warning">
+SQLi can lead to full database exfiltration or even remote code execution (RCE) on the server.
+</InfoBox>
+
+```sql
+-- Vulnerable Code
+"SELECT * FROM products WHERE id = " + request.query.id;
+
+-- Secure Code (Parameterized)
+"SELECT * FROM products WHERE id = ?";
+db.query(query, [request.query.id]);
+```
+
+<Quiz 
+  question="What characters are used in SQL to start a comment and bypass the rest of a query?" 
+  answer="--" 
+  hint="Two dashes." 
+/>
+
+<Quiz 
+  question="What is the best way to prevent SQL injection?" 
+  answer="parameterized queries" 
+  hint="Also known as prepared statements." 
+/>

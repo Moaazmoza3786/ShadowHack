@@ -1,0 +1,46 @@
+---
+title: The OSI Model
+description: Understanding the 7 layers of networking.
+---
+
+# The OSI Model
+
+The **Open Systems Interconnection (OSI)** model is a conceptual framework used to describe the functions of a networking system. It divides the process of communication into seven distinct layers.
+
+## The 7 Layers
+
+1. **Application Layer (7):** Where users interact with the network (HTTP, FTP, DNS).
+2. **Presentation Layer (6):** Handles data formatting and encryption (SSL, JPEG).
+3. **Session Layer (5):** Manages connections between applications.
+4. **Transport Layer (4):** Responsible for end-to-end communication (TCP, UDP).
+5. **Network Layer (3):** Handles routing and IP addressing.
+6. **Data Link Layer (2):** Handles physical addressing (MAC) and switching.
+7. **Physical Layer (1):** The physical hardware (cables, bits).
+
+<InfoBox type="important">
+Pentesters often focus on Layer 3 (Network), Layer 4 (Transport), and Layer 7 (Application).
+</InfoBox>
+
+## Encapsulation
+
+As data moves down the layers, each layer adds its own header. This process is called **Encapsulation**.
+
+<PacketView 
+  source="Layer 4" 
+  dest="Layer 3" 
+  protocol="TCP/IP" 
+  flags="SYN" 
+  seq="0" 
+/>
+
+<Quiz 
+  question="Which OSI layer is responsible for IP addressing and routing?" 
+  answer="Network" 
+  hint="It's Layer 3." 
+/>
+
+<Quiz 
+  question="What is the mnemonic for the OSI model layers from bottom to top?" 
+  answer="Please Do Not Throw Sausage Pizza Away" 
+  hint="Physical, Data Link, Network, Transport, Session, Presentation, Application." 
+/>

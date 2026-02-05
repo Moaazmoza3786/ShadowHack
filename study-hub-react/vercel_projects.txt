@@ -1,0 +1,7 @@
+Vercel CLI 50.9.6
+Fetching projects in moaazs-projects-54139cd3
+> Projects found under moaazs-projects-54139cd3  [2s]
+
+  Project Name      Latest Production URL                                         Updated   Node Version   
+  study-hub-react   https://study-hub-react-moaazs-projects-54139cd3.vercel.app   60s       24.x           
+

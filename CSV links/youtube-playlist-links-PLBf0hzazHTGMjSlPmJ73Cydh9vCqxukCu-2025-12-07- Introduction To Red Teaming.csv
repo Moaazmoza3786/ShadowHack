@@ -1,0 +1,36 @@
+#,title,videoUrl,videoId,publishedAt,position
+1,Introduction To Red Teaming,https://www.youtube.com/watch?v=rHxYZwMz-DY&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=1,rHxYZwMz-DY,2024-07-01T08:18:32Z,0
+2,Red Team Frameworks & Methodologies,https://www.youtube.com/watch?v=UafxorrS3mQ&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=2,UafxorrS3mQ,2024-07-18T02:02:55Z,1
+3,Introduction To The MITRE ATT&CK Framework,https://www.youtube.com/watch?v=LCec9K0aAkM&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=3,LCec9K0aAkM,2024-07-18T05:00:07Z,2
+4,Mapping APT TTPs With MITRE ATT&CK Navigator,https://www.youtube.com/watch?v=hN_r3JW6xsY&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=4,hN_r3JW6xsY,2024-07-18T09:00:06Z,3
+5,"Planning Red Team Operations | Scope, ROE & Reporting",https://www.youtube.com/watch?v=usDt-s2sACI&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=5,usDt-s2sACI,2024-07-22T10:26:31Z,4
+6,Red Team Reconnaissance Techniques,https://www.youtube.com/watch?v=BWaGnsRirtU&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=6,BWaGnsRirtU,2021-10-30T21:16:59Z,5
+7,Red Team Adversary Emulation With Caldera,https://www.youtube.com/watch?v=EIHLXWnK1Dw&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=7,EIHLXWnK1Dw,2021-10-29T16:02:44Z,6
+8,Windows Red Team Exploitation Techniques | Luckystrike & PowerShell Empire,https://www.youtube.com/watch?v=dRebw65X5eQ&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=8,dRebw65X5eQ,2021-11-01T02:13:18Z,7
+9,Windows Red Team - Dynamic Shellcode Injection & PowerShell Obfuscation,https://www.youtube.com/watch?v=6xexyQwG7SY&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=9,6xexyQwG7SY,2022-12-22T18:12:35Z,8
+10,Windows Red Team Privilege Escalation Techniques - Bypassing UAC & Kernel Exploits,https://www.youtube.com/watch?v=vPTbWnCZ0sg&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=10,vPTbWnCZ0sg,2022-12-27T15:47:27Z,9
+11,Windows Red Team Credential Access Techniques | Mimikatz & WCE,https://www.youtube.com/watch?v=wH2kE527cwQ&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=11,wH2kE527cwQ,2021-11-08T01:10:45Z,10
+12,Windows Red Team Persistence Techniques | Persistence With PowerShell Empire,https://www.youtube.com/watch?v=7h_5BJHIpnU&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=12,7h_5BJHIpnU,2021-11-05T11:39:12Z,11
+13,Windows Red Team Lateral Movement Techniques - PsExec & RDP,https://www.youtube.com/watch?v=QGkmlsvjMYI&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=13,QGkmlsvjMYI,2022-12-27T18:00:08Z,12
+14,PowerShell Empire Complete Tutorial For Beginners - Mimikatz & Privilege Escalation,https://www.youtube.com/watch?v=52xkWbDMUUM&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=14,52xkWbDMUUM,2019-06-22T13:35:40Z,13
+15,Post Exploitation With Empire And LaZagne,https://www.youtube.com/watch?v=AwFyiFOXrd0&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=15,AwFyiFOXrd0,2019-05-25T05:43:29Z,14
+16,Post Exploitation With Windows Credentials Editor (WCE) - Dump Windows Password Hashes,https://www.youtube.com/watch?v=u0RppDmw1So&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=16,u0RppDmw1So,2019-07-11T13:47:38Z,15
+17,Pivoting And Persistence With Armitage,https://www.youtube.com/watch?v=kRXVQdzRbzI&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=17,kRXVQdzRbzI,2019-07-19T11:05:35Z,16
+18,Linux Red Team Exploitation Techniques | Exploiting WordPress & MySQL,https://www.youtube.com/watch?v=_1QnyKTqQ6w&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=18,_1QnyKTqQ6w,2021-11-03T12:45:02Z,17
+19,Linux Red Team Privilege Escalation Techniques - Kernel Exploits & SUDO Permissions,https://www.youtube.com/watch?v=w2rElXYV2Fs&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=19,w2rElXYV2Fs,2022-12-30T23:25:03Z,18
+20,"Linux Red Team Persistence Techniques - SSH Keys, Web Shells & Cron Jobs",https://www.youtube.com/watch?v=tNJs8CFj_B8&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=20,tNJs8CFj_B8,2023-01-03T22:18:05Z,19
+21,Linux Defense Evasion - Apache2 Rootkit,https://www.youtube.com/watch?v=ChgqGBwl8NQ&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=21,ChgqGBwl8NQ,2022-02-17T23:54:17Z,20
+22,Linux Red Team Defense Evasion Techniques - Hiding Linux Processes,https://www.youtube.com/watch?v=GT-ClZAi6rE&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=22,GT-ClZAi6rE,2023-01-09T09:35:55Z,21
+23,Mastering Persistence: Using an Apache2 Rootkit for Stealth and Defense Evasion,https://www.youtube.com/watch?v=Ra2altDvPYI&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=23,Ra2altDvPYI,2024-12-09T10:01:14Z,22
+24,Introduction To Adversary Emulation,https://www.youtube.com/watch?v=CUMhiSdOSkY&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=24,CUMhiSdOSkY,2024-12-18T09:31:33Z,23
+25,Introduction To Advanced Persistent Threats (APTs),https://www.youtube.com/watch?v=CwSG5sa0Nao&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=25,CwSG5sa0Nao,2025-01-08T19:40:16Z,24
+26,Developing An Adversary Emulation Plan,https://www.youtube.com/watch?v=1N49x1EWw7s&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=26,1N49x1EWw7s,2025-01-13T12:30:30Z,25
+27,FIN6 Adversary Emulation Plan (TTPs & Tooling),https://www.youtube.com/watch?v=qEfk44G4zFM&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=27,qEfk44G4zFM,2025-01-13T16:00:48Z,26
+28,Emulating FIN6 - Gaining Initial Access (Office Word Macro),https://www.youtube.com/watch?v=hUBRnh5dzrI&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=28,hUBRnh5dzrI,2025-01-16T22:56:30Z,27
+29,Offensive VBA 0x1 - Your First Macro,https://www.youtube.com/watch?v=jGy7_NusjuQ&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=29,jGy7_NusjuQ,2025-01-22T16:15:35Z,28
+30,Offensive VBA 0x2 - Program & Command Execution,https://www.youtube.com/watch?v=ogbrNZ3SCRY&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=30,ogbrNZ3SCRY,2025-01-24T13:01:23Z,29
+31,Offensive VBA 0x3 - Developing PowerShell Droppers,https://www.youtube.com/watch?v=ot3053UxJOc&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=31,ot3053UxJOc,2025-01-28T21:47:04Z,30
+32,Offensive VBA 0x4 - Reverse Shell Macro with Powercat,https://www.youtube.com/watch?v=0W3Z3Br56XM&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=32,0W3Z3Br56XM,2025-02-03T21:44:42Z,31
+33,The SECRET to Embedding Metasploit Payloads in VBA Macros,https://www.youtube.com/watch?v=Q1wQuHw5JKI&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=33,Q1wQuHw5JKI,2025-02-12T14:00:51Z,32
+34,Emulating FIN6 - Active Directory Enumeration Made EASY,https://www.youtube.com/watch?v=Iwxmscx3XXc&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=34,Iwxmscx3XXc,2025-02-17T14:29:00Z,33
+35,How FIN6 Exfiltrates Files Over FTP,https://www.youtube.com/watch?v=SbZ7JUII-SQ&list=PLBf0hzazHTGMjSlPmJ73Cydh9vCqxukCu&index=35,SbZ7JUII-SQ,2025-04-09T13:54:04Z,34

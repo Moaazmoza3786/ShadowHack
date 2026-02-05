@@ -1,0 +1,116 @@
+
+# Active Recon: Nmap Host Discovery & Port Scanning
+
+## Touching the Target
+Unlike passive recon, **Active Recon** involves sending packets to the target system. You are now "touching" the infrastructure, which means you can be detected by Firewalls (FW), Intrusion Detection Systems (IDS), and IPS.
+
+The primary tool for this is **Nmap (Network Mapper)**.
+
+## 1. The TCP Handshake vs. Stealth Scan
+To understand Nmap, you must understand TCP.
+
+### Normal Connection (Full Connect)
+1.  **SYN** (You) -> Server
+2.  **SYN-ACK** (Server) -> You
+3.  **ACK** (You) -> Server
+*Result:* Connection established. Logs created on server.
+
+### SYN Scan (Stealth / Half-Open) - `nmap -sS`
+1.  **SYN** (You) -> Server
+2.  **SYN-ACK** (Server) -> You
+3.  **RST** (You) -> Server
+*Result:* You tear down the connection before it's fully established. Faster and stealthier (historically).
+
+<Mermaid chart={`
+sequenceDiagram
+    participant Attacker
+    participant Target
+    note over Attacker, Target: Normal TCP Handshake
+    Attacker->>Target: SYN
+    Target->>Attacker: SYN-ACK
+    Attacker->>Target: ACK
+    note right of Target: Log: Connection Established
+
+    note over Attacker, Target: Nmap Stealth Scan (-sS)
+    Attacker->>Target: SYN
+    Target->>Attacker: SYN-ACK
+    Attacker->>Target: RST
+    note right of Target: Log: Connection Reset (Usually ignored)
+`} />
+
+## 2. Nmap Discovery Phases
+
+### Phase 1: Host Discovery (Ping Sweep)
+Before scanning ports, Nmap checks if the host is alive.
+*   **Command:** `nmap -sn 192.168.1.0/24`
+*   **Mechanism:** Sends ICMP Echo, TCP SYN to 443, TCP ACK to 80, and ICMP Timestamp.
+
+### Phase 2: Port Scanning
+Checking the status of ports (0-65535).
+*   **Open:** App is listening.
+*   **Closed:** No app, but OS replied with RST.
+*   **Filtered:** Firewall dropped the packet (No reply).
+
+<TerminalSimulator 
+    cmd="nmap -sS -p- -T4 --min-rate 1000 10.10.10.5" 
+    output={`Starting Nmap 7.93...
+Nmap scan report for 10.10.10.5
+Host is up (0.0012s latency).
+Not shown: 65530 closed ports
+PORT      STATE SERVICE
+21/tcp    open  ftp
+22/tcp    open  ssh
+80/tcp    open  http
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+MAC Address: 00:50:56:XX:XX:XX (VMware)
+
+Nmap done: 1 IP address (1 host up) scanned in 14.50 seconds`} 
+/>
+
+**Flags Explained:**
+*   `-sS`: SYN Scan (Root required).
+*   `-p-`: Scan ALL 65535 ports (Default is top 1000).
+*   `-T4`: Aggressive timing (Faster).
+*   `--min-rate 1000`: Send at least 1000 packets/sec.
+
+## 3. Service Version Detection (`-sV`)
+Knowing port 80 is open isn't enough. Is it Apache 2.4.49 (Vulnerable) or Nginx 1.18?
+
+`nmap -sV 10.10.10.5` connects to the port and grabs the "Banner" or sends probes to elicit a version string.
+
+## 4. OS Detection (`-O`)
+Nmap analyzes IP packet characteristics (TTL, Window Size) to guess the Operating System (Windows vs Linux).
+
+<CodeBlock language="python" showLineNumbers code={`# Python Scapy: Creating a Custom SYN Packet
+from scapy.all import *
+
+ip = IP(dst="10.10.10.5")
+tcp = TCP(dport=80, flags="S") # S = SYN
+packet = ip/tcp
+
+response = sr1(packet, timeout=1, verbose=0)
+
+if response and response.haslayer(TCP):
+    if response[TCP].flags == 0x12: # SYN-ACK (0x010010)
+        print("Port 80 is OPEN")
+        # We should send RST now to be polite
+        send(IP(dst="10.10.10.5")/TCP(dport=80, flags="R"))
+    elif response[TCP].flags == 0x14: # RST-ACK
+        print("Port 80 is CLOSED")
+else:
+    print("Port 80 is FILTERED")
+`} />
+
+---
+
+<Quiz 
+    question="You scan a target and port 80 returns no response at all (timeout). Nmap marks it as 'Filtered'. What is the most likely cause?" 
+    options={[
+        "The web server is crashed",
+        "A Firewall is dropping your packets",
+        "The port is closed",
+        "The server is a Windows machine"
+    ]} 
+    answer="A Firewall is dropping your packets" 
+/>

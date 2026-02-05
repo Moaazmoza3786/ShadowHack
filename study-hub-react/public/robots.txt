@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /l/auth
+Disallow: /l/*
+Disallow: /tools/social-engineering
+
+# Privacy and Security: Protect educational lab routes from automated scanners
+Sitemap: https://study-hub-react-rho.vercel.app/sitemap.xml

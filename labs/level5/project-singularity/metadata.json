@@ -1,0 +1,9 @@
+{
+    "id": "ctf-singularity-bank",
+    "name": "Project Singularity",
+    "difficulty": "legendary",
+    "tier": 5,
+    "port": 80,
+    "category": "Full Kill Chain",
+    "flag": "AG{th3_s1ngul4r1ty_1s_h3r3_2026}"
+}

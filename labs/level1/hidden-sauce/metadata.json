@@ -1,0 +1,9 @@
+{
+    "id": "ctf-hidden-sauce",
+    "name": "Hidden Sauce",
+    "difficulty": "easy",
+    "tier": 1,
+    "port": 80,
+    "category": "Web / Warmup",
+    "flag": "AG{s0urce_cod3_d1scov3ry}"
+}

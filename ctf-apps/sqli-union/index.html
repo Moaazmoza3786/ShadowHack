@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 ShopSearch - Product Catalog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+        }
+
+        .header p {
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        /* Main Card */
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            padding: 20px 25px;
+            color: white;
+        }
+
+        .card-header h2 {
+            font-size: 1.1rem;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Search Form */
+        .search-form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+        }
+
+        .search-btn {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+        }
+
+        /* Products Table */
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .products-table th {
+            background: #f1f5f9;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .products-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .products-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        /* Query Display */
+        .query-box {
+            margin-top: 20px;
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .query-label {
+            color: #64748b;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .query-text {
+            color: #38bdf8;
+            word-break: break-all;
+        }
+
+        .injection-highlight {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.15);
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+
+        /* Success Box */
+        .success-box {
+            background: #d1fae5;
+            border: 1px solid #34d399;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-box h4 {
+            color: #065f46;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .success-box p {
+            color: #047857;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+
+        .sensitive-data {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .sensitive-data h5 {
+            color: #dc2626;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .sensitive-data code {
+            color: #991b1b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 ShopSearch</h1>
+            <p>Find products in our catalog</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>🔍 Product Search</h2>
+            </div>
+            <div class="card-body">
+                <form class="search-form" onsubmit="searchProducts(event)">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search for products..."
+                        autocomplete="off">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+
+                <div id="resultsArea">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsBody">
+                            <tr>
+                                <td>Laptop Pro 15"</td>
+                                <td>$999</td>
+                            </tr>
+                            <tr>
+                                <td>Laptop Air 13"</td>
+                                <td>$799</td>
+                            </tr>
+                            <tr>
+                                <td>Gaming Laptop</td>
+                                <td>$1,299</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="queryBox" class="query-box" style="display: none;">
+                    <div class="query-label">Executed SQL Query</div>
+                    <div class="query-text" id="queryText"></div>
+                </div>
+
+                <div id="successArea"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const FLAG = 'FLAG{un10n_4tt4ck_m4st3r}';
+
+        // Simulated database
+        const products = [
+            { name: 'Laptop Pro 15"', price: '$999' },
+            { name: 'Laptop Air 13"', price: '$799' },
+            { name: 'Gaming Laptop', price: '$1,299' },
+            { name: 'Phone X', price: '$599' },
+            { name: 'Tablet Pro', price: '$399' },
+            { name: 'Smart Watch', price: '$249' }
+        ];
+
+        const users = [
+            { username: 'admin', password: 'sup3r_s3cr3t_p4ss!' },
+            { username: 'john', password: 'john123' },
+            { username: 'sarah', password: 'sarah456' }
+        ];
+
+        function searchProducts(event) {
+            event.preventDefault();
+
+            const search = document.getElementById('searchInput').value;
+            const productsBody = document.getElementById('productsBody');
+            const queryBox = document.getElementById('queryBox');
+            const queryText = document.getElementById('queryText');
+            const successArea = document.getElementById('successArea');
+
+            // Build query display
+            const query = `SELECT name, price FROM products WHERE name LIKE '%${search}%'`;
+            queryBox.style.display = 'block';
+            queryText.innerHTML = escapeHtml(query);
+
+            // Check for UNION injection
+            const searchLower = search.toLowerCase();
+            if (searchLower.includes('union') && searchLower.includes('select')) {
+                // UNION attack successful!
+                let resultHTML = '';
+
+                // Show normal products first
+                const filtered = products.filter(p =>
+                    p.name.toLowerCase().includes(search.split("'")[0].toLowerCase())
+                );
+
+                filtered.forEach(p => {
+                    resultHTML += `<tr><td>${p.name}</td><td>${p.price}</td></tr>`;
+                });
+
+                // Check if they're extracting from users table
+                if (searchLower.includes('users') || searchLower.includes('password')) {
+                    // Add "extracted" user data
+                    resultHTML += `<tr style="background:#fef2f2;"><td style="color:#dc2626;">admin</td><td style="color:#dc2626;">sup3r_s3cr3t_p4ss!</td></tr>`;
+                    resultHTML += `<tr style="background:#fef2f2;"><td style="color:#dc2626;">john</td><td style="color:#dc2626;">john123</td></tr>`;
+
+                    productsBody.innerHTML = resultHTML;
+
+                    successArea.innerHTML = `
+                        <div class="success-box">
+                            <h4>🎯 UNION Attack Successful!</h4>
+                            <p>You extracted sensitive data from the users table!</p>
+                            <div class="sensitive-data">
+                                <h5>⚠️ EXPOSED CREDENTIALS:</h5>
+                                <code>admin : sup3r_s3cr3t_p4ss!</code>
+                            </div>
+                            <div class="flag-display">🚩 ${FLAG}</div>
+                        </div>
+                    `;
+
+                    // Notify parent
+                    if (window.parent !== window) {
+                        try {
+                            window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: FLAG }, '*');
+                        } catch (e) { }
+                    }
+                } else {
+                    // UNION attempt but wrong table
+                    resultHTML += `<tr style="background:#fff7ed;"><td colspan="2" style="color:#c2410c;">UNION data would appear here...</td></tr>`;
+                    productsBody.innerHTML = resultHTML;
+                    successArea.innerHTML = `
+                        <div style="background:#fef3c7;border:1px solid #f59e0b;padding:15px;border-radius:10px;margin-top:15px;color:#92400e;">
+                            💡 UNION works! Now try to extract from the <strong>users</strong> table (columns: username, password)
+                        </div>
+                    `;
+                }
+            } else if (search.includes("'")) {
+                // SQL error
+                productsBody.innerHTML = `
+                    <tr><td colspan="2" style="color:#dc2626;padding:20px;">
+                        ❌ SQL Error: You have an error in your SQL syntax near '${escapeHtml(search)}'
+                    </td></tr>
+                `;
+                successArea.innerHTML = '';
+            } else {
+                // Normal search
+                const filtered = products.filter(p =>
+                    p.name.toLowerCase().includes(search.toLowerCase())
+                );
+
+                if (filtered.length === 0) {
+                    productsBody.innerHTML = `
+                        <tr><td colspan="2" class="no-results">No products found for "${escapeHtml(search)}"</td></tr>
+                    `;
+                } else {
+                    productsBody.innerHTML = filtered.map(p =>
+                        `<tr><td>${p.name}</td><td>${p.price}</td></tr>`
+                    ).join('');
+                }
+                successArea.innerHTML = '';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+
+</html>

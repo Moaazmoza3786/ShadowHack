@@ -1,0 +1,49 @@
+#,title,videoUrl,videoId,publishedAt,position
+1,1- مقدمة الكورس,https://www.youtube.com/watch?v=BjfCWSFmIFI&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=1,BjfCWSFmIFI,2017-07-02T00:27:52Z,0
+2,2- تحميل وتشغيل متطلبات الكورس,https://www.youtube.com/watch?v=F7b48a2pek4&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=2,F7b48a2pek4,2017-07-02T01:13:59Z,1
+3,3- شرح لكيف تتم تسريبات قواعد بيانات المواقع الشهيرة,https://www.youtube.com/watch?v=MUN1CaC-wPE&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=3,MUN1CaC-wPE,2017-07-02T01:35:31Z,2
+4,4- Exploiting leaked databases for Penetration Testers and RedTeaming (بالعربي),https://www.youtube.com/watch?v=L-7dN3C-cOE&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=4,L-7dN3C-cOE,2017-07-02T12:29:16Z,3
+5,5 - مقدمة لنظام التشغيل Linux,https://www.youtube.com/watch?v=lN7JLDvP3_8&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=5,lN7JLDvP3_8,2017-07-09T00:54:52Z,4
+6,6-  Linux Command Line Part 1,https://www.youtube.com/watch?v=Lki6Gu8opGA&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=6,Lki6Gu8opGA,2017-07-09T01:21:26Z,5
+7,7-  Linux Command Line Part 2,https://www.youtube.com/watch?v=Jp2iAAGqADw&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=7,Jp2iAAGqADw,2017-07-09T03:04:07Z,6
+8,8- Linux Command Part 3,https://www.youtube.com/watch?v=PxRm5GKSNMI&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=8,PxRm5GKSNMI,2017-07-23T21:39:47Z,7
+9,9- Linux Command Part 4,https://www.youtube.com/watch?v=C8pPNa79K2Y&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=9,C8pPNa79K2Y,2017-07-23T22:02:45Z,8
+10,10- Linux Command Part 5,https://www.youtube.com/watch?v=LKIXbNW-B5g&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=10,LKIXbNW-B5g,2017-07-23T22:40:42Z,9
+11,11- ما هو ال Hashing وكيف يعمل,https://www.youtube.com/watch?v=4TBStYr8t4g&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=11,4TBStYr8t4g,2017-07-24T00:42:36Z,10
+12,12- ما هو ال Encoding وكيف يعمل,https://www.youtube.com/watch?v=gOos5go5h2c&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=12,gOos5go5h2c,2017-07-24T00:49:19Z,11
+13,13- ما هو ال Symmetric Encryption,https://www.youtube.com/watch?v=LOtK2IDBGik&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=13,LOtK2IDBGik,2017-07-30T00:24:49Z,12
+14,14- ما هو ال Asymmetric Encryption,https://www.youtube.com/watch?v=8lW2kvCVpHc&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=14,8lW2kvCVpHc,2017-07-30T01:08:47Z,13
+15,15- كيف يعمل ال HTTPS,https://www.youtube.com/watch?v=Iws5GpUVnq4&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=15,Iws5GpUVnq4,2017-07-30T02:12:41Z,14
+16,16- What Happens when I open Google.com in my browser (بالعربي),https://www.youtube.com/watch?v=8XKbJWnktc8&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=16,8XKbJWnktc8,2017-08-19T23:02:51Z,15
+17,17- شرح ال TCP & UDP بالتفصيل,https://www.youtube.com/watch?v=fiFBpFjfYyo&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=17,fiFBpFjfYyo,2017-08-21T02:28:46Z,16
+18,18- ما هو ال DNS وكيف يعمل,https://www.youtube.com/watch?v=ynbtZbwcCjA&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=18,ynbtZbwcCjA,2017-09-05T21:55:57Z,17
+19,19- شرح ثغرات ال Subdomain Takeover and Different DNS Records,https://www.youtube.com/watch?v=Qo37c0v9Gdo&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=19,Qo37c0v9Gdo,2017-09-05T21:57:03Z,18
+20,20- كيف تكتشف ثغرات Subdomain Takeover,https://www.youtube.com/watch?v=1tESU4F4Gt8&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=20,1tESU4F4Gt8,2017-09-05T21:55:17Z,19
+21,21- شرح أداة NMAP,https://www.youtube.com/watch?v=Ru4mFT0yANo&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=21,Ru4mFT0yANo,2017-10-02T01:58:08Z,20
+22,22- Advanced Nmap,https://www.youtube.com/watch?v=WpWlTOnOA94&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=22,WpWlTOnOA94,2017-10-02T02:03:38Z,21
+23,23- Nmap MoreOver,https://www.youtube.com/watch?v=uQcCa-xVnSM&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=23,uQcCa-xVnSM,2017-10-02T07:06:18Z,22
+24,24- شرح أداة ال BurpSuite,https://www.youtube.com/watch?v=5f7Z52I0Y2s&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=24,5f7Z52I0Y2s,2017-10-10T00:20:25Z,23
+25,25- BurpSuite Tabs part 1,https://www.youtube.com/watch?v=OaXEDgW8SUE&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=25,OaXEDgW8SUE,2017-10-10T01:26:30Z,24
+26,26- Burp Tabs part 2,https://www.youtube.com/watch?v=JEsyUw7WuIM&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=26,JEsyUw7WuIM,2017-10-10T06:49:54Z,25
+27,"27- HTTP Methods, Request and Response Headers",https://www.youtube.com/watch?v=PsdimP_-TKY&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=27,PsdimP_-TKY,2017-10-26T00:36:30Z,26
+28,28- لماذا تحدث الثغرات?,https://www.youtube.com/watch?v=sUUAzIa7F_A&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=28,sUUAzIa7F_A,2017-10-26T01:24:15Z,27
+29,"29- شرح ثغرات XSS (Reflected, Stored and DOM based XSS)",https://www.youtube.com/watch?v=xiw_O5shcK4&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=29,xiw_O5shcK4,2017-11-06T23:52:34Z,28
+30,"30- ترقيع ثغرات ال XSS, response headers and input filtering.",https://www.youtube.com/watch?v=qp264U2QyY8&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=30,qp264U2QyY8,2017-11-07T01:04:50Z,29
+31,31- شرح Advanced XSS Exploitation,https://www.youtube.com/watch?v=ZfYG3U6XueM&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=31,ZfYG3U6XueM,2017-12-03T04:50:07Z,30
+32,"32- شرح SOP, CORS, CSP and Exploiting Misconfigured CORS",https://www.youtube.com/watch?v=OcrmPMSjdSw&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=32,OcrmPMSjdSw,2017-12-03T14:26:49Z,31
+33,"33- شرح How WAF's works, Bypassing XSS filters, HTTP Parameter Pollution and more",https://www.youtube.com/watch?v=TQbKf4ZkzZ0&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=33,TQbKf4ZkzZ0,2017-12-29T21:01:14Z,32
+34,34- الجزأ الأول من حلول تحديات ال XSS,https://www.youtube.com/watch?v=TeIK1244sSk&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=34,TeIK1244sSk,2018-01-29T17:45:29Z,33
+35,35- الجزأ الثاني من حلول تحديات ال XSS,https://www.youtube.com/watch?v=PRDO0ZjYGfc&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=35,PRDO0ZjYGfc,2018-01-29T18:16:45Z,34
+36,36- شرح ثغرات ال CSRF مع مثال علي ثغرة خطيرة في موقع تويتر,https://www.youtube.com/watch?v=Vb4md5w6JJ8&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=36,Vb4md5w6JJ8,2018-04-02T18:15:32Z,35
+37,37- كيف تتربح ماديا من إكتشاف ثغرات المواقع (الجزأ الأول),https://www.youtube.com/watch?v=z0qEQ-fF7uI&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=37,z0qEQ-fF7uI,2018-07-29T00:54:09Z,36
+38,38- كيف تتربح ماديا من إكتشاف ثغرات المواقع (الجزأ الثاني),https://www.youtube.com/watch?v=KYVcCoksjSQ&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=38,KYVcCoksjSQ,2018-07-29T02:29:54Z,37
+39,39- Information disclosure tips and tricks.,https://www.youtube.com/watch?v=V9Bc_Addfps&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=39,V9Bc_Addfps,2018-12-17T00:08:29Z,38
+40,40 - شرح ثغرات Server-Side Request Forgery (SSRF),https://www.youtube.com/watch?v=9e1rSOH63ME&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=40,9e1rSOH63ME,2019-08-05T02:34:02Z,39
+41,"41- شرح ثغرات Local/Remote file inclusion, LFD, and Path Traversal",https://www.youtube.com/watch?v=FOVnU-ud4V0&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=41,FOVnU-ud4V0,2019-10-29T16:22:51Z,40
+42,42- شرح ثغرات Host header attacks,https://www.youtube.com/watch?v=klBJDJ5s3XM&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=42,klBJDJ5s3XM,2020-03-20T23:47:35Z,41
+43,43- شرح ثغرات Cache Poisoning & Cache Deception Attacks,https://www.youtube.com/watch?v=mCC-i4DaCgM&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=43,mCC-i4DaCgM,2020-03-29T23:02:14Z,42
+44,44- طريقتي في عمل اختبار اختراق لويب أبلكيشن (part 1),https://www.youtube.com/watch?v=zvJ3irTVDfc&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=44,zvJ3irTVDfc,2020-04-22T23:50:31Z,43
+45,44- طريقتي في عمل اختبار اختراق لويب أبلكيشن (part 2),https://www.youtube.com/watch?v=nmxoQP0Ca5k&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=45,nmxoQP0Ca5k,2020-04-22T23:58:59Z,44
+46,45- Google bug bounty hunting (Part1),https://www.youtube.com/watch?v=USyJjpjXEao&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=46,USyJjpjXEao,2020-06-06T18:28:29Z,45
+47,46- Google bug bounty hunting (Part2),https://www.youtube.com/watch?v=zmAFVRMhqPk&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=47,zmAFVRMhqPk,2020-06-26T22:33:33Z,46
+48,47- شرح 15 طريقة لإكتشاف ثغرات في صفحات ال file upload,https://www.youtube.com/watch?v=E9yyhxzxeok&list=PLv7cogHXoVhXvHPzIl1dWtBiYUAL8baHj&index=48,E9yyhxzxeok,2020-11-09T14:02:59Z,47

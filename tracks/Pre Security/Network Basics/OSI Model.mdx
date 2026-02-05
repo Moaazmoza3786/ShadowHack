@@ -1,0 +1,72 @@
+# The OSI Model
+
+Everything in networking—and by extension, hacking—is based on the OSI Model.
+It breaks down the complex process of sending data into 7 manageable layers.
+
+As a hacker, you need to know which layer an attack targets. Is it a physical wire tap (Layer 1)? Or a SQL Injection (Layer 7)?
+
+## Visualizing the Stack
+
+```mermaid
+graph TD
+    classDef layer7 fill:#e91e63,color:white,stroke:#333;
+    classDef layer6 fill:#9c27b0,color:white,stroke:#333;
+    classDef layer5 fill:#673ab7,color:white,stroke:#333;
+    classDef layer4 fill:#2196f3,color:white,stroke:#333;
+    classDef layer3 fill:#00bcd4,color:white,stroke:#333;
+    classDef layer2 fill:#4caf50,color:white,stroke:#333;
+    classDef layer1 fill:#ff9800,color:white,stroke:#333;
+
+    L7[7. Application Layer<br/>(HTTP, FTP, SMTP)]:::layer7
+    L6[6. Presentation Layer<br/>(Encryption, Encoding)]:::layer6
+    L5[5. Session Layer<br/>(Session Management)]:::layer5
+    L4[4. Transport Layer<br/>(TCP, UDP)]:::layer4
+    L3[3. Network Layer<br/>(IP, Routing)]:::layer3
+    L2[2. Data Link Layer<br/>(MAC, Switching)]:::layer2
+    L1[1. Physical Layer<br/>(Cables, Signals)]:::layer1
+
+    L7 --> L6
+    L6 --> L5
+    L5 --> L4
+    L4 --> L3
+    L3 --> L2
+    L2 --> L1
+```
+
+## Layer Breakdown
+
+### 7. Application (The Interface)
+Where users interact.
+*   **Protocols:** HTTP, SSH, DNS.
+*   **Attacks:** SQL Injection, XSS, Phishing.
+
+### 4. Transport (The Delivery)
+Ensures data gets there (TCP) or just sends it fast (UDP).
+*   **Protocols:** TCP, UDP.
+*   **Attacks:** Port Scanning, SYN Floods.
+
+### 3. Network (The Route)
+Addressing and routing packets across the internet.
+*   **Protocols:** IP, ICMP.
+*   **Attacks:** IP Spoofing, Man-in-the-Middle (MitM).
+
+### 2. Data Link (The Local)
+Physical addressing on the local hardware.
+*   **Protocols:** Ethernet, ARP, Wi-Fi.
+*   **Attacks:** ARP Poisoning, MAC Flooding.
+
+> [!IMPORTANT]
+> **Mnemonics:** "Please Do Not Throw Sausage Pizza Away"
+> (Physical, Data, Network, Transport, Session, Presentation, Application)
+
+## Knowledge Check
+
+<Quiz 
+  question="Which layer handles IP addressing and Routing?"
+  options={[
+    "Layer 2 (Data Link)",
+    "Layer 3 (Network)",
+    "Layer 4 (Transport)",
+    "Layer 7 (Application)"
+  ]}
+/>

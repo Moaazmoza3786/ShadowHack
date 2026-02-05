@@ -1,0 +1,2 @@
+User-agent: *
+Disallow: /secret_recipe_not_for_hackers/

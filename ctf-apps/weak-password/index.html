@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Authentication Lab - مختبر المصادقة</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00d9ff;
+            --secondary: #6c5ce7;
+            --dark: #0a0a1a;
+            --success: #00b894;
+            --danger: #ff4757;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a3e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .navbar-custom {
+            background: rgba(10, 10, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .level-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .level-tab {
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-weight: 600;
+        }
+
+        .level-tab.brute {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .level-tab.session {
+            background: linear-gradient(135deg, #f39c12, #d68910);
+            color: white;
+        }
+
+        .level-tab.reset {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .level-tab.jwt {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .level-tab.active {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border-color: white;
+        }
+
+        .challenge-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .login-portal {
+            background: linear-gradient(145deg, #1e1e3f, #2d2d5a);
+            border-radius: 20px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .portal-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 25px;
+            text-align: center;
+        }
+
+        .portal-header h4 {
+            color: white;
+            margin: 0;
+        }
+
+        .portal-body {
+            padding: 30px;
+        }
+
+        .form-control-cyber {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        .form-control-cyber:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+            color: #fff;
+        }
+
+        .form-control-cyber::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-cyber {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn-cyber:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
+            color: white;
+        }
+
+        .attempt-counter {
+            background: rgba(255, 71, 87, 0.2);
+            border: 1px solid rgba(255, 71, 87, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .attempt-counter.locked {
+            background: rgba(255, 71, 87, 0.4);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            color: white;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(0, 184, 148, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(0, 184, 148, 0.8);
+            }
+        }
+
+        .password-list {
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .password-item {
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 2px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .password-item.trying {
+            background: rgba(243, 156, 18, 0.3);
+        }
+
+        .password-item.failed {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }
+
+        .password-item.success {
+            background: rgba(0, 184, 148, 0.3);
+            color: #00b894;
+        }
+
+        .token-display {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            word-break: break-all;
+            color: #00d9ff;
+        }
+
+        .jwt-section {
+            background: rgba(155, 89, 182, 0.1);
+            border: 1px solid rgba(155, 89, 182, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .jwt-header {
+            color: #e74c3c;
+        }
+
+        .jwt-payload {
+            color: #f39c12;
+        }
+
+        .jwt-signature {
+            color: #3498db;
+        }
+
+        .hints-panel {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .hint-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .hint-item.revealed {
+            background: rgba(255, 193, 7, 0.2);
+        }
+
+        .hint-content {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hint-item.revealed .hint-content {
+            display: block;
+        }
+
+        .progress-bar-custom {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #00d9ff;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-custom py-3">
+        <div class="container">
+            <span class="navbar-brand text-white">
+                <i class="fas fa-lock me-2" style="color: var(--primary);"></i>
+                Authentication Lab
+            </span>
+            <span class="badge" style="background: var(--primary);">
+                <i class="fas fa-trophy me-1"></i>
+                <span id="completedCount">0</span>/4 Completed
+            </span>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="progress-bar-custom">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="level-tabs">
+            <div class="level-tab brute active" onclick="switchLevel('brute')">
+                <i class="fas fa-hammer me-2"></i>Brute Force
+            </div>
+            <div class="level-tab session" onclick="switchLevel('session')">
+                <i class="fas fa-cookie me-2"></i>Session Hijacking
+            </div>
+            <div class="level-tab reset" onclick="switchLevel('reset')">
+                <i class="fas fa-key me-2"></i>Password Reset
+            </div>
+            <div class="level-tab jwt" onclick="switchLevel('jwt')">
+                <i class="fas fa-file-code me-2"></i>JWT Attack
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Brute Force -->
+                <div id="level-brute" class="level-content">
+                    <div class="challenge-card">
+                        <h4><i class="fas fa-hammer text-danger me-2"></i>Brute Force Attack</h4>
+                        <p class="text-muted mb-4">هجوم القوة الغاشمة - جرب كلمات مرور شائعة | Try common passwords</p>
+
+                        <div class="login-portal">
+                            <div class="portal-header">
+                                <h4><i class="fas fa-user-shield me-2"></i>Admin Portal</h4>
+                            </div>
+                            <div class="portal-body">
+                                <div class="attempt-counter" id="attemptCounter">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Attempts: <span id="attemptCount">0</span>/10
+                                    <div class="small mt-1">Account locks after 10 failed attempts</div>
+                                </div>
+
+                                <form id="loginForm-brute">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control form-control-cyber" id="username-brute"
+                                            value="admin" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="password" class="form-control form-control-cyber"
+                                            id="password-brute" placeholder="Password">
+                                    </div>
+                                    <button type="submit" class="btn btn-cyber" id="loginBtn-brute">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                                    </button>
+                                </form>
+
+                                <div class="mt-3">
+                                    <button class="btn btn-outline-warning btn-sm" onclick="startBruteForce()">
+                                        <i class="fas fa-robot me-2"></i>Auto Brute Force
+                                    </button>
+                                </div>
+
+                                <div class="password-list mt-3" id="passwordList"></div>
+                                <div id="result-brute" class="mt-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="alert mt-4"
+                            style="background: rgba(231, 76, 60, 0.2); border: none; color: #e0e0e0;">
+                            <h5><i class="fas fa-bullseye me-2"></i>الهدف | Objective</h5>
+                            <p>اكتشف كلمة مرور المدير من قائمة كلمات المرور الشائعة</p>
+                            <p class="mb-0"><strong>Hint:</strong> Check the top 10 most common passwords</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session Hijacking -->
+                <div id="level-session" class="level-content" style="display: none;">
+                    <div class="challenge-card">
+                        <h4><i class="fas fa-cookie text-warning me-2"></i>Session Hijacking</h4>
+                        <p class="text-muted mb-4">اختطاف الجلسة - غير رقم الجلسة للوصول كمستخدم آخر</p>
+
+                        <div class="login-portal">
+                            <div class="portal-header" style="background: linear-gradient(135deg, #f39c12, #d68910);">
+                                <h4><i class="fas fa-user me-2"></i>User Dashboard</h4>
+                            </div>
+                            <div class="portal-body">
+                                <div class="alert alert-info"
+                                    style="background: rgba(52, 152, 219, 0.2); border: none;">
+                                    <strong>Logged in as:</strong> <span id="currentUser">guest</span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Your Session ID:</label>
+                                    <input type="text" class="form-control form-control-cyber" id="sessionId"
+                                        value="session_1005">
+                                    <small class="text-muted">Try changing this value...</small>
+                                </div>
+
+                                <button class="btn btn-cyber" onclick="checkSession()">
+                                    <i class="fas fa-sync me-2"></i>Validate Session
+                                </button>
+
+                                <div id="result-session" class="mt-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="alert mt-4"
+                            style="background: rgba(243, 156, 18, 0.2); border: none; color: #e0e0e0;">
+                            <h5><i class="fas fa-bullseye me-2"></i>الهدف | Objective</h5>
+                            <p>غير Session ID للوصول كـ Admin (session_1001)</p>
+                            <p class="mb-0"><strong>Hint:</strong> Admin session ID is between 1000-1010</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Reset -->
+                <div id="level-reset" class="level-content" style="display: none;">
+                    <div class="challenge-card">
+                        <h4><i class="fas fa-key text-info me-2"></i>Password Reset Vulnerability</h4>
+                        <p class="text-muted mb-4">ثغرة إعادة تعيين كلمة المرور</p>
+
+                        <div class="login-portal">
+                            <div class="portal-header" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                                <h4><i class="fas fa-envelope me-2"></i>Password Reset</h4>
+                            </div>
+                            <div class="portal-body">
+                                <form id="resetForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-control form-control-cyber" id="resetEmail"
+                                            placeholder="user@example.com">
+                                    </div>
+                                    <button type="submit" class="btn btn-cyber">
+                                        <i class="fas fa-paper-plane me-2"></i>Send Reset Link
+                                    </button>
+                                </form>
+
+                                <div id="resetLink" class="token-display mt-3" style="display: none;"></div>
+
+                                <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+
+                                <h5>Use Reset Token</h5>
+                                <form id="useTokenForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Reset Token</label>
+                                        <input type="text" class="form-control form-control-cyber" id="resetToken"
+                                            placeholder="Enter token...">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">New Password</label>
+                                        <input type="password" class="form-control form-control-cyber" id="newPassword"
+                                            placeholder="New password">
+                                    </div>
+                                    <button type="submit" class="btn btn-cyber">
+                                        <i class="fas fa-check me-2"></i>Reset Password
+                                    </button>
+                                </form>
+
+                                <div id="result-reset" class="mt-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="alert mt-4"
+                            style="background: rgba(52, 152, 219, 0.2); border: none; color: #e0e0e0;">
+                            <h5><i class="fas fa-bullseye me-2"></i>الهدف | Objective</h5>
+                            <p>استخدم token ضعيف لإعادة تعيين كلمة مرور حساب admin@company.com</p>
+                            <p class="mb-0"><strong>Hint:</strong> Token = MD5(email) - Try to predict it!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JWT Attack -->
+                <div id="level-jwt" class="level-content" style="display: none;">
+                    <div class="challenge-card">
+                        <h4><i class="fas fa-file-code text-purple me-2"></i>JWT Token Manipulation</h4>
+                        <p class="text-muted mb-4">التلاعب بـ JSON Web Token</p>
+
+                        <div class="login-portal">
+                            <div class="portal-header" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                                <h4><i class="fas fa-key me-2"></i>JWT Authentication</h4>
+                            </div>
+                            <div class="portal-body">
+                                <div class="jwt-section">
+                                    <h6>Your Current JWT:</h6>
+                                    <div class="token-display" id="currentJWT"></div>
+                                </div>
+
+                                <div class="jwt-section">
+                                    <h6>Decoded Token:</h6>
+                                    <div class="row">
+                                        <div class="col-12 mb-2">
+                                            <label class="small text-muted">Header (Algorithm)</label>
+                                            <textarea class="form-control form-control-cyber jwt-header" id="jwtHeader"
+                                                rows="2"></textarea>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="small text-muted">Payload (Data)</label>
+                                            <textarea class="form-control form-control-cyber jwt-payload"
+                                                id="jwtPayload" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-cyber mb-3" onclick="modifyJWT()">
+                                    <i class="fas fa-edit me-2"></i>Forge Token
+                                </button>
+
+                                <button class="btn btn-outline-light" onclick="verifyJWT()">
+                                    <i class="fas fa-check-circle me-2"></i>Verify Access
+                                </button>
+
+                                <div id="result-jwt" class="mt-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="alert mt-4"
+                            style="background: rgba(155, 89, 182, 0.2); border: none; color: #e0e0e0;">
+                            <h5><i class="fas fa-bullseye me-2"></i>الهدف | Objective</h5>
+                            <p>غير الـ algorithm إلى "none" وعدل role إلى "admin"</p>
+                            <p class="mb-0"><strong>Hint:</strong> JWT with alg: "none" doesn't need signature
+                                verification</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="hints-panel mb-4">
+                    <h5><i class="fas fa-lightbulb text-warning me-2"></i>تلميحات | Hints</h5>
+                    <div class="hint-item" onclick="this.classList.toggle('revealed')">
+                        <i class="fas fa-lock me-2"></i>Brute Force Hint
+                        <div class="hint-content">
+                            Top passwords: 123456, password, 12345678, qwerty, admin123
+                        </div>
+                    </div>
+                    <div class="hint-item" onclick="this.classList.toggle('revealed')">
+                        <i class="fas fa-lock me-2"></i>Session Hint
+                        <div class="hint-content">
+                            Admin always gets the first session: 1001
+                        </div>
+                    </div>
+                    <div class="hint-item" onclick="this.classList.toggle('revealed')">
+                        <i class="fas fa-lock me-2"></i>Reset Hint
+                        <div class="hint-content">
+                            Use online MD5 generator for: admin@company.com
+                        </div>
+                    </div>
+                    <div class="hint-item" onclick="this.classList.toggle('revealed')">
+                        <i class="fas fa-lock me-2"></i>JWT Hint
+                        <div class="hint-content">
+                            Change header to: {"alg":"none","typ":"JWT"}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Common Passwords -->
+                <div class="challenge-card">
+                    <h5><i class="fas fa-list me-2"></i>Common Passwords</h5>
+                    <div class="password-list">
+                        <div>1. 123456</div>
+                        <div>2. password</div>
+                        <div>3. 12345678</div>
+                        <div>4. qwerty</div>
+                        <div>5. 123456789</div>
+                        <div>6. 12345</div>
+                        <div>7. 1234</div>
+                        <div>8. 111111</div>
+                        <div>9. 1234567</div>
+                        <div>10. dragon</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const flags = {
+            brute: 'FLAG{brut3_f0rc3_1s_sl0w}',
+            session: 'FLAG{s3ss10n_h1j4ck_succ3ss}',
+            reset: 'FLAG{w34k_t0k3n_g3n3r4t10n}',
+            jwt: 'FLAG{jwt_n0n3_4lg_byp4ss}'
+        };
+
+        let completedLevels = { brute: false, session: false, reset: false, jwt: false };
+        let currentLevel = 'brute';
+        let bruteAttempts = 0;
+        const correctPassword = 'dragon';
+        const commonPasswords = ['123456', 'password', '12345678', 'qwerty', '123456789', '12345', '1234', '111111', '1234567', 'dragon'];
+
+        function switchLevel(level) {
+            document.querySelectorAll('.level-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.level-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(`level-${level}`).style.display = 'block';
+            document.querySelector(`.level-tab.${level}`).classList.add('active');
+            currentLevel = level;
+        }
+
+        function updateProgress() {
+            const completed = Object.values(completedLevels).filter(v => v).length;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('progressFill').style.width = `${(completed / 4) * 100}%`;
+        }
+
+        function markCompleted(level) {
+            if (!completedLevels[level]) {
+                completedLevels[level] = true;
+                updateProgress();
+            }
+        }
+
+        // ==================== BRUTE FORCE ====================
+        document.getElementById('loginForm-brute').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const password = document.getElementById('password-brute').value;
+            checkPassword(password);
+        });
+
+        function checkPassword(password) {
+            bruteAttempts++;
+            document.getElementById('attemptCount').textContent = bruteAttempts;
+
+            const counter = document.getElementById('attemptCounter');
+            const resultDiv = document.getElementById('result-brute');
+
+            if (bruteAttempts >= 10) {
+                counter.classList.add('locked');
+                document.getElementById('loginBtn-brute').disabled = true;
+                resultDiv.innerHTML = '<div class="alert alert-danger">🔒 Account locked! Too many attempts.</div>';
+                return false;
+            }
+
+            if (password === correctPassword) {
+                resultDiv.innerHTML = `
+                    <div class="flag-display">
+                        🎉 Login Successful!<br>
+                        ${flags.brute}
+                    </div>
+                `;
+                markCompleted('brute');
+                return true;
+            }
+
+            resultDiv.innerHTML = '<div class="alert alert-danger">❌ Invalid password</div>';
+            return false;
+        }
+
+        function startBruteForce() {
+            const listDiv = document.getElementById('passwordList');
+            listDiv.innerHTML = '';
+            let index = 0;
+
+            const interval = setInterval(() => {
+                if (index >= commonPasswords.length || bruteAttempts >= 10) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                const pwd = commonPasswords[index];
+                const item = document.createElement('div');
+                item.className = 'password-item trying';
+                item.innerHTML = `Trying: ${pwd}...`;
+                listDiv.appendChild(item);
+                listDiv.scrollTop = listDiv.scrollHeight;
+
+                setTimeout(() => {
+                    const success = checkPassword(pwd);
+                    item.className = success ? 'password-item success' : 'password-item failed';
+                    item.innerHTML = success ? `✓ ${pwd} - SUCCESS!` : `✗ ${pwd}`;
+                    if (success) clearInterval(interval);
+                }, 300);
+
+                index++;
+            }, 600);
+        }
+
+        // ==================== SESSION HIJACKING ====================
+        function checkSession() {
+            const sessionId = document.getElementById('sessionId').value;
+            const resultDiv = document.getElementById('result-session');
+            const userSpan = document.getElementById('currentUser');
+
+            const sessions = {
+                'session_1001': { user: 'admin', role: 'administrator' },
+                'session_1002': { user: 'john', role: 'user' },
+                'session_1003': { user: 'sarah', role: 'user' },
+                'session_1005': { user: 'guest', role: 'guest' }
+            };
+
+            if (sessions[sessionId]) {
+                const session = sessions[sessionId];
+                userSpan.textContent = session.user;
+
+                if (session.user === 'admin') {
+                    resultDiv.innerHTML = `
+                        <div class="flag-display">
+                            🎉 Welcome Admin!<br>
+                            ${flags.session}
+                        </div>
+                    `;
+                    markCompleted('session');
+                } else {
+                    resultDiv.innerHTML = `<div class="alert alert-info">Logged in as: ${session.user} (${session.role})</div>`;
+                }
+            } else {
+                resultDiv.innerHTML = '<div class="alert alert-danger">Invalid session</div>';
+            }
+        }
+
+        // ==================== PASSWORD RESET ====================
+        const resetTokens = {};
+
+        document.getElementById('resetForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value;
+            const linkDiv = document.getElementById('resetLink');
+
+            // Weak token generation (MD5 simulation)
+            const token = simpleHash(email);
+            resetTokens[token] = email;
+
+            linkDiv.style.display = 'block';
+            linkDiv.innerHTML = `
+                <strong>Reset link sent to:</strong> ${email}<br>
+                <strong>Token:</strong> ${token}<br>
+                <small class="text-warning">⚠️ This token is predictable!</small>
+            `;
+        });
+
+        function simpleHash(str) {
+            // Simplified "hash" for demonstration
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(16).padStart(8, '0');
+        }
+
+        document.getElementById('useTokenForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const token = document.getElementById('resetToken').value;
+            const resultDiv = document.getElementById('result-reset');
+
+            // Check if it's the admin token
+            const adminToken = simpleHash('admin@company.com');
+
+            if (token === adminToken) {
+                resultDiv.innerHTML = `
+                    <div class="flag-display">
+                        🎉 Admin password reset!<br>
+                        ${flags.reset}
+                    </div>
+                `;
+                markCompleted('reset');
+            } else if (resetTokens[token]) {
+                resultDiv.innerHTML = `<div class="alert alert-success">Password reset for: ${resetTokens[token]}</div>`;
+            } else {
+                resultDiv.innerHTML = '<div class="alert alert-danger">Invalid token</div>';
+            }
+        });
+
+        // ==================== JWT ====================
+        const originalJWT = {
+            header: { alg: "HS256", typ: "JWT" },
+            payload: { user: "guest", role: "user", iat: Date.now() }
+        };
+
+        function base64Encode(obj) {
+            return btoa(JSON.stringify(obj)).replace(/=/g, '');
+        }
+
+        function initJWT() {
+            const token = base64Encode(originalJWT.header) + '.' +
+                base64Encode(originalJWT.payload) + '.' +
+                'signature_here';
+
+            document.getElementById('currentJWT').textContent = token;
+            document.getElementById('jwtHeader').value = JSON.stringify(originalJWT.header, null, 2);
+            document.getElementById('jwtPayload').value = JSON.stringify(originalJWT.payload, null, 2);
+        }
+
+        function modifyJWT() {
+            try {
+                const header = JSON.parse(document.getElementById('jwtHeader').value);
+                const payload = JSON.parse(document.getElementById('jwtPayload').value);
+
+                let token = base64Encode(header) + '.' + base64Encode(payload);
+                if (header.alg !== 'none') {
+                    token += '.signature_here';
+                } else {
+                    token += '.';
+                }
+
+                document.getElementById('currentJWT').textContent = token;
+                document.getElementById('result-jwt').innerHTML = '<div class="alert alert-info">Token updated!</div>';
+            } catch (e) {
+                document.getElementById('result-jwt').innerHTML = '<div class="alert alert-danger">Invalid JSON</div>';
+            }
+        }
+
+        function verifyJWT() {
+            try {
+                const header = JSON.parse(document.getElementById('jwtHeader').value);
+                const payload = JSON.parse(document.getElementById('jwtPayload').value);
+                const resultDiv = document.getElementById('result-jwt');
+
+                if (header.alg === 'none' && payload.role === 'admin') {
+                    resultDiv.innerHTML = `
+                        <div class="flag-display">
+                            🎉 Admin access granted!<br>
+                            ${flags.jwt}
+                        </div>
+                    `;
+                    markCompleted('jwt');
+                } else if (payload.role === 'admin') {
+                    resultDiv.innerHTML = '<div class="alert alert-warning">Signature verification failed!</div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="alert alert-info">Access: ' + payload.role + '</div>';
+                }
+            } catch (e) {
+                document.getElementById('result-jwt').innerHTML = '<div class="alert alert-danger">Invalid token</div>';
+            }
+        }
+
+        // Initialize
+        initJWT();
+        updateProgress();
+    </script>
+</body>
+
+</html>

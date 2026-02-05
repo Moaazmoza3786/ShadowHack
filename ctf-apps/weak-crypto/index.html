@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Data Storage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light p-4">
+    <div class="container" style="max-width: 600px;">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="m-0">Secure Data Viewer</h4>
+            </div>
+            <div class="card-body">
+                <p>Welcome to our secure data storage system. All data is encrypted using industry-standard algorithms.
+                </p>
+                <button class="btn btn-primary" onclick="viewData()">View Encrypted Data</button>
+                <div id="output" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // "Encrypted" data (actually just Base64)
+        const encryptedFlag = 'RkxBR3t3ZWFrX2NyeXB0b19pc19kYW5nZXJvdXN9';
+        const encryptedData = {
+            user: 'YWRtaW4=',
+            password: 'cGFzc3dvcmQxMjM=',
+            secret: encryptedFlag
+        };
+
+        function viewData() {
+            const output = document.getElementById('output');
+            output.innerHTML = `
+                <div class="alert alert-info">
+                    <h5>Encrypted Data:</h5>
+                    <pre>${JSON.stringify(encryptedData, null, 2)}</pre>
+                    <small class="text-muted">Note: Data is "encrypted" with Base64 encoding for security.</small>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>

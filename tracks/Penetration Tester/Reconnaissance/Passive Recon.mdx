@@ -1,0 +1,56 @@
+# Passive Recon
+
+Reconnaissance is the most critical phase. If you miss a server, you can't hack it.
+**Passive Recon** means gathering info **without** touching the target's infrastructure. They should not know you are there.
+
+## Sources of Intel
+
+1.  **Whois:** Domain registration info. (Emails, Names, Addresses).
+2.  **DNS Dumpster:** Subdomains and mapping.
+3.  **Social Media:** Employee names, technologies used (LinkedIn is gold).
+4.  **Google Dorks:** Advanced search queries.
+
+## Google Dorking
+
+Using search operators to find sensitive files.
+
+*   `site:target.com filetype:pdf` (Find public documents)
+*   `site:target.com intitle:"index of"` (Directory listing)
+*   `site:github.com "target.com" password` (Particularly dangerous)
+
+## Lab: The Wayback Machine
+
+The internet never forgets. Retrieve a deleted page from `archive.org`.
+We found an old version of the target's contact page.
+
+<TerminalWindow 
+  cmd="curl http://wayback.archive.org/web/20230101/target.com/contact.html" 
+  output="<html>
+...
+<!-- DEPRECATED: Dev Server Access -->
+<!-- User: developer / Pass: BL{W4yB4ck_Tim3_M4chin3} -->
+...
+</html>" 
+/>
+
+The developer left credentials in a comment, then deleted the page. But the archive kept it.
+
+<Quiz 
+  question="Why is Passive Recon considered 'stealthy'?"
+  options={[
+    "It uses a VPN.",
+    "It interacts directly with the target server.",
+    "It relies on public 3rd-party information.",
+    "It uses encrypted packets."
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag found in the archived page?"
+  options={[
+    "BL{W4yB4ck_Tim3_M4chin3}",
+    "BL{G00gl3_D0rk}",
+    "developer",
+    "password123"
+  ]}
+/>

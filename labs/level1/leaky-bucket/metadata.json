@@ -1,0 +1,10 @@
+{
+  "id": "ctf-leaky-bucket",
+  "name": "The Leaky Bucket",
+  "description": "A disgruntled employee left more than just a resignation letter. Can you find the shadow backup?",
+  "difficulty": "easy",
+  "tier": 1,
+  "port": 80,
+  "category": "Web / Exposure",
+  "flag": "AG{unsecure_backups_lead_to_leaks_2024}"
+}

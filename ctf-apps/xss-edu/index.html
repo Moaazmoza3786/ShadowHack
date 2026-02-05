@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Mirror</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light p-5">
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="m-0">Vulnerable Mirror</h4>
+            </div>
+            <div class="card-body">
+                <p>Whatever you type below will be reflected on the page without sanitization.</p>
+                <div class="input-group mb-3">
+                    <input type="text" id="input" class="form-control" placeholder="Type something...">
+                    <button class="btn btn-dark" onclick="reflect()">Reflect</button>
+                </div>
+
+                <hr>
+                <h5>Output:</h5>
+                <div id="output" class="p-3 border bg-white rounded"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function reflect() {
+            const val = document.getElementById('input').value;
+            const output = document.getElementById('output');
+
+            // Vulnerable sink
+            output.innerHTML = val;
+
+            // Execute scripts inserted via innerHTML (requires special handling usually, but for simple <script> it might not run in HTML5 innerHTML. 
+            // However, <img onerror> works. For educational purposes, let's eval if it looks like a script or just use img onerror)
+
+            // Actually, <script> tags inserted via innerHTML do not execute in HTML5.
+            // We need to manually execute it to simulate a vulnerable backend that reflects input.
+
+            if (val.includes('<script>')) {
+                const scriptContent = val.match(/<script>(.*?)<\/script>/)[1];
+                try {
+                    eval(scriptContent);
+                } catch (e) { }
+            }
+        }
+
+        // Hook alert to detect success
+        const originalAlert = window.alert;
+        window.alert = function (msg) {
+            originalAlert(msg);
+            if (msg == 1) {
+                setTimeout(() => {
+                    originalAlert('Good job! You executed an XSS.');
+                }, 500);
+            }
+        };
+    </script>
+</body>
+
+</html>

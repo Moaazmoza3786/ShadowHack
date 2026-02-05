@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 SearchHub - Find Anything</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .container {
+            flex: 1;
+            padding: 30px 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .search-form {
+            padding: 25px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+        }
+
+        .search-btn {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .results {
+            padding: 25px;
+            border-top: 1px solid #e5e7eb;
+            min-height: 150px;
+        }
+
+        .results-title {
+            color: #374151;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .no-results {
+            color: #6b7280;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .no-results .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border: 1px solid #34d399;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-box h4 {
+            color: #065f46;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: #047857;
+            font-size: 0.9rem;
+        }
+
+        .flag-display {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            color: #92400e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+
+        .cookie-display {
+            background: #1e293b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 12px;
+            color: #38bdf8;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>🔍 SearchHub</h1>
+        <p>Find anything on the web</p>
+    </div>
+
+    <div class="container">
+        <div class="search-card">
+            <form class="search-form" onsubmit="search(event)">
+                <input type="text" class="search-input" id="searchInput" placeholder="Enter your search query..."
+                    autocomplete="off">
+                <button type="submit" class="search-btn">
+                    <span>🔎</span> Search
+                </button>
+            </form>
+
+            <div class="results" id="resultsArea">
+                <div class="no-results">
+                    <div class="icon">🔍</div>
+                    <p>Enter a search query to see results...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // The flag is stored in a cookie - but user must extract it via XSS!
+        // We use a separate variable for the secret so it's not visible in document.cookie directly
+        const SECRET_FLAG = 'FLAG{xss_c00k13_st34l3r}';
+
+        // Set a session cookie (without the flag in it directly)
+        document.cookie = "session=user_abc123xyz789; path=/";
+        document.cookie = "theme=dark; path=/";
+
+        // Track if user successfully executed XSS
+        let xssExecuted = false;
+
+        // Override alert to detect if user successfully ran XSS
+        const originalAlert = window.alert;
+        window.alert = function (msg) {
+            xssExecuted = true;
+            originalAlert(msg);
+
+            // Show success after alert is closed
+            setTimeout(() => {
+                showXSSSuccess();
+            }, 100);
+        };
+
+        function showXSSSuccess() {
+            const resultsDiv = document.getElementById('resultsArea');
+
+            // Only show if not already shown
+            if (!document.getElementById('xss-success')) {
+                const successHTML = `
+                    <div class="success-box" id="xss-success">
+                        <h4>✅ XSS Attack Successful!</h4>
+                        <p>You executed JavaScript in the page context!</p>
+                        <div class="cookie-display">
+                            <strong>Session Data Stolen:</strong><br>
+                            ${document.cookie}<br><br>
+                            <strong>Secret Flag:</strong><br>
+                            ${SECRET_FLAG}
+                        </div>
+                        <div class="flag-display">🚩 ${SECRET_FLAG}</div>
+                    </div>
+                `;
+                resultsDiv.innerHTML += successHTML;
+
+                // Notify parent if in iframe
+                if (window.parent !== window) {
+                    try {
+                        window.parent.postMessage({ type: 'CTF_FLAG_FOUND', flag: SECRET_FLAG }, '*');
+                    } catch (e) { }
+                }
+            }
+        }
+
+        function search(event) {
+            event.preventDefault();
+
+            const query = document.getElementById('searchInput').value;
+            const resultsDiv = document.getElementById('resultsArea');
+
+            if (!query.trim()) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        <div class="icon">🔍</div>
+                        <p>Please enter a search query...</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // VULNERABLE: Directly inserting user input into HTML (Reflected XSS)
+            // The user's input is NOT sanitized!
+            resultsDiv.innerHTML = `
+                <h3 class="results-title">Search Results for: ${query}</h3>
+                <div class="no-results">
+                    <div class="icon">📭</div>
+                    <p>No results found for "${query}"</p>
+                </div>
+            `;
+
+            // If XSS was already triggered via alert(), success is shown automatically
+            // Otherwise, check for common XSS patterns for feedback
+            if (!xssExecuted) {
+                setTimeout(() => {
+                    const queryLower = query.toLowerCase();
+
+                    // Check if they're trying XSS but haven't gotten it to execute
+                    if (queryLower.includes('<script') ||
+                        queryLower.includes('onerror') ||
+                        queryLower.includes('onload')) {
+
+                        // If they have alert() in their payload, it should have triggered
+                        // Otherwise give them a hint
+                        if (!queryLower.includes('alert')) {
+                            resultsDiv.innerHTML += `
+                                <div style="background:#fef3c7;border:1px solid #f59e0b;padding:15px;border-radius:10px;margin-top:15px;color:#92400e;">
+                                    💡 Tip: Try using alert() to execute JavaScript and prove XSS!
+                                </div>
+                            `;
+                        }
+                    }
+                }, 200);
+            }
+        }
+    </script>
+</body>
+
+</html>

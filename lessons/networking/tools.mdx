@@ -1,0 +1,38 @@
+---
+title: Network Troubleshooting Tools
+description: Tools for diagnosing network issues.
+---
+
+# Network Troubleshooting Tools
+
+Every hacker and network admin needs a set of tools to diagnose connectivity issues and explore networks.
+
+## Core Tools
+
+### 1. Ping
+Used to test the reachability of a host on an IP network. It measures the round-trip time for messages.
+
+### 2. Traceroute
+Shows the path that a packet takes to reach its destination, listing all the routers (hops) along the way.
+
+### 3. Netstat
+Displays network connections, routing tables, and interface statistics.
+
+<TerminalWindow 
+  title="Using Ping" 
+  command="ping google.com" 
+  output="Pinging google.com [142.250.190.46] with 32 bytes of data:\nReply from 142.250.190.46: bytes=32 time=15ms TTL=117" 
+/>
+
+### 4. Nslookup / Dig
+Used to query DNS records for a domain name.
+
+<InfoBox type="info">
+`dig` is more powerful than `nslookup` and is the standard tool on Linux systems.
+</InfoBox>
+
+<Quiz 
+  question="Which tool is used to show the path a packet takes across the network?" 
+  answer="traceroute" 
+  hint="Also known as `tracert` on Windows." 
+/>

@@ -1,0 +1,44 @@
+---
+title: How the Web Works
+description: Requests, Responses, and the HTTP protocol.
+---
+
+# How the Web Works
+
+Every time you visit a website, your browser is having a conversation with a server. This conversation follows the **HTTP** (Hypertext Transfer Protocol) rules.
+
+## The Request-Response Cycle
+
+1. **Request:** Your browser sends a message to the server (e.g., "Give me index.html").
+2. **Response:** The server sends back a message with a status code (e.g., "200 OK") and the data (HTML, CSS, JS).
+
+<PacketView 
+  source="Browser" 
+  dest="Web Server" 
+  protocol="HTTP" 
+  flags="GET /" 
+  seq="1" 
+/>
+
+## HTTP Verbs
+- **GET:** Retrieve data.
+- **POST:** Submit data (like a login form).
+- **PUT:** Update data.
+- **DELETE:** Remove data.
+
+## Status Codes
+- **200 OK:** Success!
+- **404 Not Found:** The page doesn't exist.
+- **500 Server Error:** Something went wrong on the server side.
+
+<Quiz 
+  question="Which HTTP verb is typically used when submitting a password in a login form?" 
+  answer="POST" 
+  hint="It's for sending data to the server." 
+/>
+
+<Quiz 
+  question="What status code indicates that a page was not found?" 
+  answer="404" 
+  hint="It's a very famous number." 
+/>

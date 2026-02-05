@@ -1,0 +1,102 @@
+#,title,videoUrl,videoId,publishedAt,position
+1,معسكر الامن السيبراني محاضرة #1 مقدمة الى المعسكر,https://www.youtube.com/watch?v=HiDKyQYqd4w&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=1,HiDKyQYqd4w,2024-10-06T16:26:21Z,0
+2,معسكر الامن السيبراني #2 هو ايه يعني network,https://www.youtube.com/watch?v=svN6ArkenA0&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=2,svN6ArkenA0,2024-10-07T09:12:49Z,1
+3,معسكر الامن السيبراني #3 ما هو IP address,https://www.youtube.com/watch?v=eps03HT5vGY&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=3,eps03HT5vGY,2024-10-07T16:35:29Z,2
+4,معسكر الامن السيبراني #4 public ip VS private ip,https://www.youtube.com/watch?v=r4lkUFBM1qA&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=4,r4lkUFBM1qA,2024-10-08T09:00:58Z,3
+5,معسكر الامن السيبراني #5 Subnet Mask,https://www.youtube.com/watch?v=q-04bhNv5hQ&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=5,q-04bhNv5hQ,2024-10-08T17:38:48Z,4
+6,معسكر الامن السيبراني #6 امثلة على Subnet Mask + كيفية حسابها بشكل سريع وتلقائي,https://www.youtube.com/watch?v=bzLYW29AumI&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=6,bzLYW29AumI,2024-10-09T09:00:40Z,5
+7,معسكر الامن السيبراني #7 NAT وانواعها,https://www.youtube.com/watch?v=5NKVfZ2IKH0&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=7,5NKVfZ2IKH0,2024-10-09T17:00:04Z,6
+8,معسكر الامن السيبراني #8 MAC Address,https://www.youtube.com/watch?v=aweK0ABc-dQ&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=8,aweK0ABc-dQ,2024-10-10T09:00:04Z,7
+9,معسكر الامن السيبراني #9 Casting and Transmission mode,https://www.youtube.com/watch?v=bbZpAn3XczY&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=9,bbZpAn3XczY,2024-10-10T17:00:34Z,8
+10,معسكر الامن السيبراني #10 OSI && tcp/ip model,https://www.youtube.com/watch?v=oClnAPsoiQs&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=10,oClnAPsoiQs,2024-10-11T09:00:51Z,9
+11,معسكر الامن السيبراني #11 OSI model (Application & Session & Presentation),https://www.youtube.com/watch?v=3tgBxZ1xynE&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=11,3tgBxZ1xynE,2024-10-11T17:00:04Z,10
+12,معسكر الامن السيبراني #12 OSI model (Transport Layer & TCP Vs UDP),https://www.youtube.com/watch?v=CN8Rj7PlIXE&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=12,CN8Rj7PlIXE,2024-10-12T09:00:16Z,11
+13,معسكر الامن السيبراني #13 OSI model (Network Layer),https://www.youtube.com/watch?v=NNtE6_utCnA&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=13,NNtE6_utCnA,2024-10-12T17:00:21Z,12
+14,معسكر الامن السيبراني #14 OSI model (Data && physical layer),https://www.youtube.com/watch?v=AeShAquxLH4&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=14,AeShAquxLH4,2024-10-13T09:00:15Z,13
+15,معسكر الامن السيبراني #15 Socket && Port Number,https://www.youtube.com/watch?v=PLbloEAiXtc&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=15,PLbloEAiXtc,2024-10-12T18:04:11Z,14
+16,معسكر الامن السيبراني #16 DNS,https://www.youtube.com/watch?v=iR3vb5xEL_o&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=16,iR3vb5xEL_o,2024-10-14T09:00:46Z,15
+17,معسكر الامن السيبراني #17 DHCP كيف بنحصل على ip,https://www.youtube.com/watch?v=QN_xOv4Wx4M&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=17,QN_xOv4Wx4M,2024-10-14T17:00:17Z,16
+18,معسكر الامن السيبراني #18 ARP,https://www.youtube.com/watch?v=NCvLMGwrDbg&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=18,NCvLMGwrDbg,2024-10-15T09:00:15Z,17
+19,معسكر الامن السيبراني #19 network devices(Hub & Switch & Router),https://www.youtube.com/watch?v=DlrgquunK-Y&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=19,DlrgquunK-Y,2024-10-15T17:00:13Z,18
+20,معسكر الامن السيبراني #20 VLAN,https://www.youtube.com/watch?v=EoXRHft0Hyk&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=20,EoXRHft0Hyk,2024-10-16T09:00:14Z,19
+21,معسكر الامن السيبراني #21 جدار الحماية Firewall,https://www.youtube.com/watch?v=IQTjLGC7yGo&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=21,IQTjLGC7yGo,2024-10-16T17:00:27Z,20
+22,معسكر الامن السيبراني #22  منطقه منزوعة السلاح DMZ,https://www.youtube.com/watch?v=8HHElRbeZw8&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=22,8HHElRbeZw8,2024-10-17T09:00:06Z,21
+23,معسكر الامن السيبراني #23 VPN,https://www.youtube.com/watch?v=omifx4HuLfI&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=23,omifx4HuLfI,2024-10-17T17:00:42Z,22
+24,معسكر الامن السيبراني #24 Http VS Https,https://www.youtube.com/watch?v=nXFStOJjDg8&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=24,nXFStOJjDg8,2024-10-20T09:00:50Z,23
+25,معسكر الامن السيبراني #25 HTTP Status Code,https://www.youtube.com/watch?v=VwCmLK0PimI&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=25,VwCmLK0PimI,2024-10-21T09:00:28Z,24
+26,معسكر الامن السيبراني #26 Cookie VS Session,https://www.youtube.com/watch?v=UiBZSPzDvgo&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=26,UiBZSPzDvgo,2024-10-22T09:00:21Z,25
+27,معسكر الامن السيبراني #27 Interpreter vs Compiler,https://www.youtube.com/watch?v=YOGd2yFxN-U&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=27,YOGd2yFxN-U,2024-10-27T09:00:30Z,26
+28,معسكر الامن السيبراني #28 تحميل Dev C++,https://www.youtube.com/watch?v=sFvObbQh7Co&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=28,sFvObbQh7Co,2024-10-27T17:00:52Z,27
+29,معسكر الامن السيبراني #29 Escape Sequence,https://www.youtube.com/watch?v=rV6grh6IhiM&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=29,rV6grh6IhiM,2024-10-28T09:00:54Z,28
+30,معسكر الامن السيبراني #30 Variables && Data type,https://www.youtube.com/watch?v=npmPTdRpUSg&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=30,npmPTdRpUSg,2024-10-28T17:00:53Z,29
+31,معسكر الامن السيبراني #31 Basic Arithmetic,https://www.youtube.com/watch?v=h0_LZkK_NOs&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=31,h0_LZkK_NOs,2024-10-29T09:00:43Z,30
+32,معسكر الامن السيبراني #32 Postfix and Prefix,https://www.youtube.com/watch?v=dvdFpLNkKq8&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=32,dvdFpLNkKq8,2024-10-29T17:00:40Z,31
+33,معسكر الامن السيبراني #33 Variable Scope,https://www.youtube.com/watch?v=2Ip6MRIe4Hw&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=33,2Ip6MRIe4Hw,2024-10-30T09:00:05Z,32
+34,معسكر الامن السيبراني #34 Selection Statement,https://www.youtube.com/watch?v=mm8prkaXw3w&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=34,mm8prkaXw3w,2024-10-30T17:01:00Z,33
+35,معسكر الامن السيبراني #35 Logical Operators,https://www.youtube.com/watch?v=WRSaTqTH2F4&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=35,WRSaTqTH2F4,2024-10-31T09:00:35Z,34
+36,معسكر الامن السيبراني #36  Selection Statement With Logical Operators,https://www.youtube.com/watch?v=yLmTjXMnGRc&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=36,yLmTjXMnGRc,2024-10-31T17:01:04Z,35
+37,معسكر الامن السيبراني #37 Switch,https://www.youtube.com/watch?v=BsOutu-jHeA&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=37,BsOutu-jHeA,2024-11-01T09:00:11Z,36
+38,معسكر الامن السيبراني #38 While Loop,https://www.youtube.com/watch?v=0MQpmTc0kAk&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=38,0MQpmTc0kAk,2024-11-01T17:00:01Z,37
+39,معسكر الامن السيبراني #39  For Loop,https://www.youtube.com/watch?v=8ic7bX40ENM&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=39,8ic7bX40ENM,2024-11-02T09:00:13Z,38
+40,معسكر الامن السيبراني #40  Do-While Loop,https://www.youtube.com/watch?v=uAbr9CnqVjM&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=40,uAbr9CnqVjM,2024-11-02T17:00:52Z,39
+41,معسكر الامن السيبراني #41  Break and continue + لعبه توقعات,https://www.youtube.com/watch?v=nsHdIoeINHA&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=41,nsHdIoeINHA,2024-11-03T09:00:49Z,40
+42,معسكر الامن السيبراني #42 Nested Loop,https://www.youtube.com/watch?v=KQc-53oSkAc&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=42,KQc-53oSkAc,2024-11-03T17:00:21Z,41
+43,معسكر الامن السيبراني #43 Function,https://www.youtube.com/watch?v=pS6dSoLZgMI&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=43,pS6dSoLZgMI,2024-11-04T09:00:49Z,42
+44,معسكر الامن السيبراني #44 (Math)Built-in Function,https://www.youtube.com/watch?v=4tdT3a5-u9w&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=44,4tdT3a5-u9w,2024-11-04T17:00:07Z,43
+45,معسكر الامن السيبراني #45 (Algorithms)Built-in Function,https://www.youtube.com/watch?v=LZ9rEIWE5a0&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=45,LZ9rEIWE5a0,2024-11-05T09:00:21Z,44
+46,معسكر الامن السيبراني #46 Call By Reference vs Call By Value,https://www.youtube.com/watch?v=m87GSA86-24&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=46,m87GSA86-24,2024-11-05T17:00:46Z,45
+47,معسكر الامن السيبراني #47 Function Recursion,https://www.youtube.com/watch?v=8fO1MNk1gJY&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=47,8fO1MNk1gJY,2024-11-06T09:00:08Z,46
+48,معسكر الامن السيبراني #48 Array طرق تعريفها,https://www.youtube.com/watch?v=yJZ7P3VVWWA&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=48,yJZ7P3VVWWA,2024-11-06T17:01:06Z,47
+49,معسكر الامن السيبراني #49 Array طرق التعامل معها,https://www.youtube.com/watch?v=Z3rKdIuqV_U&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=49,Z3rKdIuqV_U,2024-11-07T09:00:36Z,48
+50,معسكر الامن السيبراني #50 ما هو نظام لينكس linux,https://www.youtube.com/watch?v=ICk74KhCv6M&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=50,ICk74KhCv6M,2024-11-09T09:00:14Z,49
+51,معسكر الامن السيبراني #51  تثبيت الكالي لينكس كنظام وهمي Download Kali Linux,https://www.youtube.com/watch?v=BYtlOs8s4a4&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=51,BYtlOs8s4a4,2024-11-09T17:00:15Z,50
+52,معسكر الامن السيبراني #52 Basic Command part 1,https://www.youtube.com/watch?v=j3KS1G8e_XU&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=52,j3KS1G8e_XU,2024-11-10T09:00:43Z,51
+53,معسكر الامن السيبراني #53 Basic Command part 2,https://www.youtube.com/watch?v=S03YJFufEDI&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=53,S03YJFufEDI,2024-11-10T17:00:25Z,52
+54,معسكر الامن السيبراني #54  Relative Path vs Absolute Path,https://www.youtube.com/watch?v=FLgIp3WY2kc&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=54,FLgIp3WY2kc,2024-11-11T09:00:13Z,53
+55,معسكر الامن السيبراني #55 Root User,https://www.youtube.com/watch?v=trzY7I2R7MQ&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=55,trzY7I2R7MQ,2024-11-11T17:00:53Z,54
+56,معسكر الامن السيبراني #56 Basic Command part 3,https://www.youtube.com/watch?v=gYbQCnusYcc&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=56,gYbQCnusYcc,2024-11-12T09:00:40Z,55
+57,معسكر الامن السيبراني #57 مدير الحزم في اللينكس Package Manager(APT),https://www.youtube.com/watch?v=wAJ1468bzQU&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=57,wAJ1468bzQU,2024-11-12T17:00:57Z,56
+58,معسكر الامن السيبراني #58 الصلاحيات في اللينكس Permission in Linux,https://www.youtube.com/watch?v=AgO1UchgL_8&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=58,AgO1UchgL_8,2024-11-13T09:00:09Z,57
+59,معسكر الامن السيبراني #59 Basic Command part 4,https://www.youtube.com/watch?v=KnmAdAzLAyw&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=59,KnmAdAzLAyw,2024-11-13T17:00:20Z,58
+60,معسكر الامن السيبراني #60 فك الملفات المضغوطه + والتعامل مع @GitHub,https://www.youtube.com/watch?v=qsaNHwSPnC8&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=60,qsaNHwSPnC8,2024-11-14T09:00:51Z,59
+61,معسكر الامن السيبراني #61   Redirection in Linux,https://www.youtube.com/watch?v=QfJI6DhLFjE&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=61,QfJI6DhLFjE,2024-11-14T17:00:23Z,60
+62,معسكر الامن السيبراني #62 Information security vs Cyber security,https://www.youtube.com/watch?v=HKsX0gIW6go&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=62,HKsX0gIW6go,2024-11-16T09:00:17Z,61
+63,معسكر الامن السيبراني #63 CIA triad,https://www.youtube.com/watch?v=uYDWLC70sEw&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=63,uYDWLC70sEw,2024-11-16T17:00:49Z,62
+64,معسكر الامن السيبراني #64 مصطلحات سيبرانيه Information Security Terminology,https://www.youtube.com/watch?v=6-O2RbI7ZWA&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=64,6-O2RbI7ZWA,2024-11-17T09:00:05Z,63
+65,معسكر الامن السيبراني #65 انواع ممثلين التهديدات Types of Threat Actor,https://www.youtube.com/watch?v=MozLePTNRpA&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=65,MozLePTNRpA,2024-11-17T17:00:17Z,64
+66,معسكر الامن السيبراني #66 مبادئ اساسيه في الدفاع security principles for defenses,https://www.youtube.com/watch?v=mvPF-X-UU2k&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=66,mvPF-X-UU2k,2024-11-18T09:00:48Z,65
+67,معسكر الامن السيبراني #67  البرامج الخبيثة والفيروسات والديدان Viruses vs Worm,https://www.youtube.com/watch?v=kGnLu43N5vs&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=67,kGnLu43N5vs,2024-11-18T17:00:56Z,66
+68,معسكر الامن السيبراني #68  Trojan and Ransomware,https://www.youtube.com/watch?v=ZW0qfE_0-Qo&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=68,ZW0qfE_0-Qo,2024-11-19T09:00:38Z,67
+69,معسكر الامن السيبراني #69  Rootkits,https://www.youtube.com/watch?v=1OuZG2RPz3U&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=69,1OuZG2RPz3U,2024-11-19T17:00:01Z,68
+70,"معسكر الامن السيبراني #70  Spyware , Key loggers and Adware",https://www.youtube.com/watch?v=lEllSQZwIQ4&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=70,lEllSQZwIQ4,2024-11-20T09:00:45Z,69
+71,معسكر الامن السيبراني #71  Logic Bomb and Backdoor,https://www.youtube.com/watch?v=f7dwdO-Wzxk&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=71,f7dwdO-Wzxk,2024-11-20T17:00:42Z,70
+72,معسكر الامن السيبراني #72  الزومبي وهجوم حجب الخدمة DDOS attack and zombie,https://www.youtube.com/watch?v=N54rbj8AbYo&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=72,N54rbj8AbYo,2024-11-21T09:00:30Z,71
+73,معسكر الامن السيبراني #73  الهندسة الاجتماعية وانواعها Social engineering,https://www.youtube.com/watch?v=O0p5nGh_4so&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=73,O0p5nGh_4so,2024-11-21T17:00:19Z,72
+74,معسكر الامن السيبراني #74 هجوم الرجل في المنتصف man in the middle attack,https://www.youtube.com/watch?v=dUQP4AF4wAc&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=74,dUQP4AF4wAc,2024-11-22T09:00:42Z,73
+75,معسكر الامن السيبراني #75 رفع الصلاحيات وهجوم اليوم صفر,https://www.youtube.com/watch?v=2BwlgEpQFJU&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=75,2BwlgEpQFJU,2024-11-22T17:00:02Z,74
+76,معسكر الامن السيبراني #76 Cross-Site Scripting (XSS),https://www.youtube.com/watch?v=Aevfl0urRxk&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=76,Aevfl0urRxk,2024-11-23T09:00:09Z,75
+77,معسكر الامن السيبراني #77 حقن قواعد البيانات SQL injection,https://www.youtube.com/watch?v=spWiy6Y5eB8&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=77,spWiy6Y5eB8,2024-11-23T17:00:53Z,76
+78,معسكر الامن السيبراني #78   Buffer overflow attack,https://www.youtube.com/watch?v=y-cG7yEwHXw&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=78,y-cG7yEwHXw,2024-11-24T09:00:54Z,77
+79,معسكر الامن السيبراني #79 علم التشفير  Cryptography,https://www.youtube.com/watch?v=y-RufZ8_1qA&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=79,y-RufZ8_1qA,2024-11-24T17:01:01Z,78
+80,معسكر الامن السيبراني #80 التشفير المتماثل والغير متماثل asymmetric encryption vs symmetric,https://www.youtube.com/watch?v=0MHtDsyH1Ls&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=80,0MHtDsyH1Ls,2024-11-25T15:00:01Z,79
+81,معسكر الامن السيبراني #81 اختبار الاختراق Penetration Testing,https://www.youtube.com/watch?v=Y77Vo5M49kc&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=81,Y77Vo5M49kc,2024-11-30T09:00:37Z,80
+82,معسكر الامن السيبراني #82 جمع المعلومات information gathering,https://www.youtube.com/watch?v=YIHfoldZTcw&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=82,YIHfoldZTcw,2024-12-01T09:00:34Z,81
+83,معسكر الامن السيبراني #83 جمع المعلومات الجزء الثاني  information gathering part 2,https://www.youtube.com/watch?v=CoUqF_NgkhY&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=83,CoUqF_NgkhY,2024-12-01T17:00:11Z,82
+84,معسكر الامن السيبراني #84 Lab OSINT,https://www.youtube.com/watch?v=bpjc4zX5EjE&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=84,bpjc4zX5EjE,2024-12-02T09:00:39Z,83
+85,معسكر الامن السيبراني #85 الاستطلاع Scanning and Fingerprinting,https://www.youtube.com/watch?v=9Ivn1wo5W1w&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=85,9Ivn1wo5W1w,2024-12-02T17:00:08Z,84
+86,معسكر الامن السيبراني #86 شرح طريقة استخدام موقع Tryhackme,https://www.youtube.com/watch?v=3eNbBEQk8f4&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=86,3eNbBEQk8f4,2024-12-03T09:00:02Z,85
+87,معسكر الامن السيبراني #87 NMAP,https://www.youtube.com/watch?v=PDdQQ9Zav0M&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=87,PDdQQ9Zav0M,2024-12-03T17:00:23Z,86
+88,معسكر الامن السيبراني #88 تقييم الثغرات Vulnerability Assessment,https://www.youtube.com/watch?v=h_PMFpu41LM&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=88,h_PMFpu41LM,2024-12-04T09:00:53Z,87
+89,معسكر الامن السيبراني #89 استغلال الثغرات Exploit,https://www.youtube.com/watch?v=Oqx5CVDPOnQ&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=89,Oqx5CVDPOnQ,2024-12-05T09:00:19Z,88
+90,معسكر الامن السيبراني #90 هجومات الويب Web Application Attack,https://www.youtube.com/watch?v=rbDZeigyR4s&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=90,rbDZeigyR4s,2024-12-06T09:00:58Z,89
+91,معسكر الامن السيبراني #91 Gobuster Tool,https://www.youtube.com/watch?v=WUVofe5vAVg&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=91,WUVofe5vAVg,2024-12-06T17:00:36Z,90
+92,معسكر الامن السيبراني #92 Wireshark Tool,https://www.youtube.com/watch?v=2iHHtrKAGLI&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=92,2iHHtrKAGLI,2024-12-07T09:00:04Z,91
+93,معسكر الامن السيبراني #93 John the Ripper Tool,https://www.youtube.com/watch?v=a5sU0i3xvyA&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=93,a5sU0i3xvyA,2024-12-07T17:00:00Z,92
+94,معسكر الامن السيبراني #94 Burp Suite,https://www.youtube.com/watch?v=--j1IIjLOFs&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=94,--j1IIjLOFs,2024-12-08T09:00:00Z,93
+95,معسكر الامن السيبراني #95 هجوم القوة الغاشمة Hydra,https://www.youtube.com/watch?v=3Calir6KnQ8&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=95,3Calir6KnQ8,2024-12-08T17:00:04Z,94
+96,معسكر الامن السيبراني #96 Metasploit Framework,https://www.youtube.com/watch?v=GrGJysotIu4&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=96,GrGJysotIu4,2024-12-09T09:00:26Z,95
+97,معسكر الامن السيبراني #97 حل مشين RootMe,https://www.youtube.com/watch?v=o_xhHTbp8fg&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=97,o_xhHTbp8fg,2024-12-09T17:00:49Z,96
+98,معسكر الامن السيبراني #98 استغلال ثغرة في الويندوز 7 Blue,https://www.youtube.com/watch?v=8-MRym9nE6A&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=98,8-MRym9nE6A,2024-12-10T09:00:07Z,97
+99,معسكر الامن السيبراني #99 حل مشين Brooklyn Nine Nine,https://www.youtube.com/watch?v=_UXhsOnCmbw&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=99,_UXhsOnCmbw,2024-12-10T17:00:38Z,98
+100,معسكر الامن السيبراني #100 النهاية The Last Dance,https://www.youtube.com/watch?v=k4Ovm-kil_0&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=100,k4Ovm-kil_0,2024-12-11T15:06:35Z,99
+101,معسكر الامن السيبراني على يوديمي بفلوس!!,https://www.youtube.com/watch?v=HCGLYUAM65Q&list=PLPE_LivMIWm51WrKEc00auJnn0cxN-pWL&index=101,HCGLYUAM65Q,2024-12-13T12:18:19Z,100

@@ -1,0 +1,99 @@
+
+# Enumerating Web Servers: Nikto & Gobuster
+
+## The Web as the Primary Attack Surface
+Web applications are the most common entry point for attackers because they are *designed* to be accessible to the public.
+
+In this phase, we move from network-level scanning to application-level enumeration.
+
+## 1. Nikto: The Web Vulnerability Scanner
+Nikto is a classic Perl script that scans web servers for:
+-   Outdated server software.
+-   Dangerous files (e.g., `test.php`, `backup.sql`).
+-   Misconfigurations (e.g., Missing HTTP Headers).
+
+<TerminalSimulator 
+    cmd="nikto -h http://10.10.10.5" 
+    output={`- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.10.10.5
++ Target Hostname:    10.10.10.5
++ Target Port:        80
+---------------------------------------------------------------------------
++ Server: Apache/2.4.29 (Ubuntu)
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined.
++ /icons/README: Apache default file found.
++ /admin/: Directory indexing found.
++ /config.php.bak: Backup file found. (Solution: Delete it)
++ 7654 items checked: 0 error(s) and 5 item(s) reported
+`} 
+/>
+
+<Note type="warning">
+**Noise Warning:** Nikto is extremely "loud". It generates thousands of 404 requests. Do NOT use this on a production client without explicit permission for "noisy/automated scanning."
+</Note>
+
+## 2. Directory Busting (Gobuster / Dirbuster)
+Web servers often host hidden files that aren't linked from the homepage. 
+**Directory Busting** is the process of brute-forcing these URL paths using a wordlist.
+
+### Tool: Gobuster
+A fast, Go-based directory brute-forcer.
+
+**Command Structure:**
+`gobuster dir -u <URL> -w <WORDLIST> -x <EXTENSIONS>`
+
+<TerminalSimulator 
+    cmd="gobuster dir -u http://10.10.10.5 -w /usr/share/wordlists/dirb/common.txt -x php,txt" 
+    output={`===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.10.10.5
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Status codes:            200,204,301,302,307,401,403
+[+] Extensions:              php,txt
+===============================================================
+/.hta                (Status: 403) [Size: 277]
+/.htpasswd           (Status: 403) [Size: 277]
+/admin               (Status: 301) [Size: 312] [--> http://10.10.10.5/admin/]
+/config.php          (Status: 200) [Size: 0]
+/index.php           (Status: 200) [Size: 10918]
+/robots.txt          (Status: 200) [Size: 102]
+/uploads             (Status: 301) [Size: 314] [--> http://10.10.10.5/uploads/]
+===============================================================
+`} 
+/>
+
+### Analyzing the Output
+*   `/admin` (301): Redirects to the admin panel. A prime target for brute-force attacks.
+*   `/config.php`: Likely contains database credentials.
+*   `/robots.txt`: Often lists "disallowed" directories that the admin doesn't want Google to index (which makes them interesting to us).
+
+## 3. Robots.txt Analysis
+Always check `http://target.com/robots.txt`. It's a goldmine of forbidden paths.
+
+<CodeBlock language="text" showLineNumbers code={`User-agent: *
+Disallow: /admin/
+Disallow: /backup/
+Disallow: /private/
+Disallow: /dev/
+`} />
+
+In the example above, the admin has kindly provided us with a list of sensitive folders to attack.
+
+---
+
+<Quiz 
+    question="Why is it important to use the '-x php,txt' flag in Gobuster?" 
+    options={[
+        "To speed up the scan by ignoring other files",
+        "To brute-force files with specific extensions that might find hidden scripts or notes",
+        "It tells the server we are using a PHP client",
+        "It is required for the tool to run"
+    ]} 
+    answer="To brute-force files with specific extensions that might find hidden scripts or notes" 
+/>
