@@ -75,6 +75,14 @@ except ImportError:
     register_search_routes = None
     print("⚠ Search Routes: NOT AVAILABLE")
 
+# Import chat routes
+try:
+    from chat_routes import register_chat_routes
+    print("✓ Chat Routes: READY")
+except ImportError:
+    register_chat_routes = None
+    print("⚠ Chat Routes: NOT AVAILABLE")
+
 
 def create_app(config_name=None):
     """Application factory pattern"""
@@ -599,6 +607,10 @@ if register_profile_routes:
 # Register search routes
 if register_search_routes:
     register_search_routes(app)
+
+# Register chat routes
+if register_chat_routes:
+    register_chat_routes(app)
 
 # ==================== AUTOMATION API ====================
 

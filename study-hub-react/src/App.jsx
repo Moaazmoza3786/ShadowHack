@@ -70,6 +70,7 @@ import UserProfile from './pages/UserProfile';
 import SettingsPanel from './pages/SettingsPanel';
 import Bookmarks from './pages/Bookmarks';
 import GlobalSearch from './components/GlobalSearch';
+import ChatInterface from './pages/ChatInterface';
 import RedTeamPath from './pages/paths/RedTeamPath';
 import BlueTeamPath from './pages/paths/BlueTeamPath';
 import SOCPath from './pages/paths/SOCPath';
@@ -164,6 +165,7 @@ function App() {
                   <Route path="/profile" element={<UserProfile />} />
                   <Route path="/settings" element={<SettingsPanel />} />
                   <Route path="/bookmarks" element={<Bookmarks />} />
+                  <Route path="/chat" element={<ChatInterface />} />
 
                   <Route path="/paths/red" element={<RedTeamPath />} />
                   <Route path="/paths/blue" element={<BlueTeamPath />} />

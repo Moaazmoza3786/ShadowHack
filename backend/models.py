@@ -1234,3 +1234,41 @@ class Bookmark(db.Model):
         }
 
 
+
+# ==================== CHAT MODELS (Phase 13) ====================
+
+class ChatMessage(db.Model):
+    """Unified model for Team Chat and Direct Messages"""
+    __tablename__ = 'chat_messages'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    
+    # Target (Either Team ID or Recipient ID must be set)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=True, index=True)
+    recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True, index=True)
+    
+    content = db.Column(db.Text, nullable=False)
+    message_type = db.Column(db.String(20), default='text')  # text, image, code
+    
+    is_read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    
+    # Relationships
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_messages')
+    recipient = db.relationship('User', foreign_keys=[recipient_id], backref='received_messages')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'sender_id': self.sender_id,
+            'sender_name': self.sender.username if self.sender else 'Unknown',
+            'sender_avatar': self.sender.avatar_url if self.sender else None,
+            'team_id': self.team_id,
+            'recipient_id': self.recipient_id,
+            'content': self.content,
+            'type': self.message_type,
+            'is_read': self.is_read,
+            'is_me': False, # To be handled by frontend or API wrapper
+            'created_at': self.created_at.isoformat()
+        }
