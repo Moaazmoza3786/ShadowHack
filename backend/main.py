@@ -5,6 +5,7 @@ Enhanced version with SQLAlchemy ORM and Blueprint-based API
 
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_socketio import SocketIO
 import os
 from dotenv import load_dotenv
 
@@ -591,7 +592,7 @@ def seed_v2_data():
     print("✓ Professional V2 Content Seeded Successfully")
 
 
-# ==================== MAIN ====================
+# ==================== MAIN ENTRY POINT ====================
 
 
 # === GUNICORN PRODUCTION EXPORT ===

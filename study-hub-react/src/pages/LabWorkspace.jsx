@@ -25,6 +25,7 @@ const LabWorkspace = () => {
     const [userFlag, setUserFlag] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [feedback, setFeedback] = useState({ message: '', type: '' });
+    const [labStatus, setLabStatus] = useState('stopped');
 
     // Check if machine is already solved via AppContext
     const isSolved = user.solvedCTFTasks?.includes(`${id}-user`) || user.solvedCTFTasks?.includes(id);
@@ -117,7 +118,7 @@ const LabWorkspace = () => {
                         <LabControlPanel
                             labId={id}
                             userId={user?.id || 1}
-                            onStatusChange={(status) => console.log('Lab status:', status)}
+                            onStatusChange={setLabStatus}
                         />
 
                         {/* Objectives */}
@@ -212,23 +213,9 @@ const LabWorkspace = () => {
                         <CyberTerminal
                             initialHeight="100%"
                             title={`ROOT@CODESPACE [${machine.name}]`}
-                            isConnected={true}
-                            onCommand={async (cmd) => {
-                                try {
-                                    const response = await fetch(`${apiUrl}/labs/execute`, {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({
-                                            user_id: user.id || 1,
-                                            command: cmd
-                                        })
-                                    });
-                                    const data = await response.json();
-                                    return data.output || data.error || 'Command executed.';
-                                } catch (err) {
-                                    return 'Connection to neural terminal failed.';
-                                }
-                            }}
+                            isConnected={labStatus === 'running'}
+                            labId={id}
+                            userId={user?.id || 1}
                         />
                     </div>
                 </div>
