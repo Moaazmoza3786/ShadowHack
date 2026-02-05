@@ -24,5 +24,14 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     chunkSizeWarningLimit: 2500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['lucide-react', 'framer-motion'],
+          terminal: ['@xterm/xterm', '@xterm/addon-fit', 'socket.io-client']
+        }
+      }
+    }
   }
 })

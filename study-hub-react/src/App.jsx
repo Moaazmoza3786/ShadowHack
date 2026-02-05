@@ -70,7 +70,6 @@ import UserProfile from './pages/UserProfile';
 import SettingsPanel from './pages/SettingsPanel';
 import Bookmarks from './pages/Bookmarks';
 import GlobalSearch from './components/GlobalSearch';
-import GlobalSearch from './components/GlobalSearch';
 import ChatInterface from './pages/ChatInterface';
 import AdminDashboard from './pages/AdminDashboard';
 import RedTeamPath from './pages/paths/RedTeamPath';
@@ -95,95 +94,92 @@ function App() {
             <Route path="/l/auth" element={<LandingNode />} />
 
             {/* Application with MainLayout */}
-            <Route path="/*" element={
-              <MainLayout>
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/courses" element={<Courses />} />
-                  <Route path="/course/:id" element={<CourseDetail />} />
-                  <Route path="/course/:courseId/lesson/:lessonId" element={<LessonViewer />} />
-                  <Route path="/ctf" element={<CTF />} />
-                  <Route path="/ctf/:roomId" element={<CTFRoomDetail />} />
-                  <Route path="/ctf/daily" element={<DailyCTF />} />
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/course/:id" element={<CourseDetail />} />
+              <Route path="/lesson/:courseId/:moduleId/:lessonId" element={<LessonViewer />} />
+              <Route path="/ctf" element={<CTF />} />
+              <Route path="/ctf/:roomId" element={<CTFRoomDetail />} />
+              <Route path="/ctf/daily" element={<DailyCTF />} />
 
-                  <Route path="/labs" element={<Labs />} />
-                  <Route path="/labs/workspace/:id" element={<LabWorkspace />} />
-                  <Route path="/labs/free" element={<FreeLabs />} />
-                  <Route path="/labs/pro" element={<ProLabs />} />
-                  <Route path="/labs/campaigns" element={<Campaigns />} />
+              <Route path="/labs" element={<Labs />} />
+              <Route path="/labs/workspace/:id" element={<LabWorkspace />} />
+              <Route path="/labs/free" element={<FreeLabs />} />
+              <Route path="/labs/pro" element={<ProLabs />} />
+              <Route path="/labs/campaigns" element={<Campaigns />} />
 
-                  <Route path="/achievements" element={<Achievements />} />
-                  <Route path="/settings" element={<Settings />} />
+              <Route path="/achievements" element={<Achievements />} />
+              <Route path="/settings" element={<Settings />} />
 
-                  <Route path="/youtube-hub" element={<YouTubeHub />} />
-                  <Route path="/owasp-range" element={<OWASPRange />} />
-                  <Route path="/owasp-range/:id/:view" element={<OWASPModule />} />
+              <Route path="/youtube-hub" element={<YouTubeHub />} />
+              <Route path="/owasp-range" element={<OWASPRange />} />
+              <Route path="/owasp-range/:id/:view" element={<OWASPModule />} />
 
-                  <Route path="/career-hub" element={<CareerHub />} />
-                  <Route path="/second-brain" element={<SecondBrain />} />
-                  <Route path="/legacy-tracks" element={<LegacyTracks />} />
-                  <Route path="/specs" element={<ShadowHackSpecs />} />
+              <Route path="/career-hub" element={<CareerHub />} />
+              <Route path="/second-brain" element={<SecondBrain />} />
+              <Route path="/legacy-tracks" element={<LegacyTracks />} />
+              <Route path="/specs" element={<ShadowHackSpecs />} />
 
-                  <Route path="/tools" element={<ToolsHub />} />
-                  <Route path="/tools/payload-gen" element={<PayloadGenerator />} />
-                  <Route path="/tools/report-builder" element={<ReportBuilder />} />
-                  <Route path="/tools/encoder" element={<EncoderTool />} />
-                  {/* <Route path="/tools/cheatsheets" element={<Cheatsheets />} /> */}
-                  <Route path="/tools/web-exploitation" element={<WebExploitation />} />
-                  <Route path="/tools/campaign-manager" element={<CampaignManager />} />
-                  <Route path="/tools/js-monitor" element={<JSMonitorPro />} />
-                  <Route path="/tools/target-manager" element={<TargetManager />} />
-                  <Route path="/tools/recon-lab" element={<ReconLab />} />
-                  <Route path="/tools/api-security" element={<APISecurityLab />} />
-                  <Route path="/tools/malware-sandbox" element={<MalwareSandbox />} />
-                  <Route path="/tools/osint-lab" element={<OSINTPro />} />
-                  <Route path="/tools/ad-attack-lab" element={<ADAttackLab />} />
-                  <Route path="/tools/finding-reporter" element={<FindingReporter />} />
-                  <Route path="/tools/cve-radar" element={<CVERadar />} />
-                  <Route path="/tools/cve-museum" element={<CVEMuseum />} />
-                  <Route path="/tools/report-builder" element={<ReportBuilder />} />
-                  <Route path="/tools/hash-identifier" element={<HashIdentifier />} />
-                  <Route path="/tools/subnet-calc" element={<SubnetCalculator />} />
-                  <Route path="/tools/xss-payloads" element={<XSSPayloads />} />
-                  <Route path="/tools/sqli-payloads" element={<SQLiPayloads />} />
-                  <Route path="/tools/file-transfer" element={<FileTransferHelper />} />
-                  <Route path="/tools/privesc-lab" element={<PrivEscPro />} />
-                  <Route path="/tools/command-ref" element={<CommandReference />} />
-                  <Route path="/tools/mitre-attack" element={<MitreAttack />} />
-                  <Route path="/tools/social-eng" element={<SocialEngineeringPro />} />
-                  <Route path="/tools/persona-factory" element={<PersonaPro />} />
-                  <Route path="/tools/password-cracker" element={<PasswordCracker />} />
-                  <Route path="/tools/crypto-lab" element={<CryptoForge />} />
-                  <Route path="/tools/stego-lab" element={<StegoAnalyst />} />
-                  <Route path="/tools/devsecops-lab" element={<DevSecOpsLab />} />
-                  <Route path="/tools/c2-red-ops" element={<C2CommandCenter />} />
-                  <Route path="/tools/cloud-security" element={<CloudSecurityPro />} />
-                  <Route path="/cyber-intel" element={<CyberIntel />} />
-                  <Route path="/cyber-ops" element={<CyberOpsDashboard />} />
-                  <Route path="/teams" element={<TeamsHub />} />
-                  <Route path="/missions" element={<DailyMissions />} />
-                  <Route path="/analytics" element={<AnalyticsDashboard />} />
-                  <Route path="/assessments" element={<SkillAssessment />} />
-                  <Route path="/activity" element={<ActivityFeed />} />
-                  <Route path="/profile" element={<UserProfile />} />
-                  <Route path="/settings" element={<SettingsPanel />} />
-                  <Route path="/bookmarks" element={<Bookmarks />} />
-                  <Route path="/bookmarks" element={<Bookmarks />} />
-                  <Route path="/chat" element={<ChatInterface />} />
-                  <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/tools" element={<ToolsHub />} />
+              <Route path="/tools/payload-gen" element={<PayloadGenerator />} />
+              <Route path="/tools/report-builder" element={<ReportBuilder />} />
+              <Route path="/tools/encoder" element={<EncoderTool />} />
+              {/* <Route path="/tools/cheatsheets" element={<Cheatsheets />} /> */}
+              <Route path="/tools/web-exploitation" element={<WebExploitation />} />
+              <Route path="/tools/campaign-manager" element={<CampaignManager />} />
+              <Route path="/tools/js-monitor" element={<JSMonitorPro />} />
+              <Route path="/tools/target-manager" element={<TargetManager />} />
+              <Route path="/tools/recon-lab" element={<ReconLab />} />
+              <Route path="/tools/api-security" element={<APISecurityLab />} />
+              <Route path="/tools/malware-sandbox" element={<MalwareSandbox />} />
+              <Route path="/tools/osint-lab" element={<OSINTPro />} />
+              <Route path="/tools/ad-attack-lab" element={<ADAttackLab />} />
+              <Route path="/tools/finding-reporter" element={<FindingReporter />} />
+              <Route path="/tools/cve-radar" element={<CVERadar />} />
+              <Route path="/tools/cve-museum" element={<CVEMuseum />} />
+              <Route path="/tools/report-builder" element={<ReportBuilder />} />
+              <Route path="/tools/hash-identifier" element={<HashIdentifier />} />
+              <Route path="/tools/subnet-calc" element={<SubnetCalculator />} />
+              <Route path="/tools/xss-payloads" element={<XSSPayloads />} />
+              <Route path="/tools/sqli-payloads" element={<SQLiPayloads />} />
+              <Route path="/tools/file-transfer" element={<FileTransferHelper />} />
+              <Route path="/tools/privesc-lab" element={<PrivEscPro />} />
+              <Route path="/tools/command-ref" element={<CommandReference />} />
+              <Route path="/tools/mitre-attack" element={<MitreAttack />} />
+              <Route path="/tools/social-eng" element={<SocialEngineeringPro />} />
+              <Route path="/tools/persona-factory" element={<PersonaPro />} />
+              <Route path="/tools/password-cracker" element={<PasswordCracker />} />
+              <Route path="/tools/crypto-lab" element={<CryptoForge />} />
+              <Route path="/tools/stego-lab" element={<StegoAnalyst />} />
+              <Route path="/tools/devsecops-lab" element={<DevSecOpsLab />} />
+              <Route path="/tools/c2-red-ops" element={<C2CommandCenter />} />
+              <Route path="/tools/cloud-security" element={<CloudSecurityPro />} />
+              <Route path="/cyber-intel" element={<CyberIntel />} />
+              <Route path="/cyber-ops" element={<CyberOpsDashboard />} />
+              <Route path="/teams" element={<TeamsHub />} />
+              <Route path="/missions" element={<DailyMissions />} />
+              <Route path="/analytics" element={<AnalyticsDashboard />} />
+              <Route path="/assessments" element={<SkillAssessment />} />
+              <Route path="/activity" element={<ActivityFeed />} />
+              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/settings" element={<SettingsPanel />} />
+              <Route path="/bookmarks" element={<Bookmarks />} />
+              <Route path="/bookmarks" element={<Bookmarks />} />
+              <Route path="/chat" element={<ChatInterface />} />
+              <Route path="/admin" element={<AdminDashboard />} />
 
-                  <Route path="/paths/red" element={<RedTeamPath />} />
-                  <Route path="/paths/blue" element={<BlueTeamPath />} />
-                  <Route path="/paths/soc" element={<SOCPath />} />
+              <Route path="/paths/red" element={<RedTeamPath />} />
+              <Route path="/paths/blue" element={<BlueTeamPath />} />
+              <Route path="/paths/soc" element={<SOCPath />} />
 
-                  <Route path="/about" element={<About />} />
-                  <Route path="/partners" element={<Partners />} />
-                  <Route path="/verify" element={<VerifyCertificate />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/partners" element={<Partners />} />
+              <Route path="/verify" element={<VerifyCertificate />} />
 
-                  <Route path="/topic/:id" element={<TopicPage />} />
-                </Routes>
-              </MainLayout>
-            } />
+              <Route path="/topic/:id" element={<TopicPage />} />
+            </Route>
           </Routes>
         </Router>
       </ToastProvider>
