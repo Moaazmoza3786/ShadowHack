@@ -10,11 +10,46 @@ from docker_lab_manager import DockerLabManager, logger
 import threading
 import time
 import socket
+from tools_manager import ToolExecutor
+from kill_chain_manager import KillChainManager
 
 try:
     from main import socketio
 except ImportError:
     socketio = None
+
+class ToolsNamespace(Namespace):
+    def __init__(self):
+        super().__init__('/ws/tools')
+        self.executor = ToolExecutor()
+        self.kill_chain_manager = KillChainManager()
+
+    def on_execute_tool(self, data):
+        cmd = data.get('cmd')
+        sid = request.sid
+        
+        def stream_output(text):
+            emit('tool_output', {'data': text}, room=sid)
+
+        threading.Thread(
+            target=self.executor.execute_tool,
+            args=(cmd, stream_output),
+            daemon=True
+        ).start()
+
+    def on_get_chains(self):
+        chains = self.kill_chain_manager.get_chains()
+        emit('chains_list', chains)
+
+    def on_execute_chain(self, data):
+        chain_id = data.get('id')
+        target = data.get('target')
+        sid = request.sid
+
+        def stream_output(text):
+            emit('chain_output', {'data': text}, room=sid)
+
+        self.kill_chain_manager.execute_chain(chain_id, target, stream_output)
 
 class TerminalNamespace(Namespace):
     """
