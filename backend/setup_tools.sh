@@ -56,4 +56,64 @@ else
     echo "    Please install Go to enable these advanced tools."
 fi
 
+# 5. Advanced Offensive Tools (Phase 21)
+echo "[*] Installing Advanced Offensive Tools..."
+
+# SQLMap
+if ! command -v sqlmap &> /dev/null; then
+    echo "[+] Installing SQLMap..."
+    sudo apt-get install -y sqlmap
+else
+    echo "[✓] SQLMap is already installed."
+fi
+
+# Nikto
+if ! command -v nikto &> /dev/null; then
+    echo "[+] Installing Nikto..."
+    sudo apt-get install -y nikto
+else
+    echo "[✓] Nikto is already installed."
+fi
+
+# Hydra
+if ! command -v hydra &> /dev/null; then
+    echo "[+] Installing Hydra..."
+    sudo apt-get install -y hydra
+else
+    echo "[✓] Hydra is already installed."
+fi
+
+# John the Ripper
+if ! command -v john &> /dev/null; then
+    echo "[+] Installing John the Ripper..."
+    sudo apt-get install -y john
+else
+    echo "[✓] John the Ripper is already installed."
+fi
+
+# Gobuster
+if ! command -v gobuster &> /dev/null; then
+    echo "[+] Installing Gobuster..."
+    sudo apt-get install -y gobuster
+else
+    echo "[✓] Gobuster is already installed."
+fi
+
+# Wordlists (Seclists / Rockyou)
+if [ ! -d "/usr/share/wordlists" ]; then
+    sudo mkdir -p /usr/share/wordlists
+fi
+
+if [ ! -f "/usr/share/wordlists/rockyou.txt" ]; then
+    echo "[+] Downloading Rockyou wordlist..."
+    # Download a smaller version or the full one if feasible. Codespaces have good bandwidth.
+    # Using a reliable curl source for rockyou.txt
+    sudo wget https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -O /usr/share/wordlists/rockyou.txt
+else
+    echo "[✓] Rockyou wordlist found."
+fi
+
+# Ensure permissions
+sudo chmod -R 755 /usr/share/wordlists
+
 echo "[✓] Setup Complete! The Tool Execution Engine is ready."

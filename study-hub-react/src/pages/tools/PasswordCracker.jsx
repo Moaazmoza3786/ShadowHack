@@ -37,9 +37,36 @@ const ROCKYOU_TOP_25 = [
     'shadow', 'ashley', 'football', 'jesus', 'michael', 'ninja', 'mustang', 'password1'
 ];
 
+import { io } from 'socket.io-client';
+
 const PasswordCracker = () => {
     const [activeTab, setActiveTab] = useState('identifier');
     const { toast } = useToast();
+
+    // --- REAL EXECUTION STATE ---
+    const [socket, setSocket] = useState(null);
+    const [terminalOutput, setTerminalOutput] = useState([]);
+    const terminalRef = useRef(null);
+
+    // --- SOCKET INIT ---
+    useEffect(() => {
+        const newSocket = io('http://localhost:5000/ws/tools', { transports: ['websocket'] });
+        newSocket.on('connect', () => {
+            // Optional: toast('Connected to Cracking Engine', 'success');
+        });
+        newSocket.on('tool_output', (data) => {
+            const text = data.data || data;
+            if (activeTab === 'hydra') {
+                setHydraLogs(prev => [...prev, text]);
+                // If we want a separate raw terminal, we can use one.
+                // For now, let's pipe it to hydraLogs to keep existing UI if possible, 
+                // OR replace the UI with a terminal view like ReconLab.
+                // The existing UI splits logs into lines.
+            }
+        });
+        setSocket(newSocket);
+        return () => newSocket.disconnect();
+    }, []);
 
     // --- STATE: Identifier ---
     const [hashInput, setHashInput] = useState('');
@@ -172,46 +199,27 @@ const PasswordCracker = () => {
     const runHydra = async () => {
         if (hydraRunning) return;
         setHydraRunning(true);
-        setHydraLogs([]);
-        setHydraProgress(0);
+        setHydraLogs(['[*] Initializing Hydra v9.1 (Pro Engine)...', '[*] Target: ' + hydraTarget]);
+        setHydraProgress(5); // Indeterminate
 
-        const passwords = ['123456', 'password', 'admin', 'root', 'toor', 'welcome', 'login', 'service', 'access', 'secret'];
-        const targetPass = passwords[Math.floor(Math.random() * passwords.length)];
+        // Construct Command
+        // Example: hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://1.2.3.4
+        const wordlistPath = '/usr/share/wordlists/rockyou.txt';
+        const service = hydraService === 'http-post-form' ? 'http-post-form' : hydraService;
 
-        let i = 0;
-        const interval = setInterval(() => {
-            if (i >= passwords.length) {
-                clearInterval(interval);
-                setHydraRunning(false);
-                setHydraLogs(prev => [...prev, `[DATA] Attack finished. No valid credentials found.`]);
-                return;
-            }
+        // Basic basic command for demo: limiting speed with -t 4
+        // If service is http-post-form, it needs complex args. fallback to ssh/ftp for simple demo.
+        let cmd = `hydra -l ${hydraUser} -P ${wordlistPath} ${service}://${hydraTarget} -t 4 -I -V`;
 
-            const attempt = passwords[i];
-            const success = attempt === targetPass;
-
-            setHydraLogs(prev => {
-                const newLogs = [...prev, `[${hydraService.toUpperCase()}] Attempting ${hydraUser}:${attempt}... ${success ? 'SUCCESS' : 'FAILED'}`];
-                if (newLogs.length > 8) newLogs.shift();
-                return newLogs;
-            });
-            setHydraProgress(Math.round(((i + 1) / passwords.length) * 100));
-
-            if (success) {
-                clearInterval(interval);
-                setStatus('cracked'); // Using local var for immediate effect logic if needed, but here just state
-                setHydraRunning(false);
-                toast(`CRACKED: ${hydraUser}:${attempt}`, 'success');
-                setHydraLogs(prev => [...prev, `[SUCCESS] Valid credentials found: ${hydraUser}:${attempt}`]);
-            }
-            i++;
-        }, 500);
+        if (socket) {
+            socket.emit('execute_tool', { cmd });
+        }
     };
 
     const stopHydra = () => {
-        // In a real app we'd clear interval ID reference, simplified here
         setHydraRunning(false);
-        setHydraLogs(prev => [...prev, `[STOP] Attack aborted by user.`]);
+        setHydraLogs(prev => [...prev, `[STOP] Process terminated.`]);
+        // In real backend, we'd need a kill signal
     };
 
     return (

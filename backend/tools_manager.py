@@ -29,7 +29,15 @@ class ToolExecutor:
         'ping': '/bin/ping',
         'whois': '/usr/bin/whois',
         'dig': '/usr/bin/dig',
-        'curl': '/usr/bin/curl'
+        'curl': '/usr/bin/curl',
+        'sqlmap': '/usr/bin/sqlmap',
+        'nikto': '/usr/bin/nikto',
+        'gobuster': '/usr/bin/gobuster',
+        'hydra': '/usr/bin/hydra',
+        'john': '/usr/sbin/john',
+        'aws': '/usr/bin/aws',
+        'cat': '/bin/cat', # Useful for reading local files (careful!)
+        'ls': '/bin/ls'
     }
 
     def validate_command(self, cmd_str):
