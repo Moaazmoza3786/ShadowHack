@@ -337,9 +337,18 @@ const CloudSecurityPro = () => {
                                     { label: 'List High-Priv Groups', cmd: 'az ad group list --display-name "Admin" --query "[].displayName"' },
                                     { label: 'Current Account Info', cmd: 'az account show --output json' }
                                 ].map((c, i) => (
-                                    <div key={i} className="p-3 bg-black/40 border border-white/5 rounded-xl hover:border-cyan-500/30 transition-all">
-                                        <div className="text-[10px] font-bold text-cyan-500 uppercase mb-1">{c.label}</div>
-                                        <code className="text-xs text-white/50">{c.cmd}</code>
+                                    <div key={i} className="p-3 bg-black/40 border border-white/5 rounded-xl hover:border-cyan-500/30 transition-all flex items-center justify-between group">
+                                        <div className="overflow-hidden">
+                                            <div className="text-[10px] font-bold text-cyan-500 uppercase mb-1">{c.label}</div>
+                                            <code className="text-xs text-white/50">{c.cmd}</code>
+                                        </div>
+                                        <button
+                                            onClick={() => runTool(c.cmd)}
+                                            className="p-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                                            title="Run in Cloud Shell"
+                                        >
+                                            <Play size={14} fill="currentColor" />
+                                        </button>
                                     </div>
                                 ))}
                             </div>
