@@ -15,6 +15,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from models import db, User
+from extensions import limiter
 
 # Create Blueprint
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
@@ -157,6 +158,7 @@ def validate_username(username):
 # ==================== AUTH ROUTES ====================
 
 @auth_bp.route('/register', methods=['POST'])
+@limiter.limit("3 per hour")
 def register():
     """
     POST /api/auth/register
@@ -256,6 +258,7 @@ def register():
 
 
 @auth_bp.route('/login', methods=['POST'])
+@limiter.limit("5 per minute")
 def login():
     """
     POST /api/auth/login

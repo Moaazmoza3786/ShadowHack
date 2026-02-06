@@ -12,8 +12,9 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# Import models and routes
+# Import models, routes, and extensions
 from models import db
+from extensions import limiter
 from api_routes import api
 from auth_routes import auth_bp
 from leagues_routes import leagues_bp
@@ -147,8 +148,11 @@ def create_app(config_name=None):
         "https://study-hub3-react-rho.vercel.app/",
     ]
     
-    # Enable wide CORS for dynamic tunnels
-    CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+    # Initialize Extensions
+    limiter.init_app(app)
+
+    CORS(app, resources={r"/*": {"origins": "*"}}) # Relaxed for dev, restrict in prod if needed
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
     db.init_app(app)
     
     # Configure CORS with specific allowed origins (Security!)
