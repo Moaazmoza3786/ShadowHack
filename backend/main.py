@@ -190,6 +190,15 @@ def create_app(config_name=None):
     except ImportError:
         print("Warning: flag_validator not available")
     
+    # Import terminal socket namespace
+    try:
+        from terminal_socket import TerminalNamespace, ToolsNamespace
+        socketio.on_namespace(TerminalNamespace())
+        socketio.on_namespace(ToolsNamespace())
+        print("✓ SocketIO Namespaces: Terminal and Tools Registered")
+    except ImportError as e:
+        print(f"Warning: terminal_socket not available: {e}")
+    
     try:
         from docker_lab_manager import get_docker_manager, register_docker_lab_routes
         docker_manager = get_docker_manager()

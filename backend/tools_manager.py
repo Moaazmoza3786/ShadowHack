@@ -15,6 +15,89 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('ToolsManager')
 
+import subprocess
+import shlex
+
+class ToolExecutor:
+    """
+    Handles secure execution of external tools.
+    """
+    ALLOWED_TOOLS = {
+        'nmap': '/usr/bin/nmap',
+        'subfinder': '/usr/bin/subfinder', # Assumes installed
+        'httpx': '/usr/bin/httpx',
+        'ping': '/bin/ping',
+        'whois': '/usr/bin/whois',
+        'dig': '/usr/bin/dig',
+        'curl': '/usr/bin/curl'
+    }
+
+    def validate_command(self, cmd_str):
+        """
+        Validates if the command is allowed and safe.
+        Returns (is_valid, reason/sanitized_cmd_list)
+        """
+        try:
+            parts = shlex.split(cmd_str)
+            if not parts:
+                return False, "Empty command"
+            
+            base_cmd = parts[0]
+            if base_cmd not in self.ALLOWED_TOOLS:
+                return False, f"Tool '{base_cmd}' is not allowed via this interface."
+            
+            # Prevent chaining or redirection (basic check)
+            if any(c in cmd_str for c in [';', '|', '>', '<', '&', '$', '`']):
+                 return False, "Shell operators are not allowed."
+
+            return True, parts
+        except Exception as e:
+            return False, str(e)
+
+    def execute_tool(self, cmd_str, output_callback):
+        """
+        Executes a tool and streams output to callback.
+        """
+        is_valid, result = self.validate_command(cmd_str)
+        if not is_valid:
+            output_callback(f"\x1b[1;31m[!] Error: {result}\x1b[0m\r\n")
+            return
+
+        cmd_parts = result
+        tool_name = cmd_parts[0]
+        
+        # Check if tool is installed
+        import shutil
+        if not shutil.which(tool_name):
+             output_callback(f"\x1b[1;33m[!] Tool '{tool_name}' not found. Installing...\x1b[0m\r\n")
+             # In a real scenario, we might auto-install or warn.
+             # For now, let's warn.
+             output_callback(f"\x1b[1;31m[!] Error: '{tool_name}' is not installed in the environment.\x1b[0m\r\n")
+             return
+
+        try:
+            process = subprocess.Popen(
+                cmd_parts,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1, # Line buffered
+                universal_newlines=True
+            )
+
+            for line in process.stdout:
+                output_callback(line)
+
+            process.wait()
+            if process.returncode == 0:
+                output_callback("\x1b[1;32m[+] Execution completed successfully.\x1b[0m\r\n")
+            else:
+                output_callback(f"\x1b[1;31m[!] Tool exited with code {process.returncode}.\x1b[0m\r\n")
+
+        except Exception as e:
+            output_callback(f"\x1b[1;31m[!] Execution failed: {str(e)}\x1b[0m\r\n")
+
+
 class ToolsManager:
     """
     Backend logic for professional security tools.
