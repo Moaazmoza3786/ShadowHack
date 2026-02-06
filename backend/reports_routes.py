@@ -68,18 +68,92 @@ def add_finding(report_id):
     
     return jsonify({'success': True, 'finding': finding.to_dict()})
 
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from flask import send_file
+
 @reports_bp.route('/<int:report_id>/export', methods=['GET'])
 def export_report_pdf(report_id):
     """
-    Export report as PDF
-    Note: In a real environment, this would use WeasyPrint or pdfkit.
-    For now, we return a mock success or HTML content.
+    Export report as PDF using ReportLab
     """
-    # mock implementation
-    return jsonify({
-        'success': True, 
-        'message': 'PDF generation simulation successful. Check download folder.'
-    })
+    report = Report.query.get_or_404(report_id)
+    findings = report.findings.all()
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    # --- Title Page ---
+    title_style = ParagraphStyle('Title', parent=styles['Title'], fontSize=24, spaceAfter=20)
+    story.append(Paragraph("SECURITY ASSESSMENT REPORT", title_style))
+    story.append(Spacer(1, 12))
+    story.append(Paragraph(f"Title: {report.title}", styles['Heading2']))
+    story.append(Paragraph(f"Date: {datetime.now().strftime('%Y-%m-%d')}", styles['Normal']))
+    story.append(Spacer(1, 30))
+    story.append(Paragraph("CONFIDENTIAL", styles['Heading3']))
+    story.append(Spacer(1, 50))
+
+    # --- Executive Summary ---
+    story.append(Paragraph("Executive Summary", styles['Heading1']))
+    story.append(Paragraph(report.executive_summary or "No summary provided.", styles['Normal']))
+    story.append(Spacer(1, 20))
+
+    # --- Findings Summary Table ---
+    story.append(Paragraph("Findings Summary", styles['Heading2']))
+    data = [['Title', 'Severity', 'Status']]
+    for f in findings:
+        data.append([f.title, f.severity, 'Open'])
+
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    story.append(table)
+    story.append(Spacer(1, 20))
+
+    # --- Detailed Findings ---
+    story.append(Paragraph("Detailed Findings", styles['Heading1']))
+    for f in findings:
+        # Severity Color
+        sev_color = colors.black
+        if f.severity == 'Critical': sev_color = colors.red
+        elif f.severity == 'High': sev_color = colors.orange
+        elif f.severity == 'Medium': sev_color = colors.yellow
+
+        story.append(Paragraph(f"Finding: {f.title}", styles['Heading2']))
+        story.append(Paragraph(f"Severity: <font color='{sev_color}'>{f.severity}</font>", styles['Normal']))
+        story.append(Spacer(1, 6))
+        
+        story.append(Paragraph("Description:", styles['Heading3']))
+        story.append(Paragraph(f.description or "N/A", styles['Normal']))
+        story.append(Spacer(1, 6))
+
+        story.append(Paragraph("Remediation:", styles['Heading3']))
+        story.append(Paragraph(f.remediation or "N/A", styles['Normal']))
+        story.append(Spacer(1, 12))
+        story.append(Paragraph("-" * 60, styles['Normal']))
+        story.append(Spacer(1, 12))
+
+    doc.build(story)
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f'Security_Report_{report_id}.pdf',
+        mimetype='application/pdf'
+    )
 
 
 def register_report_routes(app):

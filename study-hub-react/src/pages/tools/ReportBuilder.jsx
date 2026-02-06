@@ -83,9 +83,45 @@ const ReportBuilder = () => {
         }
     };
 
-    const handleExport = () => {
-        alert("Generating PDF... (Simulation)");
-        // window.open(`${apiUrl}/reports/${report.id}/export`, '_blank');
+    const handleExport = async () => {
+        try {
+            setLoading(true);
+            // Assuming report has an ID after save, or use a mock ID for demo if not saved
+            const reportId = report.id || 1;
+
+            // In a real flow, you'd save first to get an ID, then export.
+            // For this demo, we might need a way to pass data if it's transient, 
+            // but the backend route expects an ID. 
+            // Let's assume the user Saved it first (which mocks a save).
+
+            // If we are fully integrated, we should fetch from:
+            // `${apiUrl}/reports/${reportId}/export`
+            // But since 'apiUrl' isn't in scope here, we use relative path assuming proxy or config.
+
+            const response = await fetch(`http://localhost:5000/api/reports/${reportId}/export`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Export failed');
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Security_Report_${report.title.replace(/\s+/g, '_')}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error('Export error:', error);
+            alert("Export failed. Please ensure you have saved the report first.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
