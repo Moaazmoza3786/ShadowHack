@@ -84,6 +84,8 @@ import { TOPICS_DATA } from './data/topics';
 import CyberTerminal from './components/CyberTerminal';
 import AIAssistant from './components/AIAssistant';
 
+import AttackChains from './pages/tools/AttackChains';
+
 function App() {
   return (
     <AppProvider>
@@ -98,6 +100,62 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/courses" element={<Courses />} />
+              <Route path="/courses/:courseId" element={<CourseDetail />} />
+              <Route path="/courses/:courseId/lessons/:lessonId" element={<LessonViewer />} />
+              <Route path="/youtube-hub" element={<YouTubeHub />} />
+              <Route path="/career-hub" element={<CareerHub />} />
+              <Route path="/second-brain" element={<SecondBrain />} />
+              <Route path="/legacy-tracks" element={<LegacyTracks />} />
+              <Route path="/specs" element={<ShadowHackSpecs />} />
+
+              <Route path="/ctf" element={<CTF />} />
+              <Route path="/ctf/daily" element={<DailyCTF />} />
+              <Route path="/ctf/room/:roomId" element={<CTFRoomDetail />} />
+
+              <Route path="/labs" element={<Labs />} />
+              <Route path="/labs/free" element={<FreeLabs />} />
+              <Route path="/labs/pro" element={<ProLabs />} />
+              <Route path="/labs/campaigns" element={<Campaigns />} />
+              <Route path="/lab-workspace/:labId" element={<LabWorkspace />} />
+
+              <Route path="/owasp-range" element={<OWASPRange />} />
+              <Route path="/owasp-range/module/:moduleId" element={<OWASPModule />} />
+
+              {/* Tools Routes */}
+              <Route path="/tools" element={<ToolsHub />} />
+              <Route path="/tools/payload-gen" element={<PayloadGenerator />} />
+              <Route path="/tools/report-builder" element={<ReportBuilder />} />
+              <Route path="/tools/encoder" element={<EncoderTool />} />
+              {/* <Route path="/tools/cheatsheets" element={<Cheatsheets />} /> */}
+              <Route path="/tools/web-exploitation" element={<WebExploitation />} />
+              <Route path="/tools/campaign-manager" element={<CampaignManager />} />
+              <Route path="/tools/js-monitor" element={<JSMonitorPro />} />
+              <Route path="/tools/target-manager" element={<TargetManager />} />
+              <Route path="/tools/recon-lab" element={<ReconLab />} />
+              <Route path="/tools/api-security" element={<APISecurityLab />} />
+              <Route path="/tools/malware-sandbox" element={<MalwareSandbox />} />
+              <Route path="/tools/osint-lab" element={<OSINTPro />} />
+              <Route path="/tools/ad-attack-lab" element={<ADAttackLab />} />
+              <Route path="/tools/finding-reporter" element={<FindingReporter />} />
+              <Route path="/tools/cve-radar" element={<CVERadar />} />
+              <Route path="/tools/cve-museum" element={<CVEMuseum />} />
+              <Route path="/tools/hash-identifier" element={<HashIdentifier />} />
+              <Route path="/tools/subnet-calculator" element={<SubnetCalculator />} />
+              <Route path="/tools/xss-payloads" element={<XSSPayloads />} />
+              <Route path="/tools/sqli-payloads" element={<SQLiPayloads />} />
+              <Route path="/tools/file-transfer" element={<FileTransferHelper />} />
+              <Route path="/tools/privesc-lab" element={<PrivEscPro />} />
+              <Route path="/tools/command-ref" element={<CommandReference />} />
+              <Route path="/tools/mitre-attack" element={<MitreAttack />} />
+              <Route path="/tools/social-engineering" element={<SocialEngineeringPro />} />
+              <Route path="/tools/persona-factory" element={<PersonaPro />} />
+              <Route path="/tools/password-cracker" element={<PasswordCracker />} />
+              <Route path="/tools/crypto-lab" element={<CryptoForge />} />
+              <Route path="/tools/stego-lab" element={<StegoAnalyst />} />
+              <Route path="/tools/devsecops-lab" element={<DevSecOpsLab />} />
+              <Route path="/tools/c2-red-ops" element={<C2CommandCenter />} />
+              <Route path="/tools/cloud-security" element={<CloudSecurityPro />} />
+              <Route path="/tools/chains" element={<AttackChains />} />
               <Route path="/course/:id" element={<CourseDetail />} />
               <Route path="/lesson/:courseId/:moduleId/:lessonId" element={<LessonViewer />} />
               <Route path="/ctf" element={<CTF />} />

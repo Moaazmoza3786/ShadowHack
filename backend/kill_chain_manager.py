@@ -10,18 +10,19 @@ class KillChainManager:
                 'name': 'Quick Web Recon',
                 'description': 'Ping -> Nmap Fast -> Nikto',
                 'steps': [
-                    {'tool': 'ping', 'cmd': 'ping -c 3 {target}'},
-                    {'tool': 'nmap', 'cmd': 'nmap -F {target}'},
-                    {'tool': 'nikto', 'cmd': 'nikto -h http://{target} -Tuning x'}
+                    {'tool': 'ping', 'cmd': 'ping -c 3 {target}', 'ignore_fail': True},
+                    {'tool': 'nmap', 'cmd': 'nmap -F {target}', 'capture_output': True},
+                    # Smart Step: Only run Nikto if port 80/443 found
+                    {'tool': 'nikto', 'cmd': 'nikto -h http://{target} -Tuning x', 'condition': 'port_80_open'}
                 ]
             },
             'full_server_audit': {
                 'name': 'Full Server Audit',
-                'description': 'Nmap Version -> Nikto Full -> Gobuster',
+                'description': 'Nmap Version -> Nikto (If Web) -> Gobuster (If Web)',
                 'steps': [
-                    {'tool': 'nmap', 'cmd': 'nmap -sV -p 80,443 {target}'},
-                    {'tool': 'nikto', 'cmd': 'nikto -h http://{target}'},
-                    {'tool': 'gobuster', 'cmd': 'gobuster dir -u http://{target} -w /usr/share/wordlists/dirb/common.txt -t 50'}
+                    {'tool': 'nmap', 'cmd': 'nmap -sV -p 80,443 {target}', 'capture_output': True},
+                    {'tool': 'nikto', 'cmd': 'nikto -h http://{target}', 'condition': 'port_80_open'},
+                    {'tool': 'gobuster', 'cmd': 'gobuster dir -u http://{target} -w /usr/share/wordlists/dirb/common.txt -t 50', 'condition': 'port_80_open'}
                 ]
             },
              'subdomain_hunt': {
@@ -43,38 +44,55 @@ class KillChainManager:
             return
 
         chain = self.chains[chain_id]
-        emit_callback(f"[*] Starting Kill Chain: {chain['name']}")
+        emit_callback(f"[*] Starting Smart Kill Chain: {chain['name']}")
         emit_callback(f"[*] Target: {target}")
         emit_callback("="*50)
 
+        context = {} # Store potential shared state
+
         def run_steps():
             for i, step in enumerate(chain['steps']):
-                cmd = step['cmd'].replace('{target}', target)
                 tool_name = step['tool']
+                original_cmd = step['cmd']
+                
+                # Check conditions
+                if 'condition' in step:
+                    cond = step['condition']
+                    should_run = False
+                    if cond == 'port_80_open':
+                        # Check context from previous nmap
+                        prev_output = context.get('last_output', '')
+                        if '80/tcp' in prev_output or '443/tcp' in prev_output or 'http' in prev_output or 'https' in prev_output:
+                            should_run = True
+                            emit_callback(f"\n[*] Condition Met: Web ports detected. Proceeding with {tool_name}.")
+                        else:
+                             emit_callback(f"\n[*] Condition Failed: Web ports NOT detected. Skipping {tool_name}.")
+                    
+                    if not should_run:
+                        continue
+
+                cmd = original_cmd.replace('{target}', target)
                 
                 emit_callback(f"\n[+] Step {i+1}/{len(chain['steps'])}: Executing {tool_name}...")
                 emit_callback(f"[>] Command: {cmd}")
                 emit_callback("-"*30)
+                
+                # We want to capture output for our logic, but also stream it.
+                step_output = []
+                
+                def stream_and_capture(line):
+                    emit_callback(line)
+                    if step.get('capture_output'):
+                        step_output.append(line)
 
-                # We need a way to capture output to decide next steps in a real autonomous agent.
-                # For now, we just stream output and run sequentially.
+                self.executor.execute_tool(cmd, stream_and_capture)
                 
-                # This is a blocking call to the tool executor for this thread
-                # We need to wrap the executor to stream to our specific socket
+                if step.get('capture_output'):
+                    context['last_output'] = "".join(step_output)
                 
-                # We use the existing executor but we need it to be synchronous or wait for it.
-                # The existing executor uses subprocess.Popen and streams. 
-                # We can reuse it but we need to wait for it to finish before next step.
-                
-                # Since ToolExecutor logic wasn't fully exposed as blocking in the snippet I saw,
-                # I'll implement a simple blocking execution here using the same safe approach.
-                
-                self.executor.execute_tool(cmd, emit_callback)
-                
-                # Wait a bit between steps
                 time.sleep(1)
             
             emit_callback("\n" + "="*50)
-            emit_callback("[*] Kill Chain Execution Complete.")
+            emit_callback("[*] Smart Chain Execution Complete.")
 
         threading.Thread(target=run_steps, daemon=True).start()

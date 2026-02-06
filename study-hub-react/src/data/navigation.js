@@ -117,6 +117,15 @@ export const navigationConfig = {
                                     subtitleAr: 'هجمات السحابة المتقدمة',
                                     path: '/tools/cloud-security',
                                     badge: 'Pro'
+                                },
+                                {
+                                    icon: Activity,
+                                    label: 'Attack Chains',
+                                    labelAr: 'سلاسل الهجوم',
+                                    subtitle: 'Automated Kill Chains',
+                                    subtitleAr: 'سيناريوهات هجوم آلية',
+                                    path: '/tools/chains',
+                                    badge: 'AI'
                                 }
                             ]
                         },
