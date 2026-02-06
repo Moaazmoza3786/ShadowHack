@@ -1,24 +1,56 @@
-
 import requests
 import json
 import random
 import time
+import os
 from datetime import datetime
+from groq import Groq
+
+# Config File Path
+CONFIG_FILE = 'config.json'
+
+def load_config():
+    """Load configuration from JSON file with env fallback"""
+    config = {}
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, 'r') as f:
+                config = json.load(f)
+        except Exception as e:
+            print(f"[!] Error loading config.json: {e}")
+    
+    # Merge/Fallback
+    return {
+        'groq_api_key': config.get('GROQ_API_KEY') or os.getenv('GROQ_API_KEY'),
+        'openai_api_key': config.get('OPENAI_API_KEY') or os.getenv('OPENAI_API_KEY'),
+        'shodan_api_key': config.get('SHODAN_API_KEY') or os.getenv('SHODAN_API_KEY'),
+        'ollama_url': config.get('OLLAMA_URL') or os.getenv('OLLAMA_URL', 'http://localhost:11434'),
+        'ai_provider': config.get('AI_PROVIDER', 'groq') # groq, openai, local
+    }
 
 class GroqManager:
-    def __init__(self, api_key):
-        self.api_key = api_key
-        self.api_url = "https://api.groq.com/openai/v1/chat/completions"
+    def __init__(self):
+        self.config = load_config()
+        self.api_key = self.config['groq_api_key']
+        self.client = None
         self.model = "llama-3.3-70b-versatile" # Using Llama 3.3 70B for high intelligence
+        
+        if self.api_key:
+            try:
+                self.client = Groq(api_key=self.api_key)
+                print("✓ AI Manager: Groq Client Initialized")
+            except Exception as e:
+                print(f"⚠ AI Manager: Init Failed - {e}")
+        else:
+            print("⚠ AI Manager: No Groq API Key found")
+
+    def reload_config(self):
+        """Reload configuration at runtime"""
+        self.config = load_config()
+        if self.config['groq_api_key']:
+             self.client = Groq(api_key=self.config['groq_api_key'])
 
     def _call_groq(self, messages, temperature=0.7, timeout=30):
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
-        data = {
-            "model": self.model,
-            "messages": messages,
             "temperature": temperature,
             "max_tokens": 1024
         }

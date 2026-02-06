@@ -7,6 +7,8 @@ from flask import Blueprint, jsonify, request, g
 from functools import wraps
 from datetime import datetime
 import hashlib
+import json
+import os
 
 from models import (
     db, User, Domain, CareerPath, Module, Lab, Quiz, Question, Choice,
@@ -28,6 +30,64 @@ api = Blueprint('api', __name__, url_prefix='/api')
 
 # Import AI Manager (Global instance initialized in main.py)
 from ai_manager import groq_manager
+
+# ==================== SETTINGS ENDPOINTS ====================
+
+@api.route('/settings/config', methods=['GET'])
+def get_settings_config():
+    """Get current system configuration (masked)"""
+    config = {}
+    if os.path.exists('config.json'):
+        try:
+            with open('config.json', 'r') as f:
+                config = json.load(f)
+        except:
+            pass
+            
+    # Mask keys for security
+    response_config = {
+        'GROQ_API_KEY': mask_key(config.get('GROQ_API_KEY') or os.getenv('GROQ_API_KEY')),
+        'OPENAI_API_KEY': mask_key(config.get('OPENAI_API_KEY') or os.getenv('OPENAI_API_KEY')),
+        'SHODAN_API_KEY': mask_key(config.get('SHODAN_API_KEY') or os.getenv('SHODAN_API_KEY')),
+        'OLLAMA_URL': config.get('OLLAMA_URL') or os.getenv('OLLAMA_URL', 'http://localhost:11434'),
+        'AI_PROVIDER': config.get('AI_PROVIDER', 'groq')
+    }
+    return jsonify({'success': True, 'config': response_config})
+
+@api.route('/settings/config', methods=['POST'])
+def update_settings_config():
+    """Update system configuration"""
+    data = request.json
+    current_config = {}
+    
+    if os.path.exists('config.json'):
+        try:
+            with open('config.json', 'r') as f:
+                current_config = json.load(f)
+        except:
+            pass
+            
+    # Update known keys if provided
+    for key in ['GROQ_API_KEY', 'OPENAI_API_KEY', 'SHODAN_API_KEY', 'OLLAMA_URL', 'AI_PROVIDER']:
+        if key in data and data[key] and not data[key].startswith('sk-***'): # Don't save masked keys
+             current_config[key] = data[key]
+             
+    try:
+        with open('config.json', 'w') as f:
+            json.dump(current_config, f, indent=4)
+            
+        # Trigger reload in managers
+        if groq_manager:
+            groq_manager.reload_config()
+            
+        return jsonify({'success': True, 'message': 'Configuration saved successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+def mask_key(key):
+    if not key: return ''
+    if len(key) < 8: return '***'
+    return f"{key[:3]}...{key[-3:]}"
 
 # ==================== AI ENDPOINTS ====================
 
