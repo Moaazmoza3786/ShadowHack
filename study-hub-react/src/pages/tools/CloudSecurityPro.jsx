@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Cloud, Server, Shield, Database,
@@ -8,20 +8,42 @@ import {
     Info, BookOpen, Fingerprint, Zap
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
+import { io } from 'socket.io-client';
 
 const CloudSecurityPro = () => {
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState('aws'); // aws, azure, library, imds
     const [activeSubTab, setActiveSubTab] = useState('iam'); // iam, s3, lambda (for AWS)
 
-    // --- SHARED STATE ---
+    // --- REAL EXECUTION STATE ---
+    const [socket, setSocket] = useState(null);
     const [terminalOutput, setTerminalOutput] = useState([
         { type: 'info', content: 'Cloud Security Pro v2.5 Initialized...' },
         { type: 'info', content: 'Ready for professional cloud auditing.' }
     ]);
+    const terminalRef = useRef(null);
+
+    // --- SOCKET INIT ---
+    useEffect(() => {
+        const newSocket = io('http://localhost:5000/ws/tools', { transports: ['websocket'] });
+        newSocket.on('tool_output', (data) => {
+            const text = data.data || data;
+            // Simple parsing for log style
+            const type = text.toLowerCase().includes('error') ? 'error' : 'info';
+            addToTerminal(text, type);
+        });
+        setSocket(newSocket);
+        return () => newSocket.disconnect();
+    }, []);
 
     const addToTerminal = (content, type = 'cmd') => {
         setTerminalOutput(prev => [...prev, { type, content, timestamp: new Date().toLocaleTimeString() }].slice(-50));
+    };
+
+    const runTool = (cmd) => {
+        if (!socket) return;
+        addToTerminal(`Executing: ${cmd}`, 'cmd');
+        socket.emit('execute_tool', { cmd });
     };
 
     // --- AWS: IAM PRIVESC STATE ---
@@ -117,27 +139,18 @@ const CloudSecurityPro = () => {
     const runS3ProHunter = () => {
         if (!s3Target) return toast('Enter target name', 'error');
         setIsScanning(true);
-        setS3Results([]);
+        setS3Results([]); // Clear previous visual results if we want to keep them or not? 
+        // For real tool, we output to terminal. Visual grid might not update unless we parse output.
+        // For now, let's just run a generic "ls" on the bucket as a probe.
+
         addToTerminal(`Initiating Pro-S3 Enumeration for: ${s3Target}`);
 
-        const suffixes = ['', '-prod', '-dev', '-public', '-backup', '-assets', '-logs', '-sql', '-internal', '-staging'];
-        let idx = 0;
+        // Check if public
+        // aws s3 ls s3://target --no-sign-request
+        runTool(`aws s3 ls s3://${s3Target} --no-sign-request`);
 
-        const interval = setInterval(() => {
-            if (idx >= suffixes.length) {
-                clearInterval(interval);
-                setIsScanning(false);
-                addToTerminal('S3 Hunter Finished.', 'success');
-                return;
-            }
-            const bucketName = `${s3Target}${suffixes[idx]}`;
-            const url = `https://${bucketName}.s3.amazonaws.com`;
-
-            // Simulation of "Real" check (usually requires proxy or CLI)
-            // In Pro tool, we show the command used to verify
-            setS3Results(prev => [...prev, { name: bucketName, url, status: 'PROBE' }]);
-            idx++;
-        }, 300);
+        // We can also try common variations if we want to be fancy, but simple is better for now.
+        setTimeout(() => setIsScanning(false), 2000);
     };
 
     // --- RENDERERS ---

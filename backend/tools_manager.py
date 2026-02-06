@@ -36,6 +36,10 @@ class ToolExecutor:
         'hydra': '/usr/bin/hydra',
         'john': '/usr/sbin/john',
         'aws': '/usr/bin/aws',
+        'az': '/usr/bin/az',
+        'nc': '/bin/nc',
+        'theHarvester': '/usr/bin/theHarvester',
+        'sherlock': '/usr/bin/sherlock',
         'cat': '/bin/cat', # Useful for reading local files (careful!)
         'ls': '/bin/ls'
     }

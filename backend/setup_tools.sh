@@ -99,6 +99,42 @@ else
     echo "[✓] Gobuster is already installed."
 fi
 
+# Check and Install AWS CLI
+if ! command -v aws &> /dev/null; then
+    echo "[+] Installing AWS CLI..."
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip -q awscliv2.zip
+    sudo ./aws/install
+    rm -rf aws awscliv2.zip
+else
+    echo "[✓] AWS CLI is already installed."
+fi
+
+# Check and Install Netcat (Traditional)
+if ! command -v nc &> /dev/null; then
+    echo "[+] Installing Netcat..."
+    sudo apt-get install -y netcat-traditional
+else
+    echo "[✓] Netcat is already installed."
+fi
+
+# Check and Install theHarvester
+if ! command -v theHarvester &> /dev/null; then
+    echo "[+] Installing theHarvester..."
+    sudo apt-get install -y theharvester
+else
+    echo "[✓] theHarvester is already installed."
+fi
+
+# Check and Install Sherlock
+if ! command -v sherlock &> /dev/null; then
+    echo "[+] Installing Sherlock..."
+    # Sherlock often needs to be installed via pip or git if not in repo, but let's try apt/pip
+    sudo apt-get install -y sherlock || pip3 install sherlock-project
+else
+    echo "[✓] Sherlock is already installed."
+fi
+
 # Wordlists (Seclists / Rockyou)
 if [ ! -d "/usr/share/wordlists" ]; then
     sudo mkdir -p /usr/share/wordlists

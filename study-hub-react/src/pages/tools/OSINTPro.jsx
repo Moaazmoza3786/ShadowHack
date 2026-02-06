@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../../context/ToastContext';
-import { useAppContext } from '../../context/AppContext';
+import { io } from 'socket.io-client';
 
 const OSINTPro = () => {
     const { toast } = useToast();
@@ -25,8 +25,22 @@ const OSINTPro = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [findings, setFindings] = useState([]);
 
+    // --- REAL EXECUTION ---
+    const [socket, setSocket] = useState(null);
+
+    useEffect(() => {
+        const newSocket = io('http://localhost:5000/ws/tools', { transports: ['websocket'] });
+        newSocket.on('tool_output', (data) => {
+            const text = data.data || data;
+            addLog(text);
+            setIsSearching(false); // Stop loading when we get data (conceptually naive but ok for stream)
+        });
+        setSocket(newSocket);
+        return () => newSocket.disconnect();
+    }, []);
+
     const addLog = (msg, type = 'info') => {
-        setLogs(prev => [...prev, { type, msg, time: new Date().toLocaleTimeString() }].slice(-50));
+        setLogs(prev => [...prev, { type, msg: typeof msg === 'string' ? msg : JSON.stringify(msg), time: new Date().toLocaleTimeString() }].slice(-50));
     };
 
     const handleSearch = async () => {
@@ -34,23 +48,10 @@ const OSINTPro = () => {
         setIsSearching(true);
         addLog(`Initiating deep OSINT search on ${target}...`, 'cmd');
 
-        try {
-            const response = await fetch(`${apiUrl}/tools/osint`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ target, type: activeTab })
-            });
-            const data = await response.json();
-            if (data.success) {
-                setFindings(data.results.findings);
-                addLog(`Intelligence gathering complete for ${target}.`, 'info');
-                toast('Search results synchronized.', 'success');
-            }
-        } catch (error) {
-            console.error("OSINT search failed:", error);
-            addLog("Search failure: Connection refused or backend offline.", "warn");
-        } finally {
-            setIsSearching(false);
+        // Use Real Tools if connected
+        if (socket) {
+            // theHarvester -d target -b google
+            socket.emit('execute_tool', { cmd: `theHarvester -d ${target} -b google` });
         }
     };
 
