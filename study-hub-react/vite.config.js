@@ -52,10 +52,9 @@ export default defineConfig({
             return "vendor-react";
           }
 
-          // ── Animation & icon libraries (loaded with layout) ───────────────
+          // ── Animation libraries (loaded with layout) ───────────────
           if (
-            id.includes("node_modules/framer-motion/") ||
-            id.includes("node_modules/lucide-react/")
+            id.includes("node_modules/framer-motion/")
           ) {
             return "vendor-ui";
           }
