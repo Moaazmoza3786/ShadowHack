@@ -1,0 +1,592 @@
+
+> shadowhack-react@0.0.0 lint
+> cross-env NODE_OPTIONS=--max-old-space-size=4096 eslint .
+
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\middleware.js
+  61:26  error  'e' is defined but never used  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\components\AIAssistant.jsx
+  62:18  error  'error' is defined but never used  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\components\CourseCard.jsx
+  8:13  error  't' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\components\GlobalSearch.jsx
+   7:25  error    'userId' is assigned a value but never used                                                                       no-unused-vars
+  51:8   warning  React Hook useEffect has a missing dependency: 'performSearch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\components\LabControlPanel.jsx
+  10:12  error    'timeLeft' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                        no-unused-vars
+  10:22  error    'setTimeLeft' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                     no-unused-vars
+  16:8   warning  React Hook useEffect has a missing dependency: 'checkStatus'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\components\LabTerminal.jsx
+  4:24  error  'lesson' is defined but never used  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\components\Navbar.jsx
+  20:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  18 |     // Close mobile menu on route change
+  19 |     useEffect(() => {
+> 20 |         setMobileMenuOpen(false);
+     |         ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |         setActiveDropdown(null);
+  22 |     }, [location]);
+  23 |  react-hooks/set-state-in-effect
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\components\NotificationCenter.jsx
+  29:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  27 |
+  28 |     useEffect(() => {
+> 29 |         fetchNotifications();
+     |         ^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  30 |         // Poll for new notifications every 30 seconds
+  31 |         const interval = setInterval(fetchNotifications, 30000);
+  32 |         return () => clearInterval(interval);  react-hooks/set-state-in-effect
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\context\ToastContext.jsx
+  61:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\data\second-brain-data.js
+  1484:41  error  Unnecessary escape character: \/  no-useless-escape
+  1484:43  error  Unnecessary escape character: \/  no-useless-escape
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\AdminDashboard.jsx
+  23:8  warning  React Hook useEffect has a missing dependency: 'fetchUsers'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\CTF.jsx
+  128:12  error  'activeCodespaces' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  131:11  error  'toast' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\ChatInterface.jsx
+  24:8  warning  React Hook useEffect has a missing dependency: 'fetchContacts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  33:8  warning  React Hook useEffect has a missing dependency: 'fetchHistory'. Either include it or remove the dependency array   react-hooks/exhaustive-deps
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\CourseDetail.jsx
+  28:13  error  't' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u               no-unused-vars
+  40:9   error  'terminalOutput' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\CyberIntel.jsx
+  19:12  error    'lastUpdated' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                    no-unused-vars
+  30:8   warning  React Hook useEffect has a missing dependency: 'fetchIntel'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  55:18  error    'error' is defined but never used                                                                              no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\CyberOpsDashboard.jsx
+   2:27  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+  13:12  error  'activeTasks' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  13:25  error  'setActiveTasks' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  52:22  error  'err' is defined but never used                                                                 no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\DailyMissions.jsx
+  12:13  error  'language' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+  77:18  error  'err' is defined but never used                                                                      no-unused-vars
+  93:11  error  'getMissionTypeClass' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\Dashboard.jsx
+  155:13  error  't' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\LabWorkspace.jsx
+   45:45  error  'apiUrl' is not defined          no-undef
+   63:18  error  'err' is defined but never used  no-unused-vars
+  111:26  error  'FileText' is not defined        no-undef
+  147:34  error  'Activity' is not defined        no-undef
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\Labs.jsx
+   30:19  error  'isLoading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+   30:46  error  'startLab' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+   40:9   error  'handleStop' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+  250:11  error  't' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+  253:10  error  'isSyncing' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+  284:9   error  'syncToCodespace' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  284:34  error  'missionId' is defined but never used                                                            no-unused-vars
+  297:23  error  'mission_id' is not defined                                                                      no-undef
+  306:14  error  'err' is defined but never used                                                                  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\LessonViewer.jsx
+   1:27  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  27:13  error  't' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\OWASPRange.jsx
+  98:18  error  'err' is defined but never used  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\SecondBrain.jsx
+    24:12  error    'builderConfig' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                          no-unused-vars
+    24:27  error    'setBuilderConfig' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                       no-unused-vars
+   162:12  warning  React Hook useEffect has a missing dependency: 'item.builderConfig'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   180:12  warning  React Hook useEffect has a missing dependency: 'obfuscatePayload'. Either include it or remove the dependency array    react-hooks/exhaustive-deps
+  1226:66  error    'idx' is defined but never used                                                                                        no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\Settings.jsx
+  15:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\ShadowHackSpecs.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\SkillAssessment.jsx
+  29:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  27 |
+  28 |     useEffect(() => {
+> 29 |         fetchAssessments();
+     |         ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  30 |     }, [fetchAssessments]);
+  31 |
+  32 |     const startAssessment = async (assessmentId) => {  react-hooks/set-state-in-effect
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\TeamsHub.jsx
+  37:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  35 |
+  36 |     useEffect(() => {
+> 37 |         fetchTeams();
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  38 |         fetchLeaderboard();
+  39 |     }, [fetchTeams, fetchLeaderboard]);
+  40 |  react-hooks/set-state-in-effect
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\UserProfile.jsx
+  19:8  warning  React Hook useEffect has a missing dependency: 'fetchProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\YouTubeHub.jsx
+  73:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  71 |     useEffect(() => {
+  72 |         if (selectedPlaylist) {
+> 73 |             loadPlaylistData(selectedPlaylist.playlistId || selectedPlaylist.id);
+     |             ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  74 |         }
+  75 |     }, [selectedPlaylist, loadPlaylistData]);
+  76 |  react-hooks/set-state-in-effect
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\ctf\CTFRoomDetail.jsx
+  100:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+   98 |             duration: 1 + Math.random() * 2
+   99 |         }));
+> 100 |         setCols(newCols);
+      |         ^^^^^^^ Avoid calling setState() directly within an effect
+  101 |     }, []);
+  102 |
+  103 |     return (  react-hooks/set-state-in-effect
+  131:12  error  'showWriteup' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+  131:25  error  'setShowWriteup' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             no-unused-vars
+  149:12  error  'logs' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       no-unused-vars
+  428:50  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  426 |                                         {Array.from({ length: 200 }).map((_, i) => (
+  427 |                                             <span key={i} className="animate-pulse" style={{ animationDelay: `${i * 0.1}s` }}>
+> 428 |                                                 {Math.random() > 0.5 ? '1' : '0'}
+      |                                                  ^^^^^^^^^^^^^ Cannot call impure function
+  429 |                                             </span>
+  430 |                                         ))}
+  431 |                                     </div>                      react-hooks/purity
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\ctf\DailyCTF.jsx
+  7:11  error  'dayOfYear' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+  7:35  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+   5 | const DailyCTF = () => {
+   6 |     // Picking a challenge based on current day
+>  7 |     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+     |                                   ^^^^^^^^^^ Cannot call impure function
+   8 |     const mockChallenge = {
+   9 |         title: 'The Cookie Monster',
+  10 |         description: 'Manipulate cookies to gain admin access. This lab tests your understanding of session management and cookie-based authentication flaws.',  react-hooks/purity
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\ctf\labs\LabComponents.jsx
+  187:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  185 |     useEffect(() => {
+  186 |         if (config.initialFiles) {
+> 187 |             setFiles(config.initialFiles.map(f => f.name));
+      |             ^^^^^^^^ Avoid calling setState() directly within an effect
+  188 |         }
+  189 |     }, [config.initialFiles]);
+  190 |  react-hooks/set-state-in-effect
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\labs\Campaigns.jsx
+  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\ADAttackLab.jsx
+  196:11  error  'containerVariants' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  372:88  error  'step' is not defined                                                                              no-undef
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\AttackChains.jsx
+  32:9  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  30 |         });
+  31 |
+> 32 |         setSocket(newSocket);
+     |         ^^^^^^^^^ Avoid calling setState() directly within an effect
+  33 |         return () => newSocket.disconnect();
+  34 |     }, []);
+  35 |  react-hooks/set-state-in-effect
+  34:8  warning  React Hook useEffect has a missing dependency: 'apiUrl'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/exhaustive-deps
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\C2CommandCenter.jsx
+   10:10  error    'io' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+   61:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  59 |                 content: `User: ${latest.payload.username}\nPass: ${latest.payload.password}\nUrl: ${latest.payload.domain}`
+  60 |             };
+> 61 |             setLoot(prev => [credItem, ...prev]);
+     |             ^^^^^^^ Avoid calling setState() directly within an effect
+  62 |             toast('CREDENTIALS CAPTURED FROM CYBER RANGE', 'success');
+  63 |         }
+  64 |     }, [capturedCreds]);  react-hooks/set-state-in-effect
+   64:8   warning  React Hook useEffect has a missing dependency: 'toast'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+   80:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  78 |
+  79 |             // Merge unique beacons
+> 80 |             setBeacons(prev => {
+     |             ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  81 |                 const combined = [...prev, ...newBeacons];
+  82 |                 // Remove duplicates by ID
+  83 |                 return Array.from(new Map(combined.map(item => [item.id, item])).values());                                react-hooks/set-state-in-effect
+   88:22  error    'MOCK_FS' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-undef
+   89:21  error    'MOCK_FS' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-undef
+  106:14  error    'MOCK_FS' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-undef
+  107:23  error    'MOCK_FS' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-undef
+  146:21  error    'socket' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             no-undef
+  149:21  error    'socket' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             no-undef
+  156:17  error    Unexpected lexical declaration in case block                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-case-declarations
+  166:17  error    Unexpected lexical declaration in case block                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-case-declarations
+  186:17  error    Unexpected lexical declaration in case block                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-case-declarations
+  194:17  error    Unexpected lexical declaration in case block                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-case-declarations
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\CVEMuseum.jsx
+   44:5    error  'useEffect' is not defined        no-undef
+   64:18   error  'err' is defined but never used   no-unused-vars
+   91:18   error  'err' is defined but never used   no-unused-vars
+  196:55   error  Unnecessary escape character: \{  no-useless-escape
+  197:98   error  Unnecessary escape character: \}  no-useless-escape
+  197:241  error  Unnecessary escape character: \}  no-useless-escape
+  197:243  error  Unnecessary escape character: \}  no-useless-escape
+  200:73   error  Unnecessary escape character: \{  no-useless-escape
+  200:81   error  Unnecessary escape character: \{  no-useless-escape
+  200:90   error  Unnecessary escape character: \}  no-useless-escape
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\CampaignManager.jsx
+  134:18  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  132 |         const template = blockLibrary[category].blocks.find(b => b.id === blockId);
+  133 |         const newBlock = {
+> 134 |             uid: Date.now(),
+      |                  ^^^^^^^^^^ Cannot call impure function
+  135 |             ...template,
+  136 |             category,
+  137 |             x: Math.max(0, x),  react-hooks/purity
+  219:24  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  217 |
+  218 |         const template = blockLibrary[suggestion.catKey].blocks.find(b => b.id === suggestion.id);
+> 219 |         const newUid = Date.now();
+      |                        ^^^^^^^^^^ Cannot call impure function
+  220 |         const newBlock = {
+  221 |             uid: newUid,
+  222 |             ...template,   react-hooks/purity
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\CloudSecurityPro.jsx
+  206:38  error  'motion' is not defined           no-undef
+  475:14  error  'AnimatePresence' is not defined  no-undef
+  476:18  error  'motion' is not defined           no-undef
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\CryptoForge.jsx
+  155:20  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  153 |     useEffect(() => {
+  154 |         const saved = localStorage.getItem('crypto_solved');
+> 155 |         if (saved) setSolvedChallenges(JSON.parse(saved));
+      |                    ^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  156 |     }, []);
+  157 |
+  158 |     // --- UTILS ---  react-hooks/set-state-in-effect
+  173:19  error  'md5' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  245:21  error  Unexpected lexical declaration in case block                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         no-case-declarations
+  246:21  error  Unexpected lexical declaration in case block                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         no-case-declarations
+  247:21  error  Unexpected lexical declaration in case block                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         no-case-declarations
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\EncoderTool.jsx
+   2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  23:21  error  Unexpected lexical declaration in case block                                   no-case-declarations
+  30:21  error  Unexpected lexical declaration in case block                                   no-case-declarations
+  31:21  error  Unexpected lexical declaration in case block                                   no-case-declarations
+  38:21  error  Unexpected lexical declaration in case block                                   no-case-declarations
+  43:21  error  Unexpected lexical declaration in case block                                   no-case-declarations
+  49:18  error  'e' is defined but never used                                                  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\FileTransferHelper.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\FindingReporter.jsx
+  189:9  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  187 |
+  188 |     useEffect(() => {
+> 189 |         calculateCVSS();
+      |         ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  190 |     }, [cvssValues]);
+  191 |
+  192 |     const saveFinding = (e) => {  react-hooks/set-state-in-effect
+  190:8  warning  React Hook useEffect has a missing dependency: 'calculateCVSS'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           react-hooks/exhaustive-deps
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\FuzzingCockpit.jsx
+   78:18  error    'err' is defined but never used                                                                           no-unused-vars
+  114:8   warning  React Hook useEffect has a missing dependency: 'toast'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  270:64  error    'i' is defined but never used                                                                             no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\HashRefinery.jsx
+  173:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  171 |             return () => clearTimeout(timer);
+  172 |         } else {
+> 173 |             setDetectedMatches([]);
+      |             ^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  174 |         }
+  175 |     }, [hashInput]);
+  176 |  react-hooks/set-state-in-effect
+  200:26  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+  206:8   warning  React Hook useEffect has a missing dependency: 'toast'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/exhaustive-deps
+  227:18  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\JSMonitorPro.jsx
+  8:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\MitreAttack.jsx
+   1:27  error  'useMemo' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                     no-unused-vars
+  11:12  error  'selectedTactic' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  11:28  error  'setSelectedTactic' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\PasswordCracker.jsx
+  267:18  error  'AnimatePresence' is not defined  no-undef
+  271:26  error  'motion' is not defined           no-undef
+  348:26  error  'motion' is not defined           no-undef
+  428:26  error  'motion' is not defined           no-undef
+  528:26  error  'motion' is not defined           no-undef
+  583:26  error  'motion' is not defined           no-undef
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\PayloadGenerator.jsx
+   2:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                     no-unused-vars
+  33:8   warning  React Hook useEffect has a missing dependency: 'fetchPayloads'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\PersonaPro.jsx
+  16:12  error  'savedPersonas' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  16:27  error  'setSavedPersonas' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\PrivEscPro.jsx
+  15:21  error  'labStatus' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+  15:32  error  'startLab' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+  15:42  error  'stopLab' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+  15:51  error  'connectionInfo' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  15:67  error  'isLoading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+  20:12  error  'targetDomain' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  20:26  error  'setTargetDomain' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\ProjectTracker.jsx
+  19:12  error    'isLoading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
+  19:23  error    'setIsLoading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+  40:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  38 |
+  39 |     useEffect(() => {
+> 40 |         fetchProjects();
+     |         ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  41 |     }, []);
+  42 |
+  43 |     const handleCreateProject = async () => {  react-hooks/set-state-in-effect
+  41:8   warning  React Hook useEffect has a missing dependency: 'fetchProjects'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+  58:18  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
+  92:18  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\ReportBuilder.jsx
+   2:27  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u              no-unused-vars
+  10:11  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u      no-unused-vars
+  21:12  error  'activeTab' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  21:23  error  'setActiveTab' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\SQLiPayloads.jsx
+  81:8  warning  React Hook useMemo has a missing dependency: 'payloads'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\SocialEngineeringPro.jsx
+     1:38   error    'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                             no-unused-vars
+   184:24   error    'setWebhookUrl' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+   185:22   error    'setProxyUrl' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u               no-unused-vars
+   190:21   error    'setRelayId' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+   243:42   error    'e' is defined but never used                                                                             no-unused-vars
+   259:34   error    'e' is defined but never used                                                                             no-unused-vars
+   269:8    warning  React Hook useEffect has a missing dependency: 'toast'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   414:19   error    'domainPrefix' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u              no-unused-vars
+  1023:230  error    'Check' is not defined                                                                                    no-undef
+  1031:86   error    'Video' is not defined                                                                                    no-undef
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\StegoAnalyst.jsx
+   52:11  error  'canvasRef' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+   75:20  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  73 |     useEffect(() => {
+  74 |         const saved = localStorage.getItem('stego_solved');
+> 75 |         if (saved) setSolvedChallenges(JSON.parse(saved));
+     |                    ^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  76 |     }, []);
+  77 |
+  78 |     // --- UTILS: ZERO WIDTH ---  react-hooks/set-state-in-effect
+  183:17  error  'charPrototype' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  505:46  error  'Copy' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    no-undef
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\SubdomainMonitor.jsx
+   58:12  error  'isLoading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   82:18  error  'err' is defined but never used                                                            no-unused-vars
+  112:18  error  'err' is defined but never used                                                            no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\SubnetCalculator.jsx
+   13:36  error  'Check' is not defined       no-undef
+   13:85  error  'Copy' is not defined        no-undef
+  122:22  error  'Network' is not defined     no-undef
+  133:30  error  'Wifi' is not defined        no-undef
+  145:30  error  'Hash' is not defined        no-undef
+  166:18  error  'motion' is not defined      no-undef
+  176:38  error  'Server' is not defined      no-undef
+  203:30  error  'Calculator' is not defined  no-undef
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\TargetManager.jsx
+  213:22  error  'err' is defined but never used  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\ToolsHub.jsx
+  10:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\VisualMapper.jsx
+    1:27  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+    1:46  error  'useMemo' is defined but never used. Allowed unused vars must match /^[A-Z_]/u              no-unused-vars
+   19:12  error  'scanStatus' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   54:18  error  'err' is defined but never used                                                             no-unused-vars
+  171:30  error  'ExternalLink' is not defined                                                               no-undef
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\WebExploitation.jsx
+   45:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  43 |         });
+  44 |
+> 45 |         setSocket(newSocket);
+     |         ^^^^^^^^^ Avoid calling setState() directly within an effect
+  46 |         return () => newSocket.disconnect();
+  47 |     }, []);
+  48 |  react-hooks/set-state-in-effect
+  201:53  error  'Activity' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    no-undef
+  470:62  error  Unexpected control character(s) in regular expression: \x1b                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-control-regex
+  471:62  error  Unexpected control character(s) in regular expression: \x1b                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-control-regex
+  472:62  error  Unexpected control character(s) in regular expression: \x1b                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-control-regex
+  473:62  error  Unexpected control character(s) in regular expression: \x1b                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-control-regex
+  474:62  error  Unexpected control character(s) in regular expression: \x1b                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-control-regex
+
+C:\Users\mmoza\Desktop\Study-hub3\study-hub-react\src\pages\tools\XSSPayloads.jsx
+  64:8  warning  React Hook useMemo has a missing dependency: 'payloads'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Γ£û 195 problems (176 errors, 19 warnings)
+
