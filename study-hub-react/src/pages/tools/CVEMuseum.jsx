@@ -6,7 +6,8 @@ import {
     ExternalLink, ChevronRight, X,
     Shield, AlertTriangle, Lightbulb,
     PlayCircle, Download, Calendar, Check,
-    TrendingUp, Zap, GitBranch, FileJson, Terminal, Bug
+    TrendingUp, Zap, GitBranch, FileJson, Terminal, Bug,
+    RefreshCcw, Rocket
 } from 'lucide-react';
 
 const CVEMuseum = () => {
@@ -16,6 +17,81 @@ const CVEMuseum = () => {
     const [filter, setFilter] = useState({ year: 'all', category: 'all' });
     const [copied, setCopied] = useState(false);
     const [selectedVariant, setSelectedVariant] = useState(0);
+    const [isLiveMode, setIsLiveMode] = useState(false);
+    const [liveResults, setLiveResults] = useState([]);
+    const [activeCodespaces, setActiveCodespaces] = useState([]);
+    const [isLoadingLive, setIsLoadingLive] = useState(false);
+    const [notification, setNotification] = useState(null);
+
+    const toast = (message, type = 'info') => {
+        setNotification({ message, type });
+        setTimeout(() => setNotification(null), 3000);
+    };
+
+    // Fetch Active Codespaces
+    const fetchCodespaces = async () => {
+        try {
+            const res = await fetch('/api/codespaces/active');
+            const data = await res.json();
+            if (data.success) {
+                setActiveCodespaces(Object.entries(data.environments).map(([id, val]) => ({ id, ...val })));
+            }
+        } catch (err) {
+            console.error("Codespace fetch failed", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchCodespaces();
+        const interval = setInterval(fetchCodespaces, 10000); // Check every 10s
+        return () => clearInterval(interval);
+    }, []);
+
+    const performLiveSearch = async () => {
+        if (!searchQuery || searchQuery.length < 3) return toast("Query too short", "warn");
+        setIsLoadingLive(true);
+        try {
+            const res = await fetch('/api/tools/cve/live', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: searchQuery })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setLiveResults(data.results);
+                toast(`Intelligence retrieved: ${data.results.length} results`, "success");
+            }
+        } catch (err) {
+            toast("CVE Database unreachable", "error");
+        } finally {
+            setIsLoadingLive(false);
+        }
+    };
+
+    const handleDeploy = async (cve) => {
+        if (activeCodespaces.length === 0) return toast("No active Codespaces found", "error");
+
+        const codespaceId = activeCodespaces[0].id; // Deploy to first available for demo
+        const artifact = {
+            name: `${cve.id || 'exploit'}.txt`,
+            content: cve.poc || cve.summary || "Tactical intel deployment.",
+            type: "vulnerability_poc"
+        };
+
+        try {
+            const res = await fetch('/api/codespaces/deploy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ codespace_id: codespaceId, artifact })
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast(`Synchronized with ${codespaceId}`, "success");
+            }
+        } catch (err) {
+            toast("Deployment bridge failure", "error");
+        }
+    };
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
@@ -209,6 +285,21 @@ const CVEMuseum = () => {
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] text-gray-100 p-4 md:p-8 font-['Outfit']">
+            {/* Notifications */}
+            <AnimatePresence>
+                {notification && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className={`fixed top-8 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 shadow-2xl ${notification.type === 'error' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white'}`}
+                    >
+                        <Zap size={16} />
+                        {notification.message}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-16">
@@ -226,6 +317,33 @@ const CVEMuseum = () => {
                     <p className="text-gray-500 text-lg md:text-xl font-['Noto_Sans_Arabic'] opacity-80">
                         متحف الثغرات - التاريخ يعيد نفسه
                     </p>
+
+                    <div className="mt-10 flex justify-center gap-4">
+                        <div className="flex bg-white/5 p-1 rounded-2xl border border-white/5">
+                            <button
+                                onClick={() => setIsLiveMode(false)}
+                                className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${!isLiveMode ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-gray-500 hover:text-white'}`}
+                            >
+                                Museum Archive
+                            </button>
+                            <button
+                                onClick={() => setIsLiveMode(true)}
+                                className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${isLiveMode ? 'bg-red-600 text-white shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
+                            >
+                                Live Intelligence
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Codespace HUD */}
+                    <div className="mt-6 flex justify-center">
+                        <div className="flex items-center gap-3 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                            <div className={`w-2 h-2 rounded-full ${activeCodespaces.length > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-gray-700'}`} />
+                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">
+                                {activeCodespaces.length > 0 ? `${activeCodespaces.length} Codespaces Online` : 'No Bridges Connected'}
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Timeline Navigation */}
@@ -258,11 +376,21 @@ const CVEMuseum = () => {
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-blue-500 transition-all" size={20} />
                         <input
                             type="text"
-                            placeholder="Search the archives..."
+                            placeholder={isLiveMode ? "Search CVE.circl.lu API..." : "Search the archives..."}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-[#12121e] border border-white/5 rounded-2xl pl-12 pr-6 py-4 focus:outline-none focus:border-blue-500/50 transition-all font-semibold"
+                            onKeyDown={(e) => e.key === 'Enter' && (isLiveMode ? performLiveSearch() : null)}
+                            className={`w-full bg-[#12121e] border border-white/5 rounded-2xl pl-12 pr-6 py-4 focus:outline-none transition-all font-semibold ${isLiveMode ? 'border-red-500/20 focus:border-red-500/50' : 'focus:border-blue-500/50'}`}
                         />
+                        {isLiveMode && (
+                            <button
+                                onClick={performLiveSearch}
+                                disabled={isLoadingLive}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 bg-red-600 hover:bg-red-500 text-white h-10 px-6 rounded-xl font-black text-[10px] uppercase transition-all disabled:opacity-50"
+                            >
+                                {isLoadingLive ? <RefreshCcw size={14} className="animate-spin" /> : 'HUNT'}
+                            </button>
+                        )}
                     </div>
                     <div className="flex gap-4">
                         <select
@@ -287,7 +415,7 @@ const CVEMuseum = () => {
 
                 {/* Archive Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredCVEs.map((cve) => (
+                    {(isLiveMode ? liveResults : filteredCVEs).map((cve) => (
                         <motion.div
                             key={cve.id}
                             layoutId={cve.id}
@@ -295,19 +423,19 @@ const CVEMuseum = () => {
                                 setSelectedCVE(cve);
                                 setActiveTab('overview');
                             }}
-                            className="group relative h-[380px] p-8 rounded-[2.5rem] bg-[#12121e] border border-white/5 hover:border-blue-500/30 transition-all cursor-pointer overflow-hidden flex flex-col"
+                            className={`group relative h-[380px] p-8 rounded-[2.5rem] bg-[#12121e] border border-white/5 transition-all cursor-pointer overflow-hidden flex flex-col ${isLiveMode ? 'hover:border-red-500/30' : 'hover:border-blue-500/30'}`}
                         >
                             {/* Background Pattern */}
-                            <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all" />
+                            <div className={`absolute -top-12 -right-12 w-32 h-32 blur-[50px] rounded-full transition-all ${isLiveMode ? 'bg-red-500/10 group-hover:bg-red-500/20' : 'bg-blue-500/10 group-hover:bg-blue-500/20'}`} />
 
-                            <div className="text-5xl mb-6">{cve.icon}</div>
+                            <div className="text-5xl mb-6">{cve.icon || '🛡️'}</div>
 
                             <div className="flex justify-between items-start mb-4">
-                                <div className="font-mono text-xs font-black text-blue-500 tracking-widest">{cve.id}</div>
-                                <div className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">{cve.category}</div>
+                                <div className={`font-mono text-xs font-black tracking-widest ${isLiveMode ? 'text-red-500' : 'text-blue-500'}`}>{cve.id}</div>
+                                <div className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">{cve.category || 'Vulnerability'}</div>
                             </div>
 
-                            <h3 className="text-2xl font-black mb-4 group-hover:text-blue-400 transition-colors line-clamp-1">{cve.name}</h3>
+                            <h3 className={`text-2xl font-black mb-4 transition-colors line-clamp-1 ${isLiveMode ? 'group-hover:text-red-400' : 'group-hover:text-blue-400'}`}>{cve.name || cve.id}</h3>
                             <p className="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-auto">
                                 {cve.summary}
                             </p>
@@ -315,15 +443,21 @@ const CVEMuseum = () => {
                             <div className="flex items-center justify-between pt-6 mt-6 border-t border-white/5">
                                 <div className="flex items-center gap-2">
                                     <Calendar size={14} className="text-gray-700" />
-                                    <span className="text-xs font-bold text-gray-600">{cve.year}</span>
+                                    <span className="text-xs font-bold text-gray-600">{cve.year || cve.published?.split('-')[0] || '2024'}</span>
                                 </div>
                                 <div className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-blue-500">Exhibit Details</span>
-                                    <ChevronRight size={14} className="text-blue-500" />
+                                    <span className={`text-[10px] font-black uppercase tracking-widest ${isLiveMode ? 'text-red-500' : 'text-blue-500'}`}>Tactical Intel</span>
+                                    <ChevronRight size={14} className={isLiveMode ? 'text-red-500' : 'text-blue-500'} />
                                 </div>
                             </div>
                         </motion.div>
                     ))}
+                    {(isLiveMode && liveResults.length === 0) && (
+                        <div className="col-span-full py-40 text-center space-y-4">
+                            <Bug size={48} className="mx-auto text-white/5" />
+                            <p className="text-white/20 font-mono text-xs uppercase tracking-widest italic">Awaiting live intelligence feed...</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Exhibit Detail Modal */}
@@ -350,12 +484,20 @@ const CVEMuseum = () => {
                                             <h2 className="text-4xl font-black text-white">{selectedCVE.name}</h2>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() => setSelectedCVE(null)}
-                                        className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-gray-500 transition-all"
-                                    >
-                                        <X size={24} />
-                                    </button>
+                                    <div className="flex gap-4 items-center">
+                                        <button
+                                            onClick={() => handleDeploy(selectedCVE)}
+                                            className="px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded-2xl shadow-xl shadow-red-500/20 transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-2"
+                                        >
+                                            <Rocket size={14} /> Deploy to Codespace
+                                        </button>
+                                        <button
+                                            onClick={() => setSelectedCVE(null)}
+                                            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-gray-500 transition-all"
+                                        >
+                                            <X size={24} />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Tabs */}

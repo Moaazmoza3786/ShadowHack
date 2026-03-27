@@ -38,6 +38,7 @@ def migrate_users_table(cursor):
         ("is_active", "BOOLEAN DEFAULT 1"),
         ("is_verified", "BOOLEAN DEFAULT 0"),
         ("verification_token", "VARCHAR(100)"),
+        ("max_concurrent_labs", "INTEGER DEFAULT 1"),
     ]
     
     for column_name, column_type in migrations:

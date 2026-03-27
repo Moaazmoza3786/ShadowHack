@@ -6,17 +6,14 @@ Bridges WebSocket events to Docker exec streams.
 
 from flask import request
 from flask_socketio import Namespace, emit, disconnect
-from docker_lab_manager import DockerLabManager, logger
+from docker_lab_manager import get_docker_manager, logger
 import threading
 import time
 import socket
 from tools_manager import ToolExecutor
 from kill_chain_manager import KillChainManager
 
-try:
-    from main import socketio
-except ImportError:
-    socketio = None
+# Avoid circular import at top level
 
 class ToolsNamespace(Namespace):
     def __init__(self):
@@ -59,7 +56,7 @@ class TerminalNamespace(Namespace):
     
     def __init__(self, check_origin=True):
         super().__init__('/ws/terminal')
-        self.lab_manager = DockerLabManager()
+        self.lab_manager = get_docker_manager()
         self.active_terminals = {} # socket_id -> {exec_id, socket, stream}
 
     def on_connect(self):
@@ -180,7 +177,7 @@ class TerminalNamespace(Namespace):
         except Exception as e:
             logger.error(f"Failed to start shell: {e}")
             if sid in self.active_terminals: # Check if still connected
-                socketio.emit('terminal_error', {'message': str(e)}, to=sid, namespace='/ws/terminal')
+                self.emit('terminal_error', {'message': str(e)}, to=sid)
 
     def _read_docker_stream(self, sid, sock):
         """Read data from Docker socket and emit to frontend"""
@@ -196,11 +193,10 @@ class TerminalNamespace(Namespace):
                     break
                     
                 # Emit to specific client in namespace
-                if socketio:
-                   socketio.emit('output', data.decode(errors='replace'), to=sid, namespace='/ws/terminal')
+                self.emit('output', data.decode(errors='replace'), to=sid)
                 
         except Exception as e:
             logger.error(f"Read stream ended: {e}")
         finally:
             if sid in self.active_terminals:
-                socketio.emit('terminal_error', {'message': 'Session ended'}, to=sid, namespace='/ws/terminal')
+                self.emit('terminal_error', {'message': 'Session ended'}, to=sid)

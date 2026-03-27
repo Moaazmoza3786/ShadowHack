@@ -49,6 +49,22 @@ Thumbs.db
 *.log
 logs/
 
+# Explicitly untrack already-committed log files
+# Run: git rm --cached <file> to stop tracking these
+backend/backend.log
+backend_debug.log
+tunnel.log
+study-hub-react/tunnel.log
+study-hub-react/fresh_tunnel.log
+study-hub-react/fresh_backend_tunnel.log
+study-hub-react/final_stable_tunnel.log
+study-hub-react/tunnel_stable_v3.log
+study-hub-react/fresh_version.log
+study-hub-react/build_error.log
+study-hub-react/build_error_2.log
+study-hub-react/build_error_v2.log
+study-hub-react/build_errors.log
+
 # ==================== Node (if any frontend build) ====================
 node_modules/
 npm-debug.log

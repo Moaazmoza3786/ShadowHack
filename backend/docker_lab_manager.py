@@ -73,8 +73,9 @@ class DockerLabManager:
             self.start_background_cleanup()
             
         except docker.errors.DockerException as e:
-            logger.warning(f"⚠ Docker not available: {e}")
-            logger.warning("Lab manager will run in simulation mode")
+            # We log this as INFO instead of WARNING to reduce noise for users without Docker
+            logger.info(f"ℹ Docker not detected on host: {e}")
+            logger.info("ℹ Lab manager running in SIMULATION MODE")
             self._docker_available = False
             self.client = None
     

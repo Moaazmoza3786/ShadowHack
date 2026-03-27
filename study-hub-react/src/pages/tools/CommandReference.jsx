@@ -106,9 +106,9 @@ const CommandReference = () => {
     const filteredCommands = useMemo(() => {
         if (!currentCategory) return [];
         return currentCategory.commands.filter(cmd =>
-            cmd.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            cmd.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())) ||
-            cmd.desc.toLowerCase().includes(searchQuery.toLowerCase())
+            (cmd.name || '').toLowerCase().includes((searchQuery || '').toLowerCase()) ||
+            (cmd.tags || []).some(t => (t || '').toLowerCase().includes((searchQuery || '').toLowerCase())) ||
+            (cmd.desc || '').toLowerCase().includes((searchQuery || '').toLowerCase())
         );
     }, [currentCategory, searchQuery]);
 

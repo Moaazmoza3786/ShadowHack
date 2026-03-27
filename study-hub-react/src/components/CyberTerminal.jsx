@@ -4,22 +4,55 @@ import { FitAddon } from '@xterm/addon-fit';
 import { Terminal as TerminalIcon, Maximize2, Minimize2, Power, Wifi, ShieldCheck } from 'lucide-react';
 import '@xterm/xterm/css/xterm.css';
 import { io } from 'socket.io-client';
+import { useAppContext } from '../context/AppContext';
 
 const CyberTerminal = ({
     initialHeight = "400px",
-    readOnly = false,
     title = "KALI-LINUX-SANDBOX [ROOT]",
-    onCommand,
     isConnected = false,
     labId,
     userId = 1
 }) => {
+    const { apiUrl } = useAppContext();
     const terminalRef = useRef(null);
     const xtermRef = useRef(null);
     const fitAddonRef = useRef(null);
     const socketRef = useRef(null);
     const [isMaximized, setIsMaximized] = useState(false);
-    const [socketStatus, setSocketStatus] = useState('disconnected'); // disconnected, connecting, connected
+    const [sessionId] = useState(() => Math.random().toString(36).substr(2, 9).toUpperCase());
+
+    const connectSocket = React.useCallback((term) => {
+        if (socketRef.current) socketRef.current.disconnect();
+
+        const socket = io(apiUrl.replace('/api', '') + '/ws/terminal', {
+            query: { lab_id: labId, user_id: userId },
+            transports: ['websocket']
+        });
+
+        socket.on('connect', () => {
+            term.writeln('\x1b[1;32m✓ ROOT ACCESS GRANTED\x1b[0m');
+            term.write('\r\n');
+        });
+
+        socket.on('output', (data) => {
+            term.write(data);
+        });
+
+        socket.on('terminal_error', (data) => {
+            term.writeln(`\r\n\x1b[1;31m⚠ ERROR: ${data.message}\x1b[0m`);
+        });
+
+        socket.on('disconnect', () => {
+            term.writeln('\r\n\x1b[1;31m✖ SESSION TERMINATED\x1b[0m');
+        });
+
+        // Handle resize
+        term.onResize((size) => {
+            socket.emit('resize', { cols: size.cols, rows: size.rows });
+        });
+
+        socketRef.current = socket;
+    }, [apiUrl, labId, userId]);
 
     useEffect(() => {
         if (!terminalRef.current) return;
@@ -64,8 +97,6 @@ const CyberTerminal = ({
         // Connect to WebSocket if labId is provided and we are "connected" (lab running)
         if (isConnected && labId) {
             connectSocket(term);
-        } else {
-            term.writeln('\x1b[1;33m⚠ Waiting for lab instance to start...\x1b[0m');
         }
 
         // Cleanup
@@ -73,50 +104,7 @@ const CyberTerminal = ({
             if (socketRef.current) socketRef.current.disconnect();
             term.dispose();
         };
-    }, [isConnected, labId]); // Re-run if connection status changes
-
-    const connectSocket = (term) => {
-        if (socketRef.current) socketRef.current.disconnect();
-
-        setSocketStatus('connecting');
-        const socket = io('http://localhost:5000/ws/terminal', {
-            query: { lab_id: labId, user_id: userId },
-            transports: ['websocket']
-        });
-
-        socket.on('connect', () => {
-            setSocketStatus('connected');
-            term.writeln('\x1b[1;32m✓ ROOT ACCESS GRANTED\x1b[0m');
-            term.write('\r\n');
-        });
-
-        socket.on('output', (data) => {
-            term.write(data);
-        });
-
-        socket.on('terminal_error', (data) => {
-            term.writeln(`\r\n\x1b[1;31m⚠ ERROR: ${data.message}\x1b[0m`);
-        });
-
-        socket.on('disconnect', () => {
-            setSocketStatus('disconnected');
-            term.writeln('\r\n\x1b[1;31m✖ SESSION TERMINATED\x1b[0m');
-        });
-
-        // Send input to backend (only if socket is connected)
-        // This part is now handled by the term.onData inside useEffect,
-        // which checks socketStatus before sending.
-        // term.onData((data) => {
-        //     socket.emit('input', data);
-        // });
-
-        // Handle resize
-        term.onResize((size) => {
-            socket.emit('resize', { cols: size.cols, rows: size.rows });
-        });
-
-        socketRef.current = socket;
-    };
+    }, [isConnected, labId, connectSocket]); // Re-run if connection status changes
 
     // Handle maximized state resize
     useEffect(() => {
@@ -171,7 +159,7 @@ const CyberTerminal = ({
                 </div>
                 <div className="flex items-center gap-4">
                     <span>ENCRYPTION: AES-256</span>
-                    <span>SESSION: {Math.random().toString(36).substr(2, 9).toUpperCase()}</span>
+                    <span>SESSION: {sessionId}</span>
                 </div>
             </div>
         </div>

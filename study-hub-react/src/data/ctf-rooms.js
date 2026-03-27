@@ -11,6 +11,8 @@ export const ctfRooms = {
                 ar: 'متدرب نسي يحذف الملاحظات. هل تستطيع إيجاد الأسرار في الكود؟',
                 en: 'An intern forgot to scrub the notes. Can you find the secrets in the source?'
             },
+            campaignId: 'techcorp_breach',
+            codespacePayloadId: 'ctf-intern-mistake',
             scenario: {
                 ar: 'مطور مبتدئ في TechCorp نشر نسخة تجريبية من صفحتهم الرئيسية. للأسف، لم يتبع قائمة الأمان وترك تعليقات المطور تحتوي على رموز وصول حساسة.',
                 en: "A junior developer at 'TechCorp' just pushed a beta version of their landing page. Unfortunately, they didn't follow the security checklist and left developer comments containing sensitive access tokens."
@@ -89,6 +91,8 @@ export const ctfRooms = {
             estimatedTime: '35 min',
             points: 250,
             tags: ['sqli', 'auth-bypass', 'sqlite'],
+            campaignId: 'techcorp_breach',
+            codespacePayloadId: 'ctf-login-limbo',
             description: {
                 ar: 'بوابة قديمة محمية بقفل ضعيف. هل يمكنك تجاوز البوابة؟',
                 en: 'An outdated portal guarded by a weak lock. Can you bypass the gate?'
@@ -321,6 +325,8 @@ export const ctfRooms = {
             estimatedTime: '80 min',
             points: 1500,
             tags: ['deserialization', 'rce', 'pickle', 'python'],
+            campaignId: 'techcorp_breach',
+            codespacePayloadId: 'ctf-dark-matter-object',
             description: {
                 ar: 'نواة غير مستقرة تعالج تيارات متسلسلة خام. هل يمكنك تحقيق السيطرة الكاملة؟',
                 en: 'An unstable core processing raw serialized streams. Can you achieve total control?'

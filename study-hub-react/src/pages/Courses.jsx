@@ -29,9 +29,8 @@ const Courses = () => {
     ];
 
     const filteredCourses = courses.filter(course => {
-        const matchesSearch = (language === 'ar' ? course.titleAr : course.title)
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
+        const title = (language === 'ar' ? course.titleAr : course.title) || '';
+        const matchesSearch = title.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesCategory = selectedCategory === 'all' || course.level === selectedCategory;
         return matchesSearch && matchesCategory;
     });

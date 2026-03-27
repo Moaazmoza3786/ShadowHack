@@ -14,7 +14,12 @@ import {
     ChevronRight,
     Terminal as TerminalIcon,
     Flame,
-    Lock
+    Lock,
+    Rocket,
+    AlertCircle,
+    Activity,
+    RefreshCcw,
+    Map
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -67,10 +72,88 @@ const RoomCard = ({ room }) => {
     );
 };
 
+const CampaignCard = ({ campaign }) => {
+    return (
+        <div className="group relative rounded-3xl bg-dark-800/60 border border-white/5 overflow-hidden hover:border-primary-500/30 transition-all duration-500 shadow-2xl">
+            <div className="p-8 space-y-6">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center">
+                            <Map className="text-primary-500" size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-black text-white italic tracking-tighter uppercase leading-none">{campaign.title}</h3>
+                            <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest">{campaign.difficulty} Operation</span>
+                        </div>
+                    </div>
+                    <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] font-black text-primary-500 uppercase tracking-widest">
+                        {campaign.stages.length} Stages
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                        {campaign.stages.map((stage, i) => (
+                            <div key={stage.id} className="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                                <div className={`h-full bg-primary-500/30 transition-all duration-1000 ${i === 0 ? 'w-full !bg-primary-500 shadow-[0_0_10px_#00f2ea]' : 'w-0'}`} />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                        <span className="text-gray-500">Progress</span>
+                        <span className="text-white italic">Stage 1: Active</span>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-2">
+                        <Trophy size={14} className="text-yellow-500" />
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{campaign.badge} Badge</span>
+                    </div>
+                    <button className="flex items-center gap-2 px-4 py-2 bg-primary-500/10 border border-primary-500/20 text-primary-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary-500 hover:text-dark-900 transition-all">
+                        Resume Mission
+                        <ChevronRight size={14} />
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const CTF = () => {
     const { t, user, liveFeed } = useAppContext();
     const [activeTab, setActiveTab] = useState('web');
     const [selectedLevel, setSelectedLevel] = useState('all');
+    const [campaigns, setCampaigns] = useState([]);
+    const [activeCodespaces, setActiveCodespaces] = useState([]);
+    const [notification, setNotification] = useState(null);
+
+    const toast = (message, type = 'info') => {
+        setNotification({ message, type });
+        setTimeout(() => setNotification(null), 3000);
+    };
+
+    const fetchData = async () => {
+        try {
+            const campaignsRes = await fetch('/api/tools/campaigns');
+            const campaignsData = await campaignsRes.json();
+            if (campaignsData.success) setCampaigns(campaignsData.campaigns);
+
+            const codespacesRes = await fetch('/api/codespaces/active');
+            const codespacesData = await codespacesRes.json();
+            if (codespacesData.success) {
+                setActiveCodespaces(Object.entries(codespacesData.environments).map(([id, env]) => ({ id, ...env })));
+            }
+        } catch (err) {
+            console.error("Failed to fetch CTF data:", err);
+        }
+    };
+
+    React.useEffect(() => {
+        fetchData();
+        const interval = setInterval(fetchData, 10000);
+        return () => clearInterval(interval);
+    }, []);
 
     const categories = [
         { id: 'web', label: 'Web Exploit', icon: TerminalIcon },
@@ -100,7 +183,46 @@ const CTF = () => {
     const worldProgress = Math.round((solvedFlagsCount / (totalPossibleFlags || 1)) * 100);
 
     return (
-        <div className="space-y-12 pb-20">
+        <div className="space-y-12 pb-20 relative">
+            {/* Notification Toast */}
+            <AnimatePresence>
+                {notification && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20, x: '-50%' }}
+                        animate={{ opacity: 1, y: 0, x: '-50%' }}
+                        exit={{ opacity: 0, y: -20, x: '-50%' }}
+                        className={`fixed top-8 left-1/2 z-[200] px-6 py-3 rounded-2xl border backdrop-blur-md shadow-2xl flex items-center gap-3 ${notification.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' :
+                            notification.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-500' :
+                                'bg-primary-500/10 border-primary-500/20 text-primary-500'
+                            }`}
+                    >
+                        {notification.type === 'success' ? <Rocket size={18} /> : <AlertCircle size={18} />}
+                        <span className="text-xs font-black uppercase tracking-widest">{notification.message}</span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Campaign Tracking HUD */}
+            {campaigns.length > 0 && (
+                <section className="space-y-8">
+                    <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                            <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase">Elite <span className="text-primary-500">Campaigns</span></h2>
+                            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Multi-stage operations for advanced operatives</p>
+                        </div>
+                        <div className="flex gap-2">
+                            {campaigns.map(c => (
+                                <button key={c.id} className="w-2.5 h-2.5 rounded-full bg-white/5 border border-white/10" />
+                            ))}
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                        {campaigns.map(campaign => (
+                            <CampaignCard key={campaign.id} campaign={campaign} />
+                        ))}
+                    </div>
+                </section>
+            )}
             {/* Header / Stats Overlay */}
             <div className="relative p-12 rounded-[3.5rem] bg-gradient-to-br from-dark-800 to-dark-900 border border-white/5 overflow-hidden">
                 <div className="absolute inset-0 bg-cyber-grid opacity-10" />

@@ -29,20 +29,22 @@ def load_config():
     }
 
 class GroqManager:
-    def __init__(self):
+    def __init__(self, api_key=None):
         self.config = load_config()
-        self.api_key = self.config['groq_api_key']
+        self.api_key = api_key or self.config.get('groq_api_key')
         self.client = None
         self.model = "llama-3.3-70b-versatile" # Using Llama 3.3 70B for high intelligence
         
         if self.api_key:
             try:
                 self.client = Groq(api_key=self.api_key)
-                print("✓ AI Manager: Groq Client Initialized")
+                # Only print if not already initialized or in verbose mode
+                # print("✓ AI Manager: Groq Client Initialized")
             except Exception as e:
                 print(f"⚠ AI Manager: Init Failed - {e}")
         else:
-            print("⚠ AI Manager: No Groq API Key found")
+            # print("⚠ AI Manager: No Groq API Key found")
+            pass
 
     def reload_config(self):
         """Reload configuration at runtime"""
@@ -51,21 +53,34 @@ class GroqManager:
              self.client = Groq(api_key=self.config['groq_api_key'])
 
     def _call_groq(self, messages, temperature=0.7, timeout=30):
-            "temperature": temperature,
-            "max_tokens": 1024
-        }
-        
+        if not self.client:
+            # Try to re-init if key exists
+            if self.api_key:
+                try:
+                    self.client = Groq(api_key=self.api_key)
+                except:
+                    print("⚠ AI Manager: AI not initialized")
+                    return None
+            else:
+                 print("⚠ AI Manager: AI not initialized")
+                 return None
+
         try:
             print(f"[*] AI Request: Sending to Groq ({len(json.dumps(messages))} bytes)...")
             start_time = time.time()
-            response = requests.post(self.api_url, headers=headers, json=data, timeout=timeout)
-            response.raise_for_status()
+            
+            completion = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=1024,
+                timeout=timeout
+            )
+            
             elapsed = time.time() - start_time
             print(f"[+] AI Response: Received in {elapsed:.2f}s")
-            return response.json()['choices'][0]['message']['content']
-        except requests.exceptions.Timeout:
-            print(f"[X] AI Error: Request timed out after {timeout}s")
-            return None
+            return completion.choices[0].message.content
+            
         except Exception as e:
             print(f"[X] AI Error: {e}")
             return None
@@ -262,6 +277,44 @@ class GroqManager:
                 "security_risk": "Unknown",
                 "usage_example": code
             }
+
+    def mutate_payload(self, payload, technique="obfuscation"):
+        """
+        Mutates a payload to bypass WAFs using specific techniques.
+        """
+        system_prompt = f"""You are an Advanced Evasion Specialist.
+        Rewrite the following attack payload to bypass modern WAFs and Filters using: {technique}.
+        
+        Techniques to apply if applicable:
+        - Encoding (URL, Hex, Unicode)
+        - Logic/Syntax manipulation (Case shuffling, whitespace, comments)
+        - Alternative functions (e.g. `[].concat()` instead of strings)
+        - Polyglot structures
+        
+        Return a JSON response with keys: 
+        - 'mutation': The mutated payload code (string).
+        - 'technique': Short name of technique used.
+        - 'success_rate': Estimated success rate (e.g. "High", "Medium").
+        
+        Payload to mutate:
+        """
+        
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": payload}
+        ]
+        
+        content = self._call_groq(messages, temperature=0.9, timeout=60)
+        
+        try:
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            return json.loads(content)
+        except Exception as e:
+            print(f"Error parsing Mutation AI: {e}")
+            return None
 
     def optimize_payload(self, payload):
         """

@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 import {
     Cloud, Server, Shield, Database,
     Lock, Unlock, AlertTriangle, Terminal,
@@ -21,7 +20,10 @@ const CloudSecurityPro = () => {
         { type: 'info', content: 'Cloud Security Pro v2.5 Initialized...' },
         { type: 'info', content: 'Ready for professional cloud auditing.' }
     ]);
-    const terminalRef = useRef(null);
+
+    const addToTerminal = (content, type = 'cmd') => {
+        setTerminalOutput(prev => [...prev, { type, content, timestamp: new Date().toLocaleTimeString() }].slice(-50));
+    };
 
     // --- SOCKET INIT ---
     useEffect(() => {
@@ -32,13 +34,12 @@ const CloudSecurityPro = () => {
             const type = text.toLowerCase().includes('error') ? 'error' : 'info';
             addToTerminal(text, type);
         });
-        setSocket(newSocket);
-        return () => newSocket.disconnect();
+        const t = setTimeout(() => setSocket(newSocket), 0);
+        return () => {
+            clearTimeout(t);
+            newSocket.disconnect();
+        };
     }, []);
-
-    const addToTerminal = (content, type = 'cmd') => {
-        setTerminalOutput(prev => [...prev, { type, content, timestamp: new Date().toLocaleTimeString() }].slice(-50));
-    };
 
     const runTool = (cmd) => {
         if (!socket) return;
@@ -130,7 +131,7 @@ const CloudSecurityPro = () => {
             setIamFindings(findings);
             addToTerminal(`IAM Audit complete. Found ${findings.length} critical issues.`, 'warn');
             toast(findings.length > 0 ? 'Attack vectors identified!' : 'No major issues found.', findings.length > 0 ? 'warning' : 'success');
-        } catch (e) {
+        } catch {
             toast('Invalid JSON format', 'error');
         }
     };

@@ -152,4 +152,16 @@ fi
 # Ensure permissions
 sudo chmod -R 755 /usr/share/wordlists
 
+
+# 6. Exploit Database (SearchSploit)
+if ! command -v searchsploit &> /dev/null; then
+    echo "[+] Installing ExploitDB (SearchSploit)..."
+    sudo apt-get install -y exploitdb
+    # Update the database
+    echo "[*] Updating Exploit Database..."
+    searchsploit -u
+else
+    echo "[✓] ExploitDB is already installed."
+fi
+
 echo "[✓] Setup Complete! The Tool Execution Engine is ready."

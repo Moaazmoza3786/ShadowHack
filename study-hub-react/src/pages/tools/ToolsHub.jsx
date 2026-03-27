@@ -3,7 +3,8 @@ import {
     Wrench, Bomb, FileText, Hash, Shield,
     Network, Fingerprint, Lock, ArrowRight, Scroll,
     Radar, Bot, Crosshair, Code, Activity, Crown,
-    Database, Microscope, Search, Globe, Library, Bug, Download
+    Database, Microscope, Search, Globe, Library, Bug, Download,
+    Briefcase, Map, Zap, Flame, Eye
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -11,15 +12,19 @@ import { motion } from 'framer-motion';
 const ToolsHub = () => {
     const tools = [
         // Advanced Simulators
+        { title: 'Project Tracker', desc: 'The Joker: Central Mission OS & Aggregator.', icon: Briefcase, color: 'text-indigo-500', link: '/tools/project-tracker' },
         { title: 'C2 Command Ctr', desc: 'Red Team Ops: Manage agents & exfiltrate loot.', icon: Network, color: 'text-red-500', link: '/tools/c2-red-ops' },
         { title: 'Cloud Security Pro', desc: 'AWS/Azure Professional auditing & IAM exploitation.', icon: Globe, color: 'text-blue-400', link: '/tools/cloud-security' },
+        { title: 'Visual Mapper', desc: 'Interactive Node Graph of domain infrastructure.', icon: Map, color: 'text-indigo-500', link: '/tools/visual-mapper' },
 
         // Offensive & Exploitation
         { title: 'API Security', desc: 'Test OWASP API Top 10 vulnerabilities.', icon: Database, color: 'text-indigo-400', link: '/tools/api-security' },
         { title: 'Web Exploitation', desc: 'XSS, SQLi, and SSRF vulnerability lab.', icon: Bug, color: 'text-orange-400', link: '/tools/web-exploitation' },
         { title: 'JS Monitor Pro', desc: 'Advanced DOM, Endpoint & Secret analyzer.', icon: Activity, color: 'text-yellow-400', link: '/tools/js-monitor' },
         { title: 'Payload Gen', desc: 'Reverse shells and command injection payloads.', icon: Bomb, color: 'text-red-500', link: '/tools/payload-gen' },
-        { title: 'Pass Cracker', desc: 'Offline & Online password attack suite.', icon: Lock, color: 'text-red-600', link: '/tools/password-cracker' },
+        { title: 'Fuzzing Cockpit', desc: 'Tactical web discovery & real-time fuzzing.', icon: Zap, color: 'text-orange-500', link: '/tools/fuzzing-cockpit' },
+        { title: 'The Hash Refinery', desc: 'Advanced real-time hash cracking station.', icon: Flame, color: 'text-orange-500', link: '/tools/password-cracker' },
+        { title: 'Subdomain Monitor', desc: 'Silent 24h automated asset tracking & alerts.', icon: Eye, color: 'text-blue-400', link: '/tools/subdomain-monitor' },
 
         { title: 'AD Attack Lab', desc: 'Active Directory exploitation & AI planning.', icon: Network, color: 'text-blue-400', link: '/tools/ad-attack-lab' },
         { title: 'CVE Radar', desc: 'Real-time vulnerability feed & patch analysis.', icon: Radar, color: 'text-red-400', link: '/tools/cve-radar' },
@@ -34,7 +39,7 @@ const ToolsHub = () => {
         { title: 'Campaigns', desc: 'Manage engagement timelines and progress.', icon: Scroll, color: 'text-amber-500', link: '/tools/campaign-manager' },
         { title: 'Report Builder', desc: 'Generate professional pentest reports.', icon: FileText, color: 'text-blue-500', link: '/tools/report-builder' },
         { title: 'Encoder/Decoder', desc: 'B64, URL, and Hex conversion utility.', icon: Hash, color: 'text-purple-500', link: '/tools/encoder' },
-        { title: 'Cheatsheets', desc: 'Quick reference for commands and syntax.', icon: Code, color: 'text-green-500', link: '/tools/cheatsheets', upcoming: true },
+        { title: 'Cheatsheets', desc: 'Quick reference for commands and syntax.', icon: Code, color: 'text-green-500', link: '/tools/cheatsheets' },
 
         // Knowledge & Utils
         { title: 'Crypto Forge', desc: 'Pro cryptography & file hashing suite.', icon: Lock, color: 'text-yellow-500', link: '/tools/crypto-lab' },

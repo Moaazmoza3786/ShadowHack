@@ -154,6 +154,29 @@ def ai_optimize():
     result = groq_manager.optimize_payload(data.get('payload'))
     return jsonify({'success': True, 'result': result}) if result else (jsonify({'success': False}), 500)
 
+@api.route('/payloads', methods=['GET'])
+def get_payloads():
+    """Get the massive payload library"""
+    try:
+        with open('payloads.json', 'r') as f:
+            data = json.load(f)
+        return jsonify({'success': True, 'payloads': data})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@api.route('/mutate', methods=['POST'])
+def mutate_payload():
+    """AI-driven payload mutation/obfuscation"""
+    data = request.json
+    payload = data.get('payload')
+    technique = data.get('technique', 'obfuscation')
+    
+    if not groq_manager:
+        return jsonify({'success': False, 'error': 'AI not initialized'}), 503
+        
+    result = groq_manager.mutate_payload(payload, technique)
+    return jsonify({'success': True, 'result': result}) if result else (jsonify({'success': False}), 500)
+
 @api.route('/ai/campaign', methods=['POST'])
 def ai_campaign():
     """Generate campaign scenario"""
@@ -188,6 +211,57 @@ def ai_security_chat():
         return jsonify({'success': True, 'response': response})
     else:
         return jsonify({'success': False, 'error': 'Failed to generate response'}), 500
+
+
+
+# Import Tools Manager
+try:
+    from tools_manager import ToolsManager
+    tools_manager = ToolsManager()
+except ImportError:
+    tools_manager = None
+
+@api.route('/tools/exploit-search', methods=['POST'])
+def exploit_search():
+    """Search Exploit-DB"""
+    if not tools_manager:
+        return jsonify({'success': False, 'error': 'Tools Manager not available'}), 503
+        
+    data = request.json
+    query = data.get('query')
+    result = tools_manager.search_exploits(query)
+    return jsonify(result)
+
+@api.route('/tools/exploit-download', methods=['POST'])
+def exploit_download():
+    """Download Exploit to Workspace"""
+    if not tools_manager:
+        return jsonify({'success': False, 'error': 'Tools Manager not available'}), 503
+        
+    data = request.json
+    exploit_id = data.get('exploit_id')
+    # Default workspace is 'downloads' relative to backend, or we can make it user specific?
+    # For now, simplistic approach.
+    result = tools_manager.mirror_exploit(exploit_id)
+    return jsonify(result)
+
+@api.route('/tools/js-mine', methods=['POST'])
+def js_mine():
+    """Deep scan JS files"""
+    if not tools_manager:
+        return jsonify({'success': False, 'error': 'Tools Manager not available'}), 503
+        
+    data = request.json
+    url = data.get('url')
+    
+    if not url:
+        return jsonify({'success': False, 'error': 'URL is required'}), 400
+        
+    # Call the new scan_javascript method
+    # Note: Ensure tools_manager instance has this method (we just added it)
+    result = tools_manager.scan_javascript(url)
+    return jsonify(result)
+
 
 
 # ==================== RECON ENDPOINTS ====================
@@ -2224,3 +2298,46 @@ def get_active_codespaces():
         "count": len(ACTIVE_CODESPACES),
         "environments": ACTIVE_CODESPACES
     })
+
+@api.route('/tools/cve/live', methods=['POST'])
+def cve_live_search():
+    data = request.get_json()
+    query = data.get('query')
+    results = tools_manager.search_live_cve(query)
+    return jsonify(results)
+
+@api.route('/codespaces/deploy', methods=['POST'])
+def deploy_to_codespace():
+    data = request.get_json()
+    c_id = data.get('codespace_id')
+    artifact = data.get('artifact') # {name, content, type}
+    
+    if not c_id or not artifact:
+        return jsonify({"success": False, "message": "codespace_id and artifact required"}), 400
+        
+    result = tools_manager.deploy_to_codespace(c_id, artifact)
+    return jsonify(result)
+
+@api.route('/codespaces/commands/<c_id>', methods=['GET'])
+def get_codespace_commands(c_id):
+    """Bridge endpoint to poll for new instructions"""
+    cmds = tools_manager.get_codespace_commands(c_id)
+    return jsonify({"success": True, "commands": cmds})
+
+@api.route('/tools/campaigns', methods=['GET'])
+def get_campaigns():
+    """Returns list of active multi-stage campaigns"""
+    return jsonify({"success": True, "campaigns": tools_manager.get_active_campaigns()})
+
+@api.route('/codespaces/sync-mission', methods=['POST'])
+def sync_mission_to_codespace_route():
+    """Push tactical artifacts for a mission to a codespace"""
+    data = request.get_json()
+    c_id = data.get('codespace_id')
+    m_id = data.get('mission_id')
+    
+    if not c_id or not m_id:
+        return jsonify({"success": False, "message": "codespace_id and mission_id required"}), 400
+        
+    result = tools_manager.sync_mission_to_codespace(c_id, m_id)
+    return jsonify(result)

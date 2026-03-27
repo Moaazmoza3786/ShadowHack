@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
+    "lint": "cross-env NODE_OPTIONS=--max-old-space-size=4096 eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "@xterm/xterm": "^5.5.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-force-graph-2d": "^1.29.1",
     "react-markdown": "^10.1.0",
     "socket.io-client": "^4.8.3"
   },
@@ -26,7 +27,8 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.23",
-    "eslint": "^9.39.1",
+    "cross-env": "^10.1.0",
+    "eslint": "^10.0.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "framer-motion": "^12.33.0",

@@ -1,6 +1,19 @@
 import React, { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { Network, ArrowRight, Copy, Check, Calculator, Wifi, Server, Hash } from 'lucide-react';
+
+const ResultRow = ({ label, value, copyKey, copied, copyToClipboard }) => (
+    <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all group">
+        <div>
+            <div className="text-xs text-white/40 uppercase tracking-wider">{label}</div>
+            <div className="font-mono text-lg text-cyan-400">{value}</div>
+        </div>
+        <button
+            onClick={() => copyToClipboard(value, copyKey)}
+            className="p-2 rounded-lg bg-white/5 opacity-0 group-hover:opacity-100 transition-all"
+        >
+            {copied === copyKey ? <Check size={16} className="text-green-400" /> : <Copy size={16} />}
+        </button>
+    </div>
+);
 
 const SubnetCalculator = () => {
     const [ipAddress, setIpAddress] = useState('192.168.1.0');
@@ -101,21 +114,6 @@ const SubnetCalculator = () => {
         setTimeout(() => setCopied(''), 2000);
     };
 
-    const ResultRow = ({ label, value, copyKey }) => (
-        <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all group">
-            <div>
-                <div className="text-xs text-white/40 uppercase tracking-wider">{label}</div>
-                <div className="font-mono text-lg text-cyan-400">{value}</div>
-            </div>
-            <button
-                onClick={() => copyToClipboard(value, copyKey)}
-                className="p-2 rounded-lg bg-white/5 opacity-0 group-hover:opacity-100 transition-all"
-            >
-                {copied === copyKey ? <Check size={16} className="text-green-400" /> : <Copy size={16} />}
-            </button>
-        </div>
-    );
-
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-fade-in">
             {/* Header */}
@@ -191,12 +189,12 @@ const SubnetCalculator = () => {
 
                     {/* Detailed Results */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <ResultRow label="Network Address" value={calculateSubnet.network} copyKey="network" />
-                        <ResultRow label="Broadcast Address" value={calculateSubnet.broadcast} copyKey="broadcast" />
-                        <ResultRow label="Subnet Mask" value={calculateSubnet.subnetMask} copyKey="mask" />
-                        <ResultRow label="Wildcard Mask" value={calculateSubnet.wildcardMask} copyKey="wildcard" />
-                        <ResultRow label="First Usable Host" value={calculateSubnet.firstHost} copyKey="first" />
-                        <ResultRow label="Last Usable Host" value={calculateSubnet.lastHost} copyKey="last" />
+                        <ResultRow label="Network Address" value={calculateSubnet.network} copyKey="network" copied={copied} copyToClipboard={copyToClipboard} />
+                        <ResultRow label="Broadcast Address" value={calculateSubnet.broadcast} copyKey="broadcast" copied={copied} copyToClipboard={copyToClipboard} />
+                        <ResultRow label="Subnet Mask" value={calculateSubnet.subnetMask} copyKey="mask" copied={copied} copyToClipboard={copyToClipboard} />
+                        <ResultRow label="Wildcard Mask" value={calculateSubnet.wildcardMask} copyKey="wildcard" copied={copied} copyToClipboard={copyToClipboard} />
+                        <ResultRow label="First Usable Host" value={calculateSubnet.firstHost} copyKey="first" copied={copied} copyToClipboard={copyToClipboard} />
+                        <ResultRow label="Last Usable Host" value={calculateSubnet.lastHost} copyKey="last" copied={copied} copyToClipboard={copyToClipboard} />
                     </div>
 
                     {/* Binary Representation */}

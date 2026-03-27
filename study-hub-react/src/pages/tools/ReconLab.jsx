@@ -1,89 +1,60 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-    Radar, Search, Crosshair, Terminal, Network, List, Book,
-    Zap, Globe, Server, AlertTriangle, FileText, Play, Copy,
-    Bot, Activity, Shield, Hash, Cloud, Database,
-    Bug, Link, FileCode, CheckSquare
+    Radar, Crosshair, Globe, Zap, Activity, Play
 } from 'lucide-react';
-import CyberTerminal from '../../components/CyberTerminal';
 import { io } from 'socket.io-client';
+import { useAppContext } from '../../context/AppContext';
+import { useToast } from '../../context/ToastContext';
 
 const ReconLab = () => {
+    const { apiUrl } = useAppContext();
+    const { toast } = useToast();
+
     // --- STATE ---
     const [target, setTarget] = useState('scanme.nmap.org');
-    const [activeTab, setActiveTab] = useState('portscan'); // Default to portscan for demo
+    const [activeTab, setActiveTab] = useState('portscan');
     const [isScanning, setIsScanning] = useState(false);
-    const [aiAnalysis, setAiAnalysis] = useState(null);
-    const [realMode, setRealMode] = useState(true); // Default to Real Mode for Pro feel
     const [socket, setSocket] = useState(null);
-
-    // Terminal Ref to write output directly
-    const terminalRef = useRef(null);
-    // We can't access xterm instance directly from here easily unless we lift state up or use a context.
-    // However, CyberTerminal handles its own socket. 
-    // Wait, CyberTerminal connects to /ws/terminal (for Docker).
-    // We need a terminal that connects to /ws/tools OR re-use CyberTerminal with a different namespace prop.
-
-    // Let's assume we modify CyberTerminal to accept a `namespace` prop, or we handle the socket here and pass data?
-    // Looking at CyberTerminal code (Step 13693):
-    // It hardcodes `/ws/terminal`.
-    // We should modify CyberTerminal to accept `namespace` prop or `socketUrl`.
-
-    // For now, to avoid breaking other things, I will create a dedicated "ToolTerminal" wrapper 
-    // OR simply use the underlying logic here if CyberTerminal isn't flexible enough yet.
-    // Actually, updating CyberTerminal is better.
-
-    // BUT, for this specific task, let's implement the socket logic here and pass it to a generic terminal viewer
-    // OR just instantiate the socket here and pass it to CyberTerminal if it supported external socket? No.
-
-    // Plan: I'll use a modified CyberTerminal that takes `customSocket` or `namespace`.
-    // Since I can't easily modify CyberTerminal right now without risky regressions (it was just fixed),
-    // I will implement a local xterm instance here similar to CyberTerminal but customized for Tools.
-    // actually, let's stick to the "CyberTerminal" component but maybe I can pass a prop to override the socket?
-
-    // Let's look at CyberTerminal again. It takes `labId` and `userId`.
-    // It connects to `http://localhost:5000/ws/terminal`.
-
-    // I will write a specialized "ToolTerminal" inside this file or strictly separate valid logic.
-    // Actually, I'll update `ReconLab` to manage its own Terminal instance using the same UI libraries,
-    // ensuring it connects to `/ws/tools`.
-
-    // ... Rethinking. The user wants "CyberTerminal" integration.
-    // I will create a `ToolsTerminal` component in the same style.
-
     const [outputBuffer, setOutputBuffer] = useState([]);
+
+    const terminalRef = useRef(null);
+
+    const addLog = (text) => {
+        setOutputBuffer(prev => [...prev, text]);
+    };
 
     // --- SOCKET CONNECTION ---
     useEffect(() => {
-        const newSocket = io('http://localhost:5000/ws/tools', {
+        const newSocket = io(apiUrl.replace('/api', '') + '/ws/tools', {
             transports: ['websocket']
         });
 
         newSocket.on('connect', () => {
-            addLog('\x1b[1;32m⚡ TOOL ENGINE ONLINE ⚡\x1b[0m');
+            addLog('\u001b[1;32m⚡ TOOL ENGINE ONLINE ⚡\u001b[0m');
         });
 
         newSocket.on('tool_output', (data) => {
-            // We need to pass this to the terminal. 
-            // Since we use the CyberTerminal UI, we might need a way to pipe this.
-            // For now, let's update the state and pass it to a simple viewer or better yet...
-            // Let's use the `CyberTerminal` UI but control the content.
-            // Wait, CyberTerminal is self-contained.
-
-            // Strategy: I will Update ReconLab to use a "Controlled" version of the Terminal.
-            // Use `xterm.js` directly here for maximum control like the plan said.
+            const text = data.data || data;
+            addLog(text);
+            if (text.toLowerCase().includes('complete') || text.toLowerCase().includes('done')) {
+                setIsScanning(false);
+            }
         });
 
-        setSocket(newSocket);
+        const t = setTimeout(() => setSocket(newSocket), 0);
 
-        return () => newSocket.disconnect();
-    }, []);
+        return () => {
+            clearTimeout(t);
+            newSocket.disconnect();
+        };
+    }, [apiUrl]);
 
-    const addLog = (text) => {
-        // formatting handled by xterm usually.
-        // For react state buffer:
-        setOutputBuffer(prev => [...prev, text]);
-    };
+    // Auto-scroll terminal
+    useEffect(() => {
+        if (terminalRef.current) {
+            terminalRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [outputBuffer]);
 
     // --- DATA ---
     const tools = {
@@ -111,44 +82,29 @@ const ReconLab = () => {
 
     // --- ACTIONS ---
     const runTool = (cmdTemplate) => {
-        if (!target) return;
-
-        // Sanitize check (basic)
-        if (target.includes(';') || target.includes('&')) {
-            addLog('\x1b[1;31m[!] Invalid target characters detected.\x1b[0m');
+        if (!target) {
+            toast('Please enter a target domain/IP', 'error');
             return;
         }
 
-        const cmd = cmdTemplate.replace('{DOMAIN}', target).replace('{IP}', target);
+        // Sanitize check (basic)
+        if (target.includes(';') || target.includes('&')) {
+            addLog('\u001b[1;31m[!] Invalid target characters detected.\u001b[0m');
+            return;
+        }
+
+        const cmd = cmdTemplate.replace(/{DOMAIN}/g, target).replace(/{IP}/g, target);
 
         setIsScanning(true);
-        addLog(`\r\n\x1b[1;34mroot@kali:~# ${cmd}\x1b[0m`);
+        addLog(`\r\n\u001b[1;34mroot@kali:~# ${cmd}\u001b[0m`);
 
         if (socket) {
             socket.emit('execute_tool', { cmd });
+        } else {
+            addLog('\u001b[1;31m[!] Error: Socket not connected.\u001b[0m');
+            setIsScanning(false);
         }
     };
-
-    // Listen to real socket events for output
-    useEffect(() => {
-        if (!socket) return;
-
-        const handleOutput = (data) => {
-            // Check if data is object or string
-            const text = data.data || data;
-            addLog(text);
-
-            // Auto scroll? 
-            // In a real terminal component we write to xterm instance.
-        };
-
-        socket.on('tool_output', handleOutput);
-
-        return () => {
-            socket.off('tool_output', handleOutput);
-        };
-    }, [socket]);
-
 
     return (
         <div className="h-full flex flex-col p-6 max-w-[1800px] mx-auto overflow-hidden">
@@ -182,7 +138,7 @@ const ReconLab = () => {
                 <div className="w-64 shrink-0 bg-gray-900/50 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden flex flex-col">
                     <div className="p-4 text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/5">Toolkit</div>
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
-                        {Object.entries(tools).map(([key, cat]) => (
+                        {Object.keys(tools).map((key) => (
                             <div key={key} className="space-y-1">
                                 <button
                                     onClick={() => setActiveTab(key)}
@@ -191,7 +147,7 @@ const ReconLab = () => {
                                         : 'text-gray-400 hover:bg-white/5 hover:text-white'
                                         }`}
                                 >
-                                    <cat.icon className="w-4 h-4" />
+                                    {React.createElement(tools[key].icon, { className: "w-4 h-4" })}
                                     <span className="capitalize">{key}</span>
                                 </button>
                             </div>
@@ -225,10 +181,11 @@ const ReconLab = () => {
                                                 </code>
                                                 <button
                                                     onClick={() => runTool(tool.cmd)}
-                                                    disabled={isScanning && realMode === false} // Allow concurrent in real mode? maybe
-                                                    className="w-full md:w-auto px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold uppercase rounded-lg shadow-lg shadow-cyan-900/20 transition-all flex items-center justify-center gap-2"
+                                                    disabled={isScanning}
+                                                    className="w-full md:w-auto px-4 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold uppercase rounded-lg shadow-lg shadow-cyan-900/20 transition-all flex items-center justify-center gap-2"
                                                 >
-                                                    <Play size={12} fill="currentColor" /> Run
+                                                    {isScanning ? <Activity className="w-3 h-3 animate-spin" /> : <Play size={12} fill="currentColor" />}
+                                                    {isScanning ? 'Scanning...' : 'Run'}
                                                 </button>
                                             </div>
                                         </div>
@@ -241,26 +198,22 @@ const ReconLab = () => {
                     {/* Terminal Output */}
                     <div className="flex-1 min-h-[400px] relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#0a0a0a]">
                         <div className="absolute inset-0 p-4 font-mono text-sm overflow-y-auto custom-scrollbar">
-                            {/* We simulate a terminal view here simpler than xterm for stability in this quick iteration, 
-                               or we could assume CyberTerminal would handle this if we passed the socket. 
-                               For now, a raw log dump is safest to ensure data visibility. */}
-                            {outputBuffer.map((line, i) => (
-                                <div key={i} className="whitespace-pre-wrap break-words leading-tight"
-                                    dangerouslySetInnerHTML={{
-                                        __html: line
-                                            .replace(/\x1b\[1;32m/g, '<span class="text-green-400 font-bold">')
-                                            .replace(/\x1b\[1;31m/g, '<span class="text-red-500 font-bold">')
-                                            .replace(/\x1b\[1;34m/g, '<span class="text-blue-400 font-bold">')
-                                            .replace(/\x1b\[1;33m/g, '<span class="text-yellow-400 font-bold">')
-                                            .replace(/\x1b\[0m/g, '</span>')
-                                    }} />
-                            ))}
-                            <div ref={terminalRef} />
+                            {outputBuffer.map((line, i) => {
+                                // Use split/join to avoid regex control character linting
+                                const processedLine = line
+                                    .split('\u001b[1;32m').join('<span class="text-green-400 font-bold">')
+                                    .split('\u001b[1;31m').join('<span class="text-red-500 font-bold">')
+                                    .split('\u001b[1;34m').join('<span class="text-blue-400 font-bold">')
+                                    .split('\u001b[1;33m').join('<span class="text-yellow-400 font-bold">')
+                                    .split('\u001b[0m').join('</span>');
 
-                            {/* Auto-scroll */}
-                            {useEffect(() => {
-                                terminalRef.current?.scrollIntoView({ behavior: 'smooth' });
-                            }, [outputBuffer])}
+                                return (
+                                    <div key={i} className="whitespace-pre-wrap break-words leading-tight"
+                                        dangerouslySetInnerHTML={{ __html: processedLine }}
+                                    />
+                                );
+                            })}
+                            <div ref={terminalRef} />
                         </div>
 
                         {/* Status Bar */}

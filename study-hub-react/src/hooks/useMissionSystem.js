@@ -52,11 +52,12 @@ export const useMissionSystem = () => {
     };
 
     const buyItem = (item) => {
-        if (state.money >= item.price && !state.inventory.includes(item.id)) {
+        const currentInventory = state.inventory || [];
+        if (state.money >= item.price && !currentInventory.includes(item.id)) {
             setState(prev => ({
                 ...prev,
                 money: prev.money - item.price,
-                inventory: [...prev.inventory, item.id]
+                inventory: [...(prev.inventory || []), item.id]
             }));
             return true;
         }

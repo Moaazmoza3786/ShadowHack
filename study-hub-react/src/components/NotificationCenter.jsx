@@ -12,24 +12,7 @@ const NotificationCenter = ({ userId = 1 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
-    useEffect(() => {
-        fetchNotifications();
-        // Poll for new notifications every 30 seconds
-        const interval = setInterval(fetchNotifications, 30000);
-        return () => clearInterval(interval);
-    }, [userId]);
-
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    const fetchNotifications = async () => {
+    const fetchNotifications = React.useCallback(async () => {
         try {
             const res = await fetch(`http://localhost:5000/api/notifications/user/${userId}`);
             const data = await res.json();
@@ -40,7 +23,24 @@ const NotificationCenter = ({ userId = 1 }) => {
         } catch (err) {
             console.error(err);
         }
-    };
+    }, [userId]);
+
+    useEffect(() => {
+        fetchNotifications();
+        // Poll for new notifications every 30 seconds
+        const interval = setInterval(fetchNotifications, 30000);
+        return () => clearInterval(interval);
+    }, [userId, fetchNotifications]);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const markAsRead = async (id) => {
         try {

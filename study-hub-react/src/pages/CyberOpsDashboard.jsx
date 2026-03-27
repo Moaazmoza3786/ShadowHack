@@ -4,9 +4,11 @@ import {
     Terminal, Shield, Zap, Search, Activity,
     Cpu, Target, AlertTriangle, ChevronRight, Play, CheckCircle
 } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 import './CyberOpsDashboard.css';
 
 const CyberOpsDashboard = () => {
+    const { apiUrl } = useAppContext();
     const [target, setTarget] = useState('');
     const [activeTasks, setActiveTasks] = useState([]);
     const [taskOutput, setTaskOutput] = useState('');
@@ -18,7 +20,7 @@ const CyberOpsDashboard = () => {
         if (!target) return;
         setIsScanning(true);
         try {
-            const res = await fetch('http://localhost:5000/api/automation/scan', {
+            const res = await fetch(`${apiUrl}/automation/scan`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ target, type: 'nmap', args: '-sV' })
@@ -36,7 +38,7 @@ const CyberOpsDashboard = () => {
     const pollTaskStatus = async (taskId) => {
         const interval = setInterval(async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/automation/tasks/${taskId}`);
+                const res = await fetch(`${apiUrl}/automation/tasks/${taskId}`);
                 const data = await res.json();
                 if (data.status === 'completed') {
                     clearInterval(interval);
@@ -57,7 +59,7 @@ const CyberOpsDashboard = () => {
     const analyzeResult = async (output) => {
         setIsAnalyzing(true);
         try {
-            const res = await fetch('http://localhost:5000/api/automation/analyze', {
+            const res = await fetch(`${apiUrl}/automation/analyze`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ output })

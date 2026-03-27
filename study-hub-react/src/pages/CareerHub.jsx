@@ -107,10 +107,13 @@ const CareerHub = () => {
                                     <div className="space-y-2">
                                         {[
                                             // Auto-link logic: Find playlists matching track keywords
-                                            ...youtubePlaylists.filter(p =>
-                                                p.title.toLowerCase().includes(track.title.toLowerCase().split(' ')[0]) ||
-                                                p.category === (track.id === 'soc-analyst' ? 'network' : 'web-security')
-                                            ).slice(0, 2)
+                                            ...youtubePlaylists.filter(p => {
+                                                const pTitle = p.title || '';
+                                                const tTitle = track.title || '';
+                                                const tFirstWord = tTitle.split(' ')[0] || '';
+                                                return pTitle.toLowerCase().includes(tFirstWord.toLowerCase()) ||
+                                                    p.category === (track.id === 'soc-analyst' ? 'network' : 'web-security');
+                                            }).slice(0, 2)
                                         ].map((course, i) => (
                                             <div key={i} className="flex items-center gap-3 p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-pointer">
                                                 <div className="w-8 h-8 rounded-lg bg-black overflow-hidden shrink-0">

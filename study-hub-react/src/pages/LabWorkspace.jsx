@@ -28,7 +28,7 @@ const LabWorkspace = () => {
     const [labStatus, setLabStatus] = useState('stopped');
 
     // Check if machine is already solved via AppContext
-    const isSolved = user.solvedCTFTasks?.includes(`${id}-user`) || user.solvedCTFTasks?.includes(id);
+    const isSolved = user?.solvedCTFTasks?.includes(`${id}-user`) || user?.solvedCTFTasks?.includes(id);
 
     if (!machine) {
         return <div className="p-12 text-center text-white">Machine not found</div>;

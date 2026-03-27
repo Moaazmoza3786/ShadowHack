@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { Play, Shield, Activity, RefreshCw, Terminal } from 'lucide-react';
+import { useAppContext } from '../../context/AppContext';
 
 const AttackChains = () => {
+    const { apiUrl } = useAppContext();
     const [socket, setSocket] = useState(null);
     const [chains, setChains] = useState({});
     const [target, setTarget] = useState('scanme.nmap.org');
@@ -11,7 +13,7 @@ const AttackChains = () => {
     const terminalRef = useRef(null);
 
     useEffect(() => {
-        const newSocket = io('http://localhost:5000/ws/tools', {
+        const newSocket = io(apiUrl.replace('/api', '') + '/ws/tools', {
             transports: ['websocket']
         });
 
@@ -74,8 +76,8 @@ const AttackChains = () => {
                         <div
                             key={id}
                             className={`p-6 rounded-2xl border transition-all cursor-pointer group ${activeChain === id
-                                    ? 'bg-red-500/10 border-red-500/50 shadow-lg shadow-red-900/20'
-                                    : 'bg-[#12121e] border-white/5 hover:border-red-500/30'
+                                ? 'bg-red-500/10 border-red-500/50 shadow-lg shadow-red-900/20'
+                                : 'bg-[#12121e] border-white/5 hover:border-red-500/30'
                                 }`}
                             onClick={() => setActiveChain(id)}
                         >

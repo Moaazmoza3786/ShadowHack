@@ -1,9 +1,10 @@
 import React from 'react';
 import { useAppContext } from '../context/AppContext';
 import Navbar from './Navbar';
+import { Outlet } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const MainLayout = ({ children }) => {
+const MainLayout = () => {
     const { language } = useAppContext();
 
     return (
@@ -24,7 +25,7 @@ const MainLayout = ({ children }) => {
                             exit={{ opacity: 0, scale: 1.01, y: -10 }}
                             transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                         >
-                            {children}
+                            <Outlet />
                         </motion.div>
                     </AnimatePresence>
                 </div>

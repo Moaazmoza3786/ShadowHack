@@ -15,18 +15,7 @@ const SkillAssessment = () => {
     const [results, setResults] = useState(null);
     const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
 
-    useEffect(() => {
-        fetchAssessments();
-    }, []);
-
-    useEffect(() => {
-        if (activeAssessment && timeLeft > 0 && !results) {
-            const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
-            return () => clearInterval(timer);
-        }
-    }, [activeAssessment, timeLeft, results]);
-
-    const fetchAssessments = async () => {
+    const fetchAssessments = React.useCallback(async () => {
         try {
             const res = await fetch('http://localhost:5000/api/assessments/available');
             const data = await res.json();
@@ -34,7 +23,11 @@ const SkillAssessment = () => {
         } catch (err) {
             console.error(err);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchAssessments();
+    }, [fetchAssessments]);
 
     const startAssessment = async (assessmentId) => {
         try {

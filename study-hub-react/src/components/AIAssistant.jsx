@@ -6,6 +6,7 @@ import { useMissionSystem } from '../hooks/useMissionSystem';
 
 const AIAssistant = () => {
     const { t, language } = useAppContext();
+    const { state } = useMissionSystem();
     const [isOpen, setIsOpen] = useState(false);
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([
@@ -40,7 +41,7 @@ const AIAssistant = () => {
             let response = '';
             const activeMission = state.mission.active ? state.mission.id : null;
 
-            if (text.toLowerCase().includes('hint') && activeMission) {
+            if ((text || '').toLowerCase().includes('hint') && activeMission) {
                 response = language === 'ar'
                     ? `تلميح لمهمة ${activeMission}: حاول استخدام nmap لفحص المنافذ المفتوحة أولاً.`
                     : `Hint for mission ${activeMission}: Try using 'nmap' to scan for open ports first.`;

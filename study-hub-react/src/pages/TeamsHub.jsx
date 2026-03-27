@@ -13,12 +13,7 @@ const TeamsHub = () => {
     const [newTeam, setNewTeam] = useState({ name: '', tag: '', description: '' });
     const [activeTab, setActiveTab] = useState('browse');
 
-    useEffect(() => {
-        fetchTeams();
-        fetchLeaderboard();
-    }, []);
-
-    const fetchTeams = async () => {
+    const fetchTeams = React.useCallback(async () => {
         try {
             const res = await fetch('http://localhost:5000/api/teams/');
             const data = await res.json();
@@ -26,9 +21,9 @@ const TeamsHub = () => {
         } catch (err) {
             console.error(err);
         }
-    };
+    }, []);
 
-    const fetchLeaderboard = async () => {
+    const fetchLeaderboard = React.useCallback(async () => {
         try {
             const res = await fetch('http://localhost:5000/api/teams/leaderboard');
             const data = await res.json();
@@ -36,7 +31,12 @@ const TeamsHub = () => {
         } catch (err) {
             console.error(err);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchTeams();
+        fetchLeaderboard();
+    }, [fetchTeams, fetchLeaderboard]);
 
     const createTeam = async () => {
         try {

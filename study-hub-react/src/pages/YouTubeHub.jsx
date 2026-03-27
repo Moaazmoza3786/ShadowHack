@@ -8,7 +8,7 @@ import {
     Video, Users, BookOpen, Star
 } from 'lucide-react';
 import { youtubeCoursesData } from '../data/youtube-data';
-import { fetchPlaylistMetadata, fetchPlaylistVideos, formatDuration } from '../services/youtube-service';
+import { fetchPlaylistMetadata, fetchPlaylistVideos } from '../services/youtube-service';
 
 const CategoryIcon = ({ icon, className }) => {
     switch (icon) {
@@ -51,16 +51,10 @@ const YouTubeHub = () => {
         localStorage.setItem('yt_favorites', JSON.stringify(newFavorites));
     };
 
-    useEffect(() => {
-        if (selectedPlaylist) {
-            loadPlaylistData(selectedPlaylist.playlistId || selectedPlaylist.id);
-        }
-    }, [selectedPlaylist]);
-
-    const loadPlaylistData = async (id) => {
+    const loadPlaylistData = React.useCallback(async (id) => {
         setIsLoading(true);
         // Use provided videos if available, otherwise fetch
-        if (selectedPlaylist.videos && selectedPlaylist.videos.length > 1) {
+        if (selectedPlaylist && selectedPlaylist.videos && selectedPlaylist.videos.length > 1) {
             setPlaylistVideos(selectedPlaylist.videos);
             setActiveVideo(selectedPlaylist.videos[0]);
         } else {
@@ -72,7 +66,13 @@ const YouTubeHub = () => {
         const meta = await fetchPlaylistMetadata(id);
         if (meta) setPlaylistMetadata(meta);
         setIsLoading(false);
-    };
+    }, [selectedPlaylist]);
+
+    useEffect(() => {
+        if (selectedPlaylist) {
+            loadPlaylistData(selectedPlaylist.playlistId || selectedPlaylist.id);
+        }
+    }, [selectedPlaylist, loadPlaylistData]);
 
     const filteredPlaylists = youtubePlaylists.filter(playlist => {
         const matchesCategory = selectedCategory === 'all' ||
@@ -80,10 +80,10 @@ const YouTubeHub = () => {
 
         const query = searchQuery.toLowerCase();
         const matchesSearch =
-            playlist.title.toLowerCase().includes(query) ||
-            playlist.titleAr?.toLowerCase().includes(query) ||
-            playlist.description?.toLowerCase().includes(query) ||
-            playlist.channel?.toLowerCase().includes(query);
+            (playlist.title || '').toLowerCase().includes(query) ||
+            (playlist.titleAr || '').toLowerCase().includes(query) ||
+            (playlist.description || '').toLowerCase().includes(query) ||
+            (playlist.channel || '').toLowerCase().includes(query);
 
         return matchesCategory && matchesSearch;
     });

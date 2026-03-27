@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
     Unlock, Search, List, Terminal, Shield,
     CheckCircle, AlertTriangle, Fingerprint,
@@ -43,31 +42,6 @@ const PasswordCracker = () => {
     const [activeTab, setActiveTab] = useState('identifier');
     const { toast } = useToast();
 
-    // --- REAL EXECUTION STATE ---
-    const [socket, setSocket] = useState(null);
-    const [terminalOutput, setTerminalOutput] = useState([]);
-    const terminalRef = useRef(null);
-
-    // --- SOCKET INIT ---
-    useEffect(() => {
-        const newSocket = io('http://localhost:5000/ws/tools', { transports: ['websocket'] });
-        newSocket.on('connect', () => {
-            // Optional: toast('Connected to Cracking Engine', 'success');
-        });
-        newSocket.on('tool_output', (data) => {
-            const text = data.data || data;
-            if (activeTab === 'hydra') {
-                setHydraLogs(prev => [...prev, text]);
-                // If we want a separate raw terminal, we can use one.
-                // For now, let's pipe it to hydraLogs to keep existing UI if possible, 
-                // OR replace the UI with a terminal view like ReconLab.
-                // The existing UI splits logs into lines.
-            }
-        });
-        setSocket(newSocket);
-        return () => newSocket.disconnect();
-    }, []);
-
     // --- STATE: Identifier ---
     const [hashInput, setHashInput] = useState('');
     const [identifiedHash, setIdentifiedHash] = useState(null);
@@ -83,8 +57,15 @@ const PasswordCracker = () => {
     const [generatedWordlist, setGeneratedWordlist] = useState('');
 
     // --- STATE: Challenges ---
-    const [solvedChallenges, setSolvedChallenges] = useState([]);
+    const [solvedChallenges, setSolvedChallenges] = useState(() => {
+        const saved = localStorage.getItem('password_solved');
+        return saved ? JSON.parse(saved) : [];
+    });
     const [challengeInputs, setChallengeInputs] = useState({});
+
+    // --- REAL EXECUTION STATE ---
+    const [socket, setSocket] = useState(null);
+    // Removed unused terminalOutput and terminalRef states
 
     // --- STATE: Online Attack (Hydra) ---
     const [hydraTarget, setHydraTarget] = useState('192.168.1.100');
@@ -94,11 +75,28 @@ const PasswordCracker = () => {
     const [hydraLogs, setHydraLogs] = useState([]);
     const [hydraProgress, setHydraProgress] = useState(0);
 
-    // --- INIT ---
+    // --- SOCKET INIT ---
     useEffect(() => {
-        const saved = localStorage.getItem('password_solved');
-        if (saved) setSolvedChallenges(JSON.parse(saved));
-    }, []);
+        const newSocket = io('http://localhost:5000/ws/tools', { transports: ['websocket'] });
+
+        newSocket.on('tool_output', (data) => {
+            const text = data.data || data;
+            if (activeTab === 'hydra') {
+                setHydraLogs(prev => [...prev, text]);
+            }
+        });
+
+        // Set socket in a timeout or microtask if strict about "synchronous setState in effect"
+        const t = setTimeout(() => setSocket(newSocket), 0);
+
+        return () => {
+            clearTimeout(t);
+            newSocket.disconnect();
+        };
+    }, [activeTab]);
+
+    // Removal of useEffect for saved challenges as it's now in the initializer
+
 
     // --- HANDLERS: Identifier ---
     const identifyHash = () => {

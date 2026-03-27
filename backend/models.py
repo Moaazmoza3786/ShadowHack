@@ -100,8 +100,6 @@ class User(db.Model):
                 self.current_rank = rank
                 break
 
-    # Admin Control
-    role = db.Column(db.String(20), default='user') # user, admin, moderator
     is_banned = db.Column(db.Boolean, default=False)
     
     def to_dict(self, include_email=False):

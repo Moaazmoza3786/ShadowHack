@@ -5,13 +5,13 @@ Phase 15: Docker Labs Integration
 
 from flask import Blueprint, request, jsonify
 from models import db, Lab, User
-from docker_lab_manager import DockerLabManager
+from docker_lab_manager import get_docker_manager
 import threading
 
 docker_bp = Blueprint('docker', __name__, url_prefix='/api/labs')
 
-# Initialize Lab Manager
-lab_manager = DockerLabManager()
+# Use common manager singleton
+lab_manager = get_docker_manager()
 
 @docker_bp.route('/<int:lab_id>/start', methods=['POST'])
 def start_lab(lab_id):
