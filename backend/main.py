@@ -122,6 +122,13 @@ def create_app(config_name=None):
         app.register_blueprint(marketplace_bp)
     except ImportError as e:
         print(f"Warning: cert_marketplace_routes not available: {e}")
+    
+    # Register games (mini-games) blueprint
+    try:
+        from games_routes import games_bp
+        app.register_blueprint(games_bp)
+    except ImportError as e:
+        print(f"Warning: games_routes not available: {e}")
 
     # Register feature-specific routes
     features = [
