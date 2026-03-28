@@ -129,6 +129,13 @@ def create_app(config_name=None):
         app.register_blueprint(games_bp)
     except ImportError as e:
         print(f"Warning: games_routes not available: {e}")
+    
+    # Register wiki blueprint
+    try:
+        from wiki_routes import wiki_bp
+        app.register_blueprint(wiki_bp)
+    except ImportError as e:
+        print(f"Warning: wiki_routes not available: {e}")
 
     # Register feature-specific routes
     features = [

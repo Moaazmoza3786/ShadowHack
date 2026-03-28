@@ -1499,6 +1499,135 @@ class UserCertification(db.Model):
     # Marketplace
     for_sale = db.Column(db.Boolean, default=False)
     listing_price = db.Column(db.Integer)
+
+
+# ==================== WIKI MODELS ====================
+
+class WikiArticle(db.Model):
+    """Community knowledge base articles"""
+    __tablename__ = 'wiki_articles'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    
+    # Content
+    title = db.Column(db.String(500), nullable=False, index=True)
+    slug = db.Column(db.String(500), unique=True, nullable=False, index=True)
+    content = db.Column(db.Text, nullable=False)  # Markdown
+    summary = db.Column(db.Text)
+    
+    # Metadata
+    category = db.Column(db.String(100), nullable=False, index=True)  # Web Security, API Security, etc.
+    difficulty = db.Column(db.String(20), default='intermediate')  # beginner, intermediate, advanced
+    tags = db.Column(db.JSON, default=list)  # Array of tags
+    
+    # Stats
+    views_count = db.Column(db.Integer, default=0)
+    upvotes_count = db.Column(db.Integer, default=0)
+    downvotes_count = db.Column(db.Integer, default=0)
+    comments_count = db.Column(db.Integer, default=0)
+    
+    # Status
+    is_published = db.Column(db.Boolean, default=True)
+    is_featured = db.Column(db.Boolean, default=False)
+    is_archived = db.Column(db.Boolean, default=False)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    last_edited_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+    
+    # Relationships
+    author = db.relationship('User', foreign_keys=[author_id], backref='wiki_articles')
+    editor = db.relationship('User', foreign_keys=[last_edited_by])
+    votes = db.relationship('WikiVote', backref='article', lazy='dynamic', cascade='all, delete-orphan')
+    comments = db.relationship('WikiComment', backref='article', lazy='dynamic', cascade='all, delete-orphan')
+    
+    def to_dict(self, include_content=False):
+        """Convert to dictionary"""
+        data = {
+            'id': self.id,
+            'title': self.title,
+            'slug': self.slug,
+            'summary': self.summary,
+            'category': self.category,
+            'difficulty': self.difficulty,
+            'tags': self.tags,
+            'author': {
+                'id': self.author.id,
+                'username': self.author.username,
+                'avatar_url': self.author.avatar_url
+            },
+            'views_count': self.views_count,
+            'upvotes_count': self.upvotes_count,
+            'downvotes_count': self.downvotes_count,
+            'comments_count': self.comments_count,
+            'is_featured': self.is_featured,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+        if include_content:
+            data['content'] = self.content
+        return data
+
+
+class WikiComment(db.Model):
+    """Comments on wiki articles"""
+    __tablename__ = 'wiki_comments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    article_id = db.Column(db.Integer, db.ForeignKey('wiki_articles.id'), nullable=False, index=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    
+    # Content
+    content = db.Column(db.Text, nullable=False)
+    
+    # Moderation
+    is_approved = db.Column(db.Boolean, default=True)
+    is_deleted = db.Column(db.Boolean, default=False)
+    
+    # Stats
+    upvotes_count = db.Column(db.Integer, default=0)
+    downvotes_count = db.Column(db.Integer, default=0)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    author = db.relationship('User', backref='wiki_comments')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'content': self.content,
+            'author': {
+                'id': self.author.id,
+                'username': self.author.username,
+                'avatar_url': self.author.avatar_url
+            },
+            'upvotes_count': self.upvotes_count,
+            'downvotes_count': self.downvotes_count,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+
+
+class WikiVote(db.Model):
+    """Voting system for wiki articles"""
+    __tablename__ = 'wiki_votes'
+    __table_args__ = (db.UniqueConstraint('article_id', 'user_id', name='unique_user_article_vote'),)
+    
+    id = db.Column(db.Integer, primary_key=True)
+    article_id = db.Column(db.Integer, db.ForeignKey('wiki_articles.id'), nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    
+    # Vote value: 1 for upvote, -1 for downvote
+    value = db.Column(db.Integer, default=1)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref='wiki_votes')
     
     # Dates
     earned_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
