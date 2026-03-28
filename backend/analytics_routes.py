@@ -247,6 +247,186 @@ def get_leaderboard():
     return jsonify({"success": True, "leaderboard": leaderboard, "period": period})
 
 
+# ==================== ADVANCED ML-POWERED ANALYTICS ====================
+
+@analytics_bp.route("/user/<int:user_id>/skill-analysis", methods=["GET"])
+def get_skill_analysis(user_id):
+    """Get advanced skill analysis with gaps and strengths"""
+    try:
+        from advanced_analytics_engine import analytics_engine
+        import numpy as np
+        
+        user = User.query.get_or_404(user_id)
+        
+        # Build user progress data
+        user_progress = {
+            'web-security_labs_completed': LabSubmission.query.filter_by(user_id=user_id).count(),
+            'web-security_hours': 40,
+        }
+        
+        # Get peer data
+        peer_profiles = []
+        for p in User.query.limit(100).all():
+            if p.id != user_id:
+                peer_profiles.append({
+                    'id': p.id,
+                    'username': p.username,
+                    'xp_points': p.xp_points,
+                    'level': p.level,
+                    'labs_completed': LabSubmission.query.filter_by(user_id=p.id).count()
+                })
+        
+        user_profile = {
+            'id': user_id,
+            'xp_points': user.xp_points,
+            'level': user.level,
+        }
+        
+        report = analytics_engine.generate_comprehensive_report(
+            user_profile=user_profile,
+            user_progress=user_progress,
+            peer_profiles=peer_profiles
+        )
+        
+        return jsonify({
+            'success': True,
+            'analysis': report
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"Error in skill analysis: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@analytics_bp.route("/user/<int:user_id>/learning-prediction", methods=["GET"])
+def get_learning_prediction(user_id):
+    """Get predictive learning curve"""
+    try:
+        from advanced_analytics_engine import PredictiveLearningModel
+        
+        user = User.query.get_or_404(user_id)
+        model = PredictiveLearningModel()
+        
+        domains = ['web-security', 'networks', 'crypto', 'forensics']
+        predictions = {}
+        
+        current_level_score = user.level * 10
+        
+        for domain in domains:
+            time_to_competency = model.predict_time_to_competency(
+                current_score=min(current_level_score, 80),
+                domain=domain
+            )
+            
+            completion_pred = model.predict_completion_date(10, time_to_competency)
+            success_prob = model.predict_success_rate({
+                'streak_days': user.streak_days or 0,
+                'weekly_xp': user.weekly_xp or 0,
+                'level': user.level
+            })
+            
+            predictions[domain] = {
+                'hours_to_competency': time_to_competency,
+                'estimated_completion': completion_pred,
+                'success_probability': round(success_prob * 100, 1),
+                'recommended_pace': model.recommend_learning_pace({'level': user.level}, 10)
+            }
+        
+        return jsonify({
+            'success': True,
+            'predictions': predictions,
+            'current_level': user.level
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"Error in learning prediction: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@analytics_bp.route("/user/<int:user_id>/peer-comparison", methods=["GET"])
+def get_peer_comparison(user_id):
+    """Compare user to peers"""
+    try:
+        from advanced_analytics_engine import PeerComparison
+        
+        user = User.query.get_or_404(user_id)
+        comparison = PeerComparison()
+        
+        peer_profiles = []
+        for u in User.query.all():
+            if u.id != user_id:
+                peer_profiles.append({
+                    'id': u.id,
+                    'username': u.username,
+                    'xp_points': u.xp_points,
+                    'level': u.level,
+                    'labs_completed': LabSubmission.query.filter_by(user_id=u.id).count()
+                })
+        
+        user_profile = {
+            'id': user_id,
+            'username': user.username,
+            'xp_points': user.xp_points,
+            'level': user.level,
+            'labs_completed': LabSubmission.query.filter_by(user_id=user_id).count()
+        }
+        
+        peer_comparison_data = comparison.compare_to_peers(user_profile, peer_profiles)
+        similar_peers = comparison.identify_learning_style_peers(user_profile, peer_profiles)
+        
+        return jsonify({
+            'success': True,
+            'comparison': peer_comparison_data,
+            'similar_peers': similar_peers
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"Error in peer comparison: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@analytics_bp.route("/leaderboard/stats", methods=["GET"])
+def get_leaderboard_statistics():
+    """Get leaderboard statistics"""
+    try:
+        import numpy as np
+        from collections import Counter
+        
+        all_users = User.query.all()
+        xp_points = [u.xp_points for u in all_users]
+        levels = [u.level for u in all_users]
+        
+        if not xp_points:
+            return jsonify({'success': False, 'error': 'No users'}), 404
+        
+        level_distribution = Counter(levels)
+        
+        stats = {
+            'total_users': len(all_users),
+            'xp_statistics': {
+                'mean': int(sum(xp_points) / len(xp_points)),
+                'median': int(np.median(xp_points)),
+                'max': max(xp_points),
+                'min': min(xp_points),
+                'total_distributed': sum(xp_points)
+            },
+            'level_distribution': dict(level_distribution),
+            'activity': {
+                'active_users': sum(1 for u in all_users if u.weekly_xp > 100),
+                'average_weekly_xp': int(sum(u.weekly_xp or 0 for u in all_users) / len(all_users))
+            }
+        }
+        
+        return jsonify({'success': True, 'statistics': stats}), 200
+    
+    except Exception as e:
+        logger.error(f"Error getting stats: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 def register_analytics_routes(app):
     """Register analytics blueprint"""
     app.register_blueprint(analytics_bp)
