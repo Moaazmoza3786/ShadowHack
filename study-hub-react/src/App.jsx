@@ -83,6 +83,7 @@ const ProgressDashboard = lazy(() => import("./pages/ProgressDashboard"));
 const GlobalLeaderboards = lazy(() => import("./pages/GlobalLeaderboards"));
 const CertMarketplace = lazy(() => import("./pages/CertMarketplace"));
 const MiniGames = lazy(() => import("./pages/MiniGames"));
+const MentorshipHub = lazy(() => import("./pages/MentorshipHub"));
 const SkillAssessment = lazy(() => import("./pages/SkillAssessment"));
 const ActivityFeed = lazy(() => import("./pages/ActivityFeed"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
@@ -334,6 +335,7 @@ function App() {
                   <Route path="/leaderboards" element={<GlobalLeaderboards />} />
                   <Route path="/marketplace" element={<CertMarketplace />} />
                   <Route path="/games" element={<MiniGames />} />
+                  <Route path="/mentorship" element={<MentorshipHub />} />
                   <Route path="/assessments" element={<SkillAssessment />} />
                   <Route path="/activity" element={<ActivityFeed />} />
                   <Route path="/profile" element={<UserProfile />} />
