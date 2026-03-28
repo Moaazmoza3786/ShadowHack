@@ -1,15 +1,19 @@
 """
 Mini-Games & Gamified Challenges API Routes
 Handles game scoring, leaderboards, achievements
+Powered by Groq AI for dynamic challenge generation
 """
 
 from flask import Blueprint, jsonify, request
 from functools import wraps
 import jwt
 import os
+import logging
 from datetime import datetime, timedelta
 
 from models import db, User
+
+logger = logging.getLogger(__name__)
 
 games_bp = Blueprint('games', __name__, url_prefix='/api/games')
 
@@ -348,3 +352,188 @@ def get_daily_challenge():
         'description': f'Play {game_config["name"]} today for +150 XP bonus!',
         'expires_at': (datetime.utcnow() + timedelta(days=1)).isoformat(),
     })
+
+
+# ==================== GROQ-POWERED AI CHALLENGES ====================
+
+@games_bp.route('/<game_id>/ai-challenge', methods=['GET'])
+def get_ai_challenge(game_id):
+    """
+    Get AI-generated challenge for a game
+    Uses Groq qwen3-32b for dynamic content generation
+    Query params:
+    - difficulty: beginner, intermediate, advanced, hard, expert
+    """
+    try:
+        from groq_games_engine import groq_games_engine
+        
+        difficulty = request.args.get('difficulty', 'intermediate')
+        
+        challenge_data = groq_games_engine.get_game_challenge(game_id, difficulty)
+        
+        return jsonify({
+            'success': True,
+            'challenge': challenge_data
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"Error generating AI challenge: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@games_bp.route('/<game_id>/ai-challenge/<int:challenge_id>/submit', methods=['POST'])
+@token_required
+def submit_ai_challenge(current_user, game_id, challenge_id):
+    """
+    Submit answer to AI-generated challenge
+    Calculates dynamic XP based on difficulty, score, and time
+    """
+    try:
+        from groq_games_engine import groq_games_engine
+        
+        data = request.json
+        score = data.get('score', 0)
+        max_score = data.get('max_score', 1000)
+        time_spent = data.get('time_spent_seconds')
+        difficulty = data.get('difficulty', 'intermediate')
+        
+        # Calculate XP
+        xp_calculation = groq_games_engine.calculate_dynamic_xp(
+            game_id=game_id,
+            difficulty=difficulty,
+            score=score,
+            max_score=max_score,
+            time_spent_seconds=time_spent
+        )
+        
+        xp_earned = xp_calculation['total_xp']
+        
+        # Award XP to user
+        current_user.xp_points += xp_earned
+        current_user.level = max(1, int(0.1 * (current_user.xp_points ** 0.5)))
+        
+        # Update weekly XP for leaderboards
+        current_user.weekly_xp += xp_earned
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'xp_earned': xp_earned,
+            'xp_calculation': xp_calculation,
+            'user_level': current_user.level,
+            'total_xp': current_user.xp_points,
+            'challenge_id': challenge_id
+        }), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error submitting AI challenge: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@games_bp.route('/daily-ai-challenge', methods=['GET'])
+def get_daily_ai_challenge():
+    """
+    Get today's featured AI-generated challenge
+    Provides bonus XP for completion
+    Changes every 24 hours
+    """
+    try:
+        from groq_games_engine import groq_games_engine
+        
+        daily_challenge = groq_games_engine.generate_daily_challenge()
+        
+        return jsonify(daily_challenge), 200
+    
+    except Exception as e:
+        logger.error(f"Error generating daily AI challenge: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@games_bp.route('/<game_id>/ai-difficulty-recommendations', methods=['GET'])
+@token_required
+def get_difficulty_recommendations(current_user, game_id):
+    """
+    Get personalized difficulty recommendation for a game
+    Based on user's historical performance and XP level
+    """
+    try:
+        user_xp = current_user.xp_points
+        
+        # Determine difficulty based on XP
+        if user_xp < 1000:
+            recommended = 'beginner'
+            explanation = 'Start with basic challenges to learn the fundamentals'
+        elif user_xp < 10000:
+            recommended = 'intermediate'
+            explanation = 'You\'re ready for moderate difficulty challenges'
+        elif user_xp < 50000:
+            recommended = 'advanced'
+            explanation = 'Challenge yourself with advanced scenarios'
+        elif user_xp < 100000:
+            recommended = 'hard'
+            explanation = 'Master-level challenges for elite hunters'
+        else:
+            recommended = 'expert'
+            explanation = 'Ultimate difficulty - only for the most skilled'
+        
+        return jsonify({
+            'success': True,
+            'game_id': game_id,
+            'recommended_difficulty': recommended,
+            'explanation': explanation,
+            'user_xp': user_xp,
+            'user_level': current_user.level,
+            'difficulty_ladder': ['beginner', 'intermediate', 'advanced', 'hard', 'expert']
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"Error getting recommendations: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@games_bp.route('/ai-hint/<game_id>/<topic>', methods=['GET'])
+def get_ai_hint(game_id, topic):
+    """
+    Get AI-generated hint for a challenge topic
+    Helps students without giving away the answer
+    """
+    try:
+        from groq_learning_manager import groq_learning_manager
+        
+        difficulty = request.args.get('difficulty', 'intermediate')
+        context = request.args.get('context')
+        
+        hint = groq_learning_manager.generate_learning_hints(
+            topic=f'{game_id}: {topic}',
+            difficulty=difficulty,
+            context=context
+        )
+        
+        return jsonify({
+            'success': True,
+            'game_id': game_id,
+            'topic': topic,
+            'hint': hint,
+            'difficulty': difficulty
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"Error generating hint: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
