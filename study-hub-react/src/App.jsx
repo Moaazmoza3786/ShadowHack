@@ -79,6 +79,7 @@ const CyberOpsDashboard = lazy(() => import("./pages/CyberOpsDashboard"));
 const TeamsHub = lazy(() => import("./pages/TeamsHub"));
 const DailyMissions = lazy(() => import("./pages/DailyMissions"));
 const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
+const AdvancedAnalytics = lazy(() => import("./pages/AdvancedAnalytics"));
 const ProgressDashboard = lazy(() => import("./pages/ProgressDashboard"));
 const GlobalLeaderboards = lazy(() => import("./pages/GlobalLeaderboards"));
 const CertMarketplace = lazy(() => import("./pages/CertMarketplace"));
@@ -331,6 +332,7 @@ function App() {
                   <Route path="/teams" element={<TeamsHub />} />
                   <Route path="/missions" element={<DailyMissions />} />
                   <Route path="/analytics" element={<AnalyticsDashboard />} />
+                  <Route path="/analytics-advanced" element={<AdvancedAnalytics />} />
                   <Route path="/progress" element={<ProgressDashboard />} />
                   <Route path="/leaderboards" element={<GlobalLeaderboards />} />
                   <Route path="/marketplace" element={<CertMarketplace />} />
