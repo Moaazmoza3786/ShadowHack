@@ -1437,3 +1437,167 @@ class LearningPlanWeek(db.Model):
             'completed_at': self.completed_at.isoformat() if self.completed_at else None
         }
 
+
+# ==================== CERTIFICATION MARKETPLACE MODELS ====================
+
+class CertificationTemplate(db.Model):
+    """Certification types available in the marketplace"""
+    __tablename__ = 'certification_templates'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), unique=True, nullable=False)
+    issuer = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
+    icon_url = db.Column(db.String(500))
+    
+    # Market data
+    base_price = db.Column(db.Integer, default=100)  # Base price in USD
+    demand_level = db.Column(db.String(20), default='medium')  # low, medium, high, very_high
+    market_cap = db.Column(db.Integer, default=0)
+    active_listings = db.Column(db.Integer, default=0)
+    verified_count = db.Column(db.Integer, default=0)
+    avg_rating = db.Column(db.Float, default=4.5)
+    
+    # Stats
+    trend_24h = db.Column(db.Float, default=0)  # Percentage change
+    last_sale_days_ago = db.Column(db.Integer, default=1)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'issuer': self.issuer,
+            'description': self.description,
+            'icon_url': self.icon_url,
+            'base_price': self.base_price,
+            'demand_level': self.demand_level,
+            'market_cap': self.market_cap,
+            'active_listings': self.active_listings,
+            'verified_count': self.verified_count,
+            'avg_rating': self.avg_rating,
+            'trend_24h': self.trend_24h,
+            'last_sale_days_ago': self.last_sale_days_ago
+        }
+
+
+class UserCertification(db.Model):
+    """Certifications earned by users"""
+    __tablename__ = 'user_certifications'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    template_id = db.Column(db.Integer, db.ForeignKey('certification_templates.id'), nullable=False)
+    
+    # Verification
+    is_verified = db.Column(db.Boolean, default=False)
+    verification_code = db.Column(db.String(100), unique=True)
+    verification_url = db.Column(db.String(500))  # For LinkedIn, HackerRank, etc.
+    
+    # Marketplace
+    for_sale = db.Column(db.Boolean, default=False)
+    listing_price = db.Column(db.Integer)
+    
+    # Dates
+    earned_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime, nullable=True)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = db.relationship('User', backref=db.backref('certifications', cascade='all, delete-orphan'))
+    template = db.relationship('CertificationTemplate', backref=db.backref('earned_by_users'))
+    
+    __table_args__ = (db.UniqueConstraint('user_id', 'template_id'),)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'template_id': self.template_id,
+            'name': self.template.name,
+            'issuer': self.template.issuer,
+            'is_verified': self.is_verified,
+            'for_sale': self.for_sale,
+            'listing_price': self.listing_price,
+            'earned_at': self.earned_at.isoformat(),
+            'expires_at': self.expires_at.isoformat() if self.expires_at else None
+        }
+
+
+class CertMarketplaceTrade(db.Model):
+    """Records of certification marketplace trades"""
+    __tablename__ = 'cert_marketplace_trades'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    seller_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    cert_id = db.Column(db.Integer, db.ForeignKey('user_certifications.id'), nullable=False)
+    
+    # Trade details
+    trade_price = db.Column(db.Integer, nullable=False)
+    platform_fee = db.Column(db.Float, default=0.1)  # 10% fee
+    seller_payout = db.Column(db.Integer)
+    
+    # Status
+    status = db.Column(db.String(20), default='pending')  # pending, completed, disputed, cancelled
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    completed_at = db.Column(db.DateTime, nullable=True)
+    
+    seller = db.relationship('User', foreign_keys=[seller_id], backref='sales')
+    buyer = db.relationship('User', foreign_keys=[buyer_id], backref='purchases')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'seller_id': self.seller_id,
+            'buyer_id': self.buyer_id,
+            'cert_id': self.cert_id,
+            'trade_price': self.trade_price,
+            'platform_fee': self.platform_fee,
+            'seller_payout': self.seller_payout,
+            'status': self.status,
+            'created_at': self.created_at.isoformat(),
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None
+        }
+
+
+class EmployerVerification(db.Model):
+    """Employer verification of certifications"""
+    __tablename__ = 'employer_verifications'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    employer_name = db.Column(db.String(255), nullable=False)
+    employer_email = db.Column(db.String(255), nullable=False)
+    employer_logo = db.Column(db.String(500))
+    
+    cert_id = db.Column(db.Integer, db.ForeignKey('user_certifications.id'), nullable=False)
+    
+    # Verification
+    verification_token = db.Column(db.String(255), unique=True)
+    is_verified = db.Column(db.Boolean, default=False)
+    verified_at = db.Column(db.DateTime, nullable=True)
+    
+    # Rating
+    rating = db.Column(db.Integer)  # 1-5 stars
+    comment = db.Column(db.Text)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    certification = db.relationship('UserCertification', backref=db.backref('verifications', cascade='all, delete-orphan'))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'employer_name': self.employer_name,
+            'employer_logo': self.employer_logo,
+            'is_verified': self.is_verified,
+            'rating': self.rating,
+            'comment': self.comment,
+            'verified_at': self.verified_at.isoformat() if self.verified_at else None
+        }
+

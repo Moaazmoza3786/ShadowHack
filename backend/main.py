@@ -115,6 +115,13 @@ def create_app(config_name=None):
         app.register_blueprint(learning_plans_bp)
     except ImportError as e:
         print(f"Warning: learning_plans_routes not available: {e}")
+    
+    # Register certification marketplace blueprint
+    try:
+        from cert_marketplace_routes import marketplace_bp
+        app.register_blueprint(marketplace_bp)
+    except ImportError as e:
+        print(f"Warning: cert_marketplace_routes not available: {e}")
 
     # Register feature-specific routes
     features = [
