@@ -108,6 +108,13 @@ def create_app(config_name=None):
     app.register_blueprint(auth_bp)
     app.register_blueprint(leagues_bp)
     app.register_blueprint(subscription_bp)
+    
+    # Register learning plans blueprint
+    try:
+        from learning_plans_routes import learning_plans_bp
+        app.register_blueprint(learning_plans_bp)
+    except ImportError as e:
+        print(f"Warning: learning_plans_routes not available: {e}")
 
     # Register feature-specific routes
     features = [

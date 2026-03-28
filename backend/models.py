@@ -1334,3 +1334,106 @@ class ChatMessage(db.Model):
             'is_me': False, # To be handled by frontend or API wrapper
             'created_at': self.created_at.isoformat()
         }
+
+
+# ==================== LEARNING PLAN MODELS (TIER 2, Feature 6) ====================
+
+class LearningPlan(db.Model):
+    """AI-generated learning plans for users"""
+    __tablename__ = 'learning_plans'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    
+    # Plan details
+    domain = db.Column(db.String(100), nullable=False)  # web-security, networks, crypto, etc.
+    difficulty = db.Column(db.String(50), nullable=False)  # beginner, intermediate, advanced, expert
+    title = db.Column(db.String(200))
+    
+    # Curriculum data (JSON)
+    plan_data = db.Column(db.JSON)  # Full curriculum structure
+    
+    # Progress tracking
+    weeks_completed = db.Column(db.Integer, default=0)
+    current_week = db.Column(db.Integer, default=1)
+    completion_percentage = db.Column(db.Float, default=0.0)
+    
+    # Status
+    is_active = db.Column(db.Boolean, default=True)
+    started_at = db.Column(db.DateTime, default=datetime.utcnow)
+    completed_at = db.Column(db.DateTime, nullable=True)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = db.relationship('User', backref=db.backref('learning_plans', lazy='dynamic'))
+    weeks = db.relationship('LearningPlanWeek', backref='plan', lazy='dynamic', cascade='all, delete-orphan')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'domain': self.domain,
+            'difficulty': self.difficulty,
+            'title': self.title,
+            'weeks_completed': self.weeks_completed,
+            'current_week': self.current_week,
+            'completion_percentage': self.completion_percentage,
+            'is_active': self.is_active,
+            'started_at': self.started_at.isoformat() if self.started_at else None,
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None,
+            'plan_data': self.plan_data
+        }
+
+
+class LearningPlanWeek(db.Model):
+    """Individual week within a learning plan"""
+    __tablename__ = 'learning_plan_weeks'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    plan_id = db.Column(db.Integer, db.ForeignKey('learning_plans.id'), nullable=False, index=True)
+    
+    # Week details
+    week_number = db.Column(db.Integer, nullable=False)
+    title = db.Column(db.String(200))
+    objectives = db.Column(db.Text)
+    summary = db.Column(db.Text)
+    
+    # Topics and labs
+    topics = db.Column(db.JSON)  # List of topics
+    labs = db.Column(db.JSON)  # List of recommended labs
+    
+    # Estimates
+    estimated_hours = db.Column(db.Integer, default=15)
+    xp_reward = db.Column(db.Integer, default=250)
+    
+    # Progress
+    labs_completed = db.Column(db.Integer, default=0)
+    is_completed = db.Column(db.Boolean, default=False)
+    started_at = db.Column(db.DateTime, nullable=True)
+    completed_at = db.Column(db.DateTime, nullable=True)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    __table_args__ = (db.UniqueConstraint('plan_id', 'week_number'),)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'plan_id': self.plan_id,
+            'week_number': self.week_number,
+            'title': self.title,
+            'objectives': self.objectives,
+            'summary': self.summary,
+            'topics': self.topics,
+            'labs': self.labs,
+            'estimated_hours': self.estimated_hours,
+            'xp_reward': self.xp_reward,
+            'labs_completed': self.labs_completed,
+            'is_completed': self.is_completed,
+            'started_at': self.started_at.isoformat() if self.started_at else None,
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None
+        }
+
