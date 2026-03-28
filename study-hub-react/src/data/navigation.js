@@ -44,6 +44,7 @@ import {
   Cpu,
   Newspaper,
   MessageCircle,
+  Edit,
 } from "lucide-react";
 
 export const navigationConfig = {
@@ -62,6 +63,14 @@ export const navigationConfig = {
       labelAr: "العقل الثاني",
       icon: Brain,
       path: "/second-brain",
+    },
+    {
+      id: "social-eng",
+      label: "Social Eng Pro",
+      labelAr: "الهندسة الاجتماعية",
+      icon: MessageCircle,
+      path: "/tools/social-eng",
+      badge: "Pro",
     },
   ],
 
@@ -84,6 +93,15 @@ export const navigationConfig = {
               title: "Web & Cloud",
               titleAr: "الويب والسحابة",
               items: [
+                {
+                  icon: MessageCircle,
+                  label: "Social Eng Pro",
+                  labelAr: "الهندسة الاجتماعية الاحترافية",
+                  subtitle: "Phishing, pretexting & profiling",
+                  subtitleAr: "تصيد احتيالي وإدارة هويات",
+                  path: "/tools/social-eng",
+                  badge: "Pro",
+                },
                 {
                   icon: Bug,
                   label: "Web Exploitation",
@@ -150,15 +168,6 @@ export const navigationConfig = {
                   subtitle: "Social Engineering Identities",
                   subtitleAr: "تقمص الشخصيات المتقدم",
                   path: "/tools/persona-factory",
-                  badge: "Pro",
-                },
-                {
-                  icon: MessageCircle,
-                  label: "Social Eng Pro",
-                  labelAr: "الهندسة الاجتماعية الاحترافية",
-                  subtitle: "Phishing, pretexting & profiling",
-                  subtitleAr: "تصيد احتيالي وإدارة هويات",
-                  path: "/tools/social-eng",
                   badge: "Pro",
                 },
                 {
@@ -338,6 +347,15 @@ export const navigationConfig = {
                   subtitle: "Engagement management",
                   subtitleAr: "إدارة المهام",
                   path: "/tools/campaign-manager",
+                },
+                {
+                  icon: Edit,
+                  label: "Bug Bounty Report",
+                  labelAr: "تقرير مكافآت الثغرات",
+                  subtitle: "Automated Vulnerability Reporting",
+                  subtitleAr: "تقارير ثغرات آلية",
+                  path: "/tools/bug-bounty-report",
+                  badge: "New",
                 },
                 {
                   icon: FileText,

@@ -4,14 +4,14 @@ import {
     Network, Fingerprint, Lock, ArrowRight, Scroll,
     Radar, Bot, Crosshair, Code, Activity, Crown,
     Database, Microscope, Search, Globe, Library, Bug, Download,
-    Briefcase, Map, Zap, Flame, Eye
+    Briefcase, Map, Zap, Flame, Eye, Edit
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const ToolsHub = () => {
     const tools = [
-        // Advanced Simulators
+        { title: 'Social Eng Pro', desc: 'Phishing manager, AI pretexting, & target profiling.', icon: Fingerprint, color: 'text-purple-400', link: '/tools/social-eng' },
         { title: 'Project Tracker', desc: 'The Joker: Central Mission OS & Aggregator.', icon: Briefcase, color: 'text-indigo-500', link: '/tools/project-tracker' },
         { title: 'C2 Command Ctr', desc: 'Red Team Ops: Manage agents & exfiltrate loot.', icon: Network, color: 'text-red-500', link: '/tools/c2-red-ops' },
         { title: 'Cloud Security Pro', desc: 'AWS/Azure Professional auditing & IAM exploitation.', icon: Globe, color: 'text-blue-400', link: '/tools/cloud-security' },
@@ -37,6 +37,7 @@ const ToolsHub = () => {
         // Operations & Management
         { title: 'Target Manager', desc: 'Track assets, scope, and vulnerabilities.', icon: Crosshair, color: 'text-rose-500', link: '/tools/target-manager' },
         { title: 'Campaigns', desc: 'Manage engagement timelines and progress.', icon: Scroll, color: 'text-amber-500', link: '/tools/campaign-manager' },
+        { title: 'Bug Bounty Report', desc: 'Automated vulnerability reporting & templates.', icon: Edit, color: 'text-primary-500', link: '/tools/bug-bounty-report' },
         { title: 'Report Builder', desc: 'Generate professional pentest reports.', icon: FileText, color: 'text-blue-500', link: '/tools/report-builder' },
         { title: 'Encoder/Decoder', desc: 'B64, URL, and Hex conversion utility.', icon: Hash, color: 'text-purple-500', link: '/tools/encoder' },
         { title: 'Cheatsheets', desc: 'Quick reference for commands and syntax.', icon: Code, color: 'text-green-500', link: '/tools/cheatsheets' },
@@ -52,7 +53,6 @@ const ToolsHub = () => {
         { title: 'PrivEsc Pro', desc: 'Professional Win & Linux escalation mastery.', icon: Shield, color: 'text-yellow-500', link: '/tools/privesc-lab' },
         { title: 'Command Reference', desc: '200+ commands for pentests & CTFs.', icon: Code, color: 'text-green-400', link: '/tools/command-ref' },
         { title: 'MITRE ATT&CK', desc: 'Track your red team skills by technique.', icon: Shield, color: 'text-red-500', link: '/tools/mitre-attack' },
-        { title: 'Social Eng Pro', desc: 'Phishing manager, AI pretexting, & target profiling.', icon: Fingerprint, color: 'text-purple-400', link: '/tools/social-eng' },
         { title: 'Persona Pro', desc: 'Sock-puppet manager & OpSec-safe identity vault.', icon: Fingerprint, color: 'text-pink-500', link: '/tools/persona-factory' },
     ];
 

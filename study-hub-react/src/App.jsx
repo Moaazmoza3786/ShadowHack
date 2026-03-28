@@ -29,6 +29,7 @@ const ShadowHackSpecs = lazy(() => import("./pages/ShadowHackSpecs"));
 // Tools
 const PayloadGenerator = lazy(() => import("./pages/tools/PayloadGenerator"));
 const ReportBuilder = lazy(() => import("./pages/tools/ReportBuilder"));
+const BugBountyReportBuilder = lazy(() => import("./pages/tools/BugBountyReportBuilder"));
 const EncoderTool = lazy(() => import("./pages/tools/EncoderTool"));
 const CommandReference = lazy(() => import("./pages/tools/CommandReference"));
 const Cheatsheets = CommandReference;
@@ -208,6 +209,10 @@ function App() {
                   <Route
                     path="/tools/report-builder"
                     element={<ReportBuilder />}
+                  />
+                  <Route
+                    path="/tools/bug-bounty-report"
+                    element={<BugBountyReportBuilder />}
                   />
                   <Route path="/tools/encoder" element={<EncoderTool />} />
                   <Route path="/tools/cheatsheets" element={<Cheatsheets />} />
