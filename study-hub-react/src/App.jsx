@@ -80,6 +80,7 @@ const TeamsHub = lazy(() => import("./pages/TeamsHub"));
 const DailyMissions = lazy(() => import("./pages/DailyMissions"));
 const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
 const ProgressDashboard = lazy(() => import("./pages/ProgressDashboard"));
+const GlobalLeaderboards = lazy(() => import("./pages/GlobalLeaderboards"));
 const SkillAssessment = lazy(() => import("./pages/SkillAssessment"));
 const ActivityFeed = lazy(() => import("./pages/ActivityFeed"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
@@ -328,6 +329,7 @@ function App() {
                   <Route path="/missions" element={<DailyMissions />} />
                   <Route path="/analytics" element={<AnalyticsDashboard />} />
                   <Route path="/progress" element={<ProgressDashboard />} />
+                  <Route path="/leaderboards" element={<GlobalLeaderboards />} />
                   <Route path="/assessments" element={<SkillAssessment />} />
                   <Route path="/activity" element={<ActivityFeed />} />
                   <Route path="/profile" element={<UserProfile />} />

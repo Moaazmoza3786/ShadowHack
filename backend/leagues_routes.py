@@ -306,7 +306,56 @@ def reset_weekly_leagues():
     })
 
 
-@leagues_bp.route('/seed', methods=['POST'])
+@leagues_bp.route('/global-<period>', methods=['GET'])
+def get_global_leaderboard(period='weekly'):
+    """Get global leaderboard across all regions"""
+    limit = request.args.get('limit', 100, type=int)
+    user_id = request.args.get('user_id', type=int)
+    
+    query = User.query.filter(User.xp_points > 0)
+    
+    if period == 'weekly':
+        query = query.order_by(User.weekly_xp.desc())
+    else:  # alltime
+        query = query.order_by(User.xp_points.desc())
+    
+    users = query.limit(limit).all()
+    
+    rankings = []
+    for idx, user in enumerate(users, 1):
+        rankings.append({
+            'rank': idx,
+            'id': user.id,
+            'username': user.username,
+            'avatar_url': user.avatar_url,
+            'xp': user.weekly_xp if period == 'weekly' else user.xp_points,
+            'level': user.level,
+            'country': getattr(user, 'country', 'Unknown'),
+            'labs_completed': user.lab_submissions.filter_by(is_correct=True).count() if hasattr(user, 'lab_submissions') else 0
+        })
+    
+    user_rank = None
+    if user_id:
+        for ranking in rankings:
+            if ranking['id'] == user_id:
+                user_rank = ranking
+                break
+    
+    return jsonify({
+        'success': True,
+        'period': period,
+        'rankings': rankings,
+        'user_rank': user_rank,
+        'total_players': User.query.count()
+    })
+
+
+# Alias for regional leaderboards
+@leagues_bp.route('/<region>-<period>', methods=['GET'])
+def get_regional_leaderboard(region='global', period='weekly'):
+    """Get regional leaderboard"""
+    # For now, all return same data. In production, add country/region field to User model
+    return get_global_leaderboard(period)
 def seed_leagues():
     """Seed initial league data (run once during setup)"""
     admin_key = request.headers.get('X-Admin-Key')
