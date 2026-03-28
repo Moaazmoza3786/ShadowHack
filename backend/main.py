@@ -136,6 +136,13 @@ def create_app(config_name=None):
         app.register_blueprint(wiki_bp)
     except ImportError as e:
         print(f"Warning: wiki_routes not available: {e}")
+    
+    # Register bug bounty blueprint
+    try:
+        from bug_bounty_routes import bug_bounty_bp
+        app.register_blueprint(bug_bounty_bp)
+    except ImportError as e:
+        print(f"Warning: bug_bounty_routes not available: {e}")
 
     # Register feature-specific routes
     features = [
