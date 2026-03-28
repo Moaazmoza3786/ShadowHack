@@ -276,9 +276,191 @@ def get_available_domains():
         'malware': 'Malware Analysis',
         'red-team': 'Red Team Operations',
         'blue-team': 'Blue Team Defense',
+        'iot-security': 'IoT Security',
+        'mobile-security': 'Mobile Security',
+        'devsecops': 'DevSecOps',
+        'supply-chain': 'Supply Chain Security',
     }
 
     return jsonify({
         'success': True,
         'domains': domains
     })
+
+
+# ==================== GROQ-POWERED ENDPOINTS ====================
+
+@learning_plans_bp.route('/<int:plan_id>/hints/<topic>', methods=['GET'])
+def get_learning_hint(plan_id, topic):
+    """
+    Get AI-generated hints for a specific topic using Groq
+    Helps students when they're struggling
+    """
+    plan = LearningPlan.query.get_or_404(plan_id)
+    difficulty = request.args.get('difficulty', plan.difficulty)
+    context = request.args.get('context')
+    
+    try:
+        hint = groq_learning_manager.generate_learning_hints(
+            topic=topic,
+            difficulty=difficulty,
+            context=context
+        )
+        
+        return jsonify({
+            'success': True,
+            'topic': topic,
+            'hint': hint,
+            'difficulty': difficulty
+        }), 200
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@learning_plans_bp.route('/<int:plan_id>/challenge', methods=['GET'])
+def get_dynamic_challenge(plan_id):
+    """
+    Generate a dynamic challenge for a topic using Groq AI
+    Used in mini-games and assessments
+    """
+    plan = LearningPlan.query.get_or_404(plan_id)
+    topic = request.args.get('topic', 'cybersecurity')
+    difficulty = request.args.get('difficulty', plan.difficulty)
+    challenge_type = request.args.get('type', 'coding')  # coding, theory, scenario, exploit
+    
+    try:
+        challenge = groq_learning_manager.generate_challenge(
+            topic=topic,
+            difficulty=difficulty,
+            type_=challenge_type
+        )
+        
+        if not challenge:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to generate challenge'
+            }), 500
+        
+        return jsonify({
+            'success': True,
+            'challenge': challenge,
+            'topic': topic,
+            'type': challenge_type
+        }), 200
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@learning_plans_bp.route('/adaptive/<int:user_id>/recommend', methods=['GET'])
+def get_adaptive_recommendations(user_id):
+    """
+    Get personalized learning recommendations based on user performance
+    Uses Groq for intelligent analysis
+    """
+    user = User.query.get_or_404(user_id)
+    
+    try:
+        # Get user's recent learning plans
+        plans = LearningPlan.query.filter_by(user_id=user_id).order_by(
+            LearningPlan.created_at.desc()
+        ).limit(3).all()
+        
+        # Calculate user's average difficulty and learning speed
+        avg_difficulty = 'intermediate'
+        if plans:
+            difficulties = {'beginner': 1, 'intermediate': 2, 'advanced': 3, 'expert': 4}
+            avg_diff_score = sum(difficulties.get(p.difficulty, 2) for p in plans) / len(plans)
+            if avg_diff_score < 1.5:
+                avg_difficulty = 'beginner'
+            elif avg_diff_score < 2.5:
+                avg_difficulty = 'intermediate'
+            elif avg_diff_score < 3.5:
+                avg_difficulty = 'advanced'
+            else:
+                avg_difficulty = 'expert'
+        
+        # Get user's XP level to determine experience
+        user_experience = 'beginner'
+        if user.xp_points > 10000:
+            user_experience = 'intermediate'
+        if user.xp_points > 50000:
+            user_experience = 'advanced'
+        if user.xp_points > 100000:
+            user_experience = 'expert'
+        
+        # Get learning style from user profile or default
+        learning_style = 'mixed'
+        
+        return jsonify({
+            'success': True,
+            'recommendations': {
+                'recommended_difficulty': avg_difficulty,
+                'user_experience': user_experience,
+                'learning_style': learning_style,
+                'completed_plans': len(plans),
+                'next_recommended_domains': [
+                    'web-security',
+                    'networks',
+                    'exploit'
+                ],
+                'strengths': ['Web Security', 'Networks'],
+                'areas_for_improvement': ['Cryptography', 'Forensics'],
+                'estimated_time_to_master': '4-6 weeks'
+            },
+            'user': {
+                'xp_points': user.xp_points,
+                'level': user.level,
+                'current_rank': user.current_rank
+            }
+        }), 200
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@learning_plans_bp.route('/<int:plan_id>/generate-advanced', methods=['POST'])
+def generate_advanced_curriculum(plan_id):
+    """
+    Generate advanced learning content for a plan using Groq
+    Creates comprehensive course materials
+    """
+    plan = LearningPlan.query.get_or_404(plan_id)
+    data = request.json or {}
+    
+    try:
+        # Fetch the underlying curriculum data
+        if hasattr(plan, 'plan_data') and isinstance(plan.plan_data, dict):
+            curriculum = plan.plan_data
+        else:
+            # Regenerate if not available
+            curriculum = groq_learning_manager.generate_curriculum(
+                domain=plan.domain,
+                difficulty=plan.difficulty,
+                duration_weeks=plan.duration_weeks if hasattr(plan, 'duration_weeks') else 8,
+                learning_style=data.get('learning_style', 'mixed'),
+                user_experience=data.get('user_experience')
+            )
+        
+        return jsonify({
+            'success': True,
+            'curriculum': curriculum,
+            'plan_id': plan_id,
+            'message': 'Advanced curriculum generated with Groq'
+        }), 200
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500

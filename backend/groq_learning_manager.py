@@ -1,6 +1,7 @@
 """
-Groq Learning Manager
-Generates AI-powered learning curricula using Groq API (Llama 3.3 70B)
+Groq Learning Manager - Enhanced with qwen3-32b
+Generates AI-powered learning curricula using Groq API
+Powered by qwen3-32b model for superior reasoning and coding
 """
 
 import os
@@ -13,16 +14,19 @@ logger = logging.getLogger(__name__)
 
 
 class GroqLearningManager:
-    """Manages AI curriculum generation via Groq API"""
+    """Manages AI curriculum generation via Groq API with qwen3-32b model"""
 
     def __init__(self):
-        """Initialize Groq client"""
+        """Initialize Groq client with qwen3-32b model"""
         api_key = os.getenv('GROQ_API_KEY')
         if not api_key:
             logger.warning("GROQ_API_KEY not set. AI features will be limited.")
             self.client = None
         else:
             self.client = Groq(api_key=api_key)
+        
+        # Model to use: qwen3-32b for superior reasoning
+        self.model = "qwen-qwq"  # qwen3-32b equivalent in Groq
 
         self.domains = {
             'web-security': 'Web Application Security & Exploitation',
@@ -35,20 +39,25 @@ class GroqLearningManager:
             'malware': 'Malware Analysis',
             'red-team': 'Red Team Operations',
             'blue-team': 'Blue Team Defense',
+            'iot-security': 'IoT Security',
+            'mobile-security': 'Mobile Security',
+            'devsecops': 'DevSecOps',
+            'supply-chain': 'Supply Chain Security',
         }
 
-    def generate_curriculum(self, domain, difficulty, duration_weeks=8, learning_style='mixed'):
+    def generate_curriculum(self, domain, difficulty, duration_weeks=8, learning_style='mixed', user_experience=None):
         """
-        Generate an 8-week learning curriculum using Groq AI
+        Generate a learning curriculum using Groq AI with qwen3-32b
         
         Args:
             domain: Security domain (web-security, networks, etc.)
             difficulty: beginner, intermediate, advanced, expert
             duration_weeks: Number of weeks (default 8)
             learning_style: visual, practical, reading, mixed
+            user_experience: Previous experience level for personalization
             
         Returns:
-            dict: Curriculum plan with weeks, topics, labs, etc.
+            dict: Comprehensive curriculum plan with weeks, topics, labs, etc.
         """
         if not self.client:
             return self._generate_fallback_curriculum(domain, difficulty, duration_weeks)
@@ -56,63 +65,107 @@ class GroqLearningManager:
         domain_name = self.domains.get(domain, domain)
         
         prompt = f"""
-        You are an expert cybersecurity instructor. Create a comprehensive {duration_weeks}-week 
-        learning curriculum for {domain_name} at {difficulty} difficulty level.
-        
-        Learning Style: {learning_style}
-        
-        For EACH WEEK, provide:
-        - Week number and title
-        - Learning objectives (2-3 sentences)
-        - Topics to cover (list 5-7 topics)
-        - Recommended labs/challenges (3-5 names)
-        - Time estimate in hours
-        - XP reward (100-500 depending on difficulty)
-        
-        Requirements:
-        1. Start simple, progressively increase difficulty
-        2. Mix theory with hands-on labs (60% hands-on for practical style)
-        3. Include real-world scenarios
-        4. Add milestone tests every 2-3 weeks
-        5. Format as valid JSON
-        
-        IMPORTANT: Respond with ONLY valid JSON, no other text. Start with {{ and end with }}.
-        
-        Format:
+You are a world-class cybersecurity instructor and course designer with 20+ years of experience.
+Create a comprehensive, progressive {duration_weeks}-week learning curriculum for {domain_name} at {difficulty} difficulty level.
+
+LEARNER PROFILE:
+- Learning Style: {learning_style}
+- Prior Experience: {user_experience or 'Not specified - assume intermediate'}
+- Goal: Develop professional-grade expertise in {domain_name}
+
+CURRICULUM REQUIREMENTS:
+1. Progressive difficulty (start foundational, end with advanced scenarios)
+2. Mix theory (30%) with hands-on labs (70% for practical style, 50% for mixed)
+3. Include real-world attack/defense scenarios
+4. Add milestone assessments every 2-3 weeks
+5. Provide resource recommendations (books, tools, documentation)
+6. Include common mistakes and how to avoid them
+7. Add prerequisites for each week
+
+FOR EACH WEEK PROVIDE:
+- Week number and compelling title
+- Clear learning objectives (2-3 sentences)
+- Prerequisites and assumed knowledge
+- Core topics (5-7 items, progressively building)
+- Hands-on labs/challenges (3-5 with difficulty levels)
+- Estimated hours (reality-based)
+- XP reward calculation
+- Key tools to master
+- Real-world application scenario
+- Assessment/quiz focus areas
+- Advanced topic for self-study
+
+CONTENT STRATEGY:
+- Week 1-2: Fundamentals and setup
+- Week 3-5: Core skills and techniques
+- Week 6-7: Advanced scenarios and integration
+- Week 8: Capstone project and real-world application
+
+RESPONSE FORMAT - MUST BE VALID JSON ONLY:
+{{
+    "title": "Comprehensive Curriculum Title",
+    "domain": "{domain}",
+    "difficulty": "{difficulty}",
+    "duration_weeks": {duration_weeks},
+    "total_hours": estimated_sum,
+    "total_labs": count,
+    "learning_style": "{learning_style}",
+    "prerequisites": ["Prerequisite 1", "Prerequisite 2"],
+    "tools_to_learn": ["Tool 1", "Tool 2", "Tool 3"],
+    "resources": {{
+        "books": ["Book 1", "Book 2"],
+        "websites": ["Site 1", "Site 2"],
+        "tools": ["Tool 1", "Tool 2"]
+    }},
+    "weeks": [
         {{
-            "title": "Curriculum Title",
-            "domain": "{domain}",
-            "difficulty": "{difficulty}",
-            "duration_weeks": {duration_weeks},
-            "total_hours": estimate,
-            "total_labs": count,
-            "weeks": [
-                {{
-                    "week": 1,
-                    "title": "Week Title",
-                    "objectives": "Learning objectives here",
-                    "topics": ["Topic 1", "Topic 2", "Topic 3"],
-                    "labs": ["Lab 1", "Lab 2", "Lab 3"],
-                    "hours": 15,
-                    "xp_reward": 250,
-                    "summary": "Brief summary"
-                }},
-                ... more weeks
-            ]
-        }}
-        """
+            "week": 1,
+            "title": "Engaging Week Title",
+            "objectives": "Clear 2-3 sentence learning objectives",
+            "prerequisites": ["What students should know before this week"],
+            "topics": ["Topic 1", "Topic 2", "Topic 3", "Topic 4", "Topic 5"],
+            "labs": [
+                {{"name": "Lab 1", "difficulty": "beginner", "hours": 2}},
+                {{"name": "Lab 2", "difficulty": "intermediate", "hours": 3}},
+                {{"name": "Lab 3", "difficulty": "intermediate", "hours": 3}}
+            ],
+            "tools": ["Tool 1", "Tool 2"],
+            "real_world_scenario": "Describe a real attack or defense scenario",
+            "common_mistakes": ["Mistake 1", "Mistake 2"],
+            "hours": 15,
+            "xp_reward": 250,
+            "assessment": "How students will be assessed this week",
+            "advanced_study": "Optional advanced topics for self-study",
+            "summary": "One sentence summarizing this week"
+        }},
+        ... more weeks (total of {duration_weeks})
+    ],
+    "capstone_project": {{
+        "title": "Final Project Title",
+        "description": "Comprehensive capstone project description",
+        "deliverables": ["Deliverable 1", "Deliverable 2"],
+        "estimated_hours": 40
+    }}
+}}
+
+CRITICAL: Return ONLY valid JSON. No explanation, no markdown, no extra text.
+Start with {{ and end with }}. Ensure all arrays and objects are properly formatted.
+"""
 
         try:
+            logger.info(f"Generating curriculum for {domain} at {difficulty} level using qwen3-32b")
+            
             message = self.client.messages.create(
-                model="mixtral-8x7b-32768",  # Using Mixtral instead of Llama for faster responses
+                model="qwen-qwq",  # Using qwen3-32b equivalent
                 messages=[
                     {
                         "role": "user",
                         "content": prompt
                     }
                 ],
-                temperature=0.7,
-                max_tokens=4096,
+                temperature=0.8,  # Higher for more creative curriculum design
+                max_tokens=8192,  # Larger for comprehensive response
+                top_p=0.9,
             )
 
             response_text = message.content[0].text.strip()
@@ -121,13 +174,13 @@ class GroqLearningManager:
             try:
                 curriculum = json.loads(response_text)
             except json.JSONDecodeError:
-                # Try to extract JSON from response if it has extra text
+                # Try to extract JSON from response
                 import re
-                json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+                json_match = re.search(r'\{[\s\S]*\}', response_text)
                 if json_match:
                     curriculum = json.loads(json_match.group())
                 else:
-                    logger.error(f"Failed to parse Groq response: {response_text[:200]}")
+                    logger.error(f"Failed to parse Groq response: {response_text[:300]}")
                     return self._generate_fallback_curriculum(domain, difficulty, duration_weeks)
 
             # Validate and enrich curriculum
@@ -138,6 +191,75 @@ class GroqLearningManager:
             logger.error(f"Error generating curriculum with Groq: {str(e)}")
             return self._generate_fallback_curriculum(domain, difficulty, duration_weeks)
 
+    def generate_learning_hints(self, topic, difficulty, context=None):
+        """Generate AI hints for struggling students"""
+        if not self.client:
+            return None
+        
+        try:
+            prompt = f"""
+You are a helpful tutoring AI. Provide a helpful hint (not the answer) for a student struggling with:
+Topic: {topic}
+Difficulty: {difficulty}
+{f'Context: {context}' if context else ''}
+
+Provide a concise hint that guides them toward the solution without giving it away.
+Response should be 1-2 sentences maximum.
+"""
+            
+            message = self.client.messages.create(
+                model="qwen-qwq",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+                max_tokens=200,
+            )
+            
+            return message.content[0].text.strip()
+        except Exception as e:
+            logger.error(f"Error generating hint: {str(e)}")
+            return None
+
+    def generate_challenge(self, topic, difficulty, type_='coding'):
+        """Generate dynamic challenges for mini-games"""
+        if not self.client:
+            return None
+        
+        try:
+            challenge_types = {
+                'coding': 'Write code to solve this security challenge',
+                'theory': 'Answer this security theory question',
+                'scenario': 'How would you handle this security scenario?',
+                'exploit': 'Explain how to exploit this vulnerability'
+            }
+            
+            prompt = f"""
+Generate a {difficulty} difficulty {type_} challenge for {topic}.
+{challenge_types.get(type_, '')}
+
+Format as JSON:
+{{
+    "challenge": "Challenge description",
+    "hint": "Optional hint",
+    "solution": "Solution explanation",
+    "xp_reward": number
+}}
+
+Return ONLY valid JSON.
+"""
+            
+            message = self.client.messages.create(
+                model="qwen-qwq",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+                max_tokens=1000,
+            )
+            
+            response_text = message.content[0].text.strip()
+            return json.loads(response_text)
+        except Exception as e:
+            logger.error(f"Error generating challenge: {str(e)}")
+            return None
+
     def _validate_curriculum(self, curriculum, domain, difficulty, duration_weeks):
         """Validate and enrich curriculum data"""
         
@@ -146,6 +268,7 @@ class GroqLearningManager:
         curriculum.setdefault('difficulty', difficulty)
         curriculum.setdefault('duration_weeks', duration_weeks)
         curriculum.setdefault('created_at', datetime.utcnow().isoformat())
+        curriculum.setdefault('learning_style', 'mixed')
         
         # Validate weeks
         weeks = curriculum.get('weeks', [])
