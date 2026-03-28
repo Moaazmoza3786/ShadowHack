@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Search, ChevronDown, User } from 'lucide-react';
 import { navigationConfig } from '../data/navigation';
 import { useAppContext } from '../context/AppContext';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -214,6 +215,8 @@ const Navbar = () => {
                             </div>
 
                             {/* User Profile Icon */}
+                            <ThemeToggle />
+                            
                             <button className="hidden lg:flex w-9 h-9 items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                                 <User size={18} className="text-gray-400" />
                             </button>

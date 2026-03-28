@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
 import { ToastProvider } from "./context/ToastContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import MainLayout from "./components/MainLayout";
 
 // Lazy load all page components
@@ -78,6 +79,7 @@ const CyberOpsDashboard = lazy(() => import("./pages/CyberOpsDashboard"));
 const TeamsHub = lazy(() => import("./pages/TeamsHub"));
 const DailyMissions = lazy(() => import("./pages/DailyMissions"));
 const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
+const ProgressDashboard = lazy(() => import("./pages/ProgressDashboard"));
 const SkillAssessment = lazy(() => import("./pages/SkillAssessment"));
 const ActivityFeed = lazy(() => import("./pages/ActivityFeed"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
@@ -146,9 +148,10 @@ class ErrorBoundary extends React.Component {
 function App() {
   return (
     <ErrorBoundary>
-      <AppProvider>
-        <ToastProvider>
-          <Router>
+      <ThemeProvider>
+        <AppProvider>
+          <ToastProvider>
+            <Router>
             <Suspense
               fallback={
                 <div className="h-screen w-screen bg-dark-950 flex items-center justify-center">
@@ -324,6 +327,7 @@ function App() {
                   <Route path="/teams" element={<TeamsHub />} />
                   <Route path="/missions" element={<DailyMissions />} />
                   <Route path="/analytics" element={<AnalyticsDashboard />} />
+                  <Route path="/progress" element={<ProgressDashboard />} />
                   <Route path="/assessments" element={<SkillAssessment />} />
                   <Route path="/activity" element={<ActivityFeed />} />
                   <Route path="/profile" element={<UserProfile />} />
@@ -348,6 +352,7 @@ function App() {
           </Router>
         </ToastProvider>
       </AppProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

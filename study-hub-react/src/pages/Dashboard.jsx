@@ -27,30 +27,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLabManager } from '../hooks/useLabManager';
 import { useToast } from '../context/ToastContext';
 import CyberTerminal from '../components/CyberTerminal';
+import HeroSection from '../components/HeroSection';
+import EnhancedStatCard from '../components/EnhancedStatCard';
 
 const StatCard = ({ label, value, icon: Icon, color, suffix = "" }) => (
-    <div className="relative group overflow-hidden bg-dark-800/40 border border-white/5 rounded-[2rem] p-8 hover:border-white/10 transition-all duration-500">
-        <div className={`absolute top-0 right-0 w-32 h-32 opacity-10 group-hover:opacity-20 blur-3xl rounded-full transition-opacity duration-500 ${color}`} />
-        <div className="relative z-10 flex items-center justify-between pointer-events-none">
-            <div>
-                <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2">{label}</p>
-                <div className="flex items-baseline gap-2">
-                    <p className="text-4xl font-black text-white italic tracking-tighter uppercase">{value}</p>
-                    <span className="text-xs font-bold text-gray-500 uppercase">{suffix}</span>
-                </div>
-            </div>
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border border-white/10 backdrop-blur-xl group-hover:scale-110 transition-transform duration-500`}>
-                <Icon className={`${color.replace('bg-', 'text-')} w-7 h-7`} />
-            </div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5 overflow-hidden">
-            <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: "65%" }}
-                className={`h-full ${color}`}
-            />
-        </div>
-    </div>
+    <EnhancedStatCard label={label} value={value} icon={Icon} color={color} suffix={suffix} />
 );
 
 const DailyChallengeSection = () => {
@@ -157,6 +138,9 @@ const Dashboard = () => {
 
     return (
         <div className="space-y-12">
+            {/* NEW: Enhanced Hero Section */}
+            <HeroSection userName={user?.name} />
+
             {/* Header / Hero */}
             <header className="relative py-12 px-12 rounded-[3rem] bg-gradient-to-br from-dark-800/80 to-dark-900 border border-white/5 overflow-hidden group">
                 <div className="absolute inset-0 bg-cyber-grid opacity-20" />
