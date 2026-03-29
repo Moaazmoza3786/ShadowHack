@@ -143,6 +143,13 @@ def create_app(config_name=None):
         app.register_blueprint(bug_bounty_bp)
     except ImportError as e:
         print(f"Warning: bug_bounty_routes not available: {e}")
+    
+    # Register mentorship blueprint
+    try:
+        from mentorship_routes import mentorship_bp
+        app.register_blueprint(mentorship_bp)
+    except ImportError as e:
+        print(f"Warning: mentorship_routes not available: {e}")
 
     # Register feature-specific routes
     features = [
