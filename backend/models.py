@@ -1616,7 +1616,6 @@ class WikiComment(db.Model):
 class WikiVote(db.Model):
     """Voting system for wiki articles"""
     __tablename__ = 'wiki_votes'
-    __table_args__ = (db.UniqueConstraint('article_id', 'user_id', name='unique_user_article_vote'),)
     
     id = db.Column(db.Integer, primary_key=True)
     article_id = db.Column(db.Integer, db.ForeignKey('wiki_articles.id'), nullable=False, index=True)
@@ -1626,34 +1625,21 @@ class WikiVote(db.Model):
     value = db.Column(db.Integer, default=1)
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    user = db.relationship('User', backref='wiki_votes')
-    
-    # Dates
-    earned_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    expires_at = db.Column(db.DateTime, nullable=True)
-    
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
-    user = db.relationship('User', backref=db.backref('certifications', cascade='all, delete-orphan'))
-    template = db.relationship('CertificationTemplate', backref=db.backref('earned_by_users'))
+    user = db.relationship('User', backref='wiki_votes')
     
-    __table_args__ = (db.UniqueConstraint('user_id', 'template_id'),)
+    __table_args__ = (db.UniqueConstraint('article_id', 'user_id', name='unique_user_article_vote'),)
     
     def to_dict(self):
         return {
             'id': self.id,
+            'article_id': self.article_id,
             'user_id': self.user_id,
-            'template_id': self.template_id,
-            'name': self.template.name,
-            'issuer': self.template.issuer,
-            'is_verified': self.is_verified,
-            'for_sale': self.for_sale,
-            'listing_price': self.listing_price,
-            'earned_at': self.earned_at.isoformat(),
-            'expires_at': self.expires_at.isoformat() if self.expires_at else None
+            'value': self.value,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
         }
 
 
