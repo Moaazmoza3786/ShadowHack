@@ -182,19 +182,19 @@ const BugBountyHub = () => {
           animate="visible"
           className="grid grid-cols-1 md:grid-cols-4 gap-4"
         >
-          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30">
+          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-linear-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30">
             <p className="text-sm text-gray-400 mb-2">Total Earnings</p>
             <p className="text-3xl font-black text-green-400">${earnings.total.toLocaleString()}</p>
           </motion.div>
-          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30">
+          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-linear-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30">
             <p className="text-sm text-gray-400 mb-2">This Month</p>
             <p className="text-3xl font-black text-blue-400">${earnings.this_month}</p>
           </motion.div>
-          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30">
+          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-linear-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30">
             <p className="text-sm text-gray-400 mb-2">Pending Approval</p>
             <p className="text-3xl font-black text-purple-400">${earnings.pending}</p>
           </motion.div>
-          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
+          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-linear-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
             <p className="text-sm text-gray-400 mb-2">Verified Reports</p>
             <p className="text-3xl font-black text-yellow-400">{earnings.verified_bugs}</p>
           </motion.div>
@@ -254,7 +254,7 @@ const BugBountyHub = () => {
             <motion.div
               key={submission.id}
               variants={itemVariants}
-              className="p-6 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50"
+              className="p-6 rounded-xl bg-linear-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
@@ -309,7 +309,7 @@ const BugBountyHub = () => {
           className="space-y-6"
         >
           {/* Platform Breakdown */}
-          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50">
+          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-linear-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50">
             <h3 className="text-lg font-bold text-white mb-4">Earnings by Platform</h3>
             <div className="space-y-4">
               {earnings.platforms.map((platform, idx) => (
@@ -323,7 +323,7 @@ const BugBountyHub = () => {
                       initial={{ width: 0 }}
                       animate={{ width: `${(platform.total / earnings.total) * 100}%` }}
                       transition={{ delay: 0.1, duration: 1 }}
-                      className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
+                      className="h-full bg-linear-to-r from-green-500 to-emerald-500"
                     />
                   </div>
                 </div>
@@ -332,7 +332,7 @@ const BugBountyHub = () => {
           </motion.div>
 
           {/* Tips for Maximizing Earnings */}
-          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30">
+          <motion.div variants={itemVariants} className="p-6 rounded-xl bg-linear-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30">
             <h3 className="text-lg font-bold text-white mb-4">💰 Tips to Maximize Earnings</h3>
             <ul className="space-y-2 text-gray-300">
               <li>• Focus on Critical and High severity vulnerabilities</li>
@@ -357,7 +357,7 @@ const ProgramCard = ({ program, variants, index }) => {
       variants={variants}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="group p-6 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 hover:border-red-500/50 transition-all cursor-pointer"
+      className="group p-6 rounded-xl bg-linear-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 hover:border-red-500/50 transition-all cursor-pointer"
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
@@ -407,7 +407,7 @@ const ProgramCard = ({ program, variants, index }) => {
       </div>
 
       {/* Action */}
-      <button className="w-full px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold rounded-lg transition-all">
+      <button className="w-full px-4 py-2 bg-linear-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold rounded-lg transition-all">
         View Program →
       </button>
     </motion.div>
