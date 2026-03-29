@@ -5,10 +5,26 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        global: 'globalThis'
+      },
+      supported: {
+        bigint: false
+      }
+    }
+  },
+  esbuild: {
+    loader: 'jsx',
+    include: /src\/.*\.jsx?$/,
+    exclude: []
+  },
   server: {
     port: 3000,
     host: "127.0.0.1",
     allowedHosts: true,
+    middlewareMode: false,
     proxy: {
       "/api": {
         target: "http://127.0.0.1:5000",

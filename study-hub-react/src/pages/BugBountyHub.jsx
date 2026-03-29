@@ -337,7 +337,7 @@ const BugBountyHub = () => {
             <ul className="space-y-2 text-gray-300">
               <li>• Focus on Critical and High severity vulnerabilities</li>
               <li>• Target programs with $5K+ maximum bounties</li>
-              <li>• Prioritize programs with < 2 hour response time</li>
+              <li>• Prioritize programs with &lt; 2 hour response time</li>
               <li>• Build reputation: consistent quality reports = higher payouts</li>
               <li>• Specialize in areas with less competition (API, Cloud, IoT)</li>
               <li>• Document findings thoroughly for faster approvals</li>
