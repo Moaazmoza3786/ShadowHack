@@ -72,6 +72,7 @@ const FuzzingCockpit = lazy(() => import("./pages/tools/FuzzingCockpit"));
 const ProjectTracker = lazy(() => import("./pages/tools/ProjectTracker"));
 const LandingNode = lazy(() => import("./pages/tools/LandingNode"));
 const AttackChains = lazy(() => import("./pages/tools/AttackChains"));
+const PentesterAI = lazy(() => import("./pages/PentesterAI"));
 
 // Features
 const CyberIntel = lazy(() => import("./pages/CyberIntel"));
@@ -342,6 +343,7 @@ function App() {
                   <Route path="/mentorship" element={<MentorshipHub />} />
                   <Route path="/bug-bounty" element={<BugBountyHub />} />
                   <Route path="/wiki" element={<WikiHub />} />
+                  <Route path="/pentester-ai" element={<PentesterAI />} />
                   <Route path="/assessments" element={<SkillAssessment />} />
                   <Route path="/activity" element={<ActivityFeed />} />
                   <Route path="/profile" element={<UserProfile />} />

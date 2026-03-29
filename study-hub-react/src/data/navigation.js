@@ -45,6 +45,7 @@ import {
   Newspaper,
   MessageCircle,
   Edit,
+  Zap as ZapIcon,
 } from "lucide-react";
 
 export const navigationConfig = {
@@ -56,6 +57,14 @@ export const navigationConfig = {
       labelAr: "لوحة التحكم",
       icon: LayoutDashboard,
       path: "/",
+    },
+    {
+      id: "pentester-ai",
+      label: "AI Pentester",
+      labelAr: "مساعد الاختبار الأمني",
+      icon: Bot,
+      path: "/pentester-ai",
+      badge: "NEW",
     },
     {
       id: "second-brain",
