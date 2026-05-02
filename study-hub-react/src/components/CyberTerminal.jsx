@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
-import { Terminal as TerminalIcon, Maximize2, Minimize2, Power, Wifi, ShieldCheck } from 'lucide-react';
+import { Terminal as TerminalIcon, Maximize2, Minimize2, Power } from 'lucide-react';
 import '@xterm/xterm/css/xterm.css';
 import { io } from 'socket.io-client';
 import { useAppContext } from '../context/AppContext';
 
 const CyberTerminal = ({
     initialHeight = "400px",
-    title = "KALI-LINUX-SANDBOX [ROOT]",
+    title = "LINUX TOOLING SHELL",
     isConnected = false,
     labId,
     userId = 1
@@ -30,7 +30,7 @@ const CyberTerminal = ({
         });
 
         socket.on('connect', () => {
-            term.writeln('\x1b[1;32m✓ ROOT ACCESS GRANTED\x1b[0m');
+            term.writeln('\x1b[1;32m✓ Terminal session connected\x1b[0m');
             term.write('\r\n');
         });
 
@@ -43,7 +43,7 @@ const CyberTerminal = ({
         });
 
         socket.on('disconnect', () => {
-            term.writeln('\r\n\x1b[1;31m✖ SESSION TERMINATED\x1b[0m');
+            term.writeln('\r\n\x1b[1;31m✖ Session disconnected\x1b[0m');
         });
 
         // Handle resize
@@ -84,15 +84,31 @@ const CyberTerminal = ({
 
         const fitAddon = new FitAddon();
         term.loadAddon(fitAddon);
-        term.open(terminalRef.current);
-        fitAddon.fit();
+        
+        // Use requestAnimationFrame to ensure DOM is ready before opening/fitting
+        requestAnimationFrame(() => {
+            if (terminalRef.current && term) {
+                try {
+                    term.open(terminalRef.current);
+                    
+                    // Small delay to ensure the container is sized
+                    setTimeout(() => {
+                        if (fitAddon && term && !term._disposed) {
+                            fitAddon.fit();
+                        }
+                    }, 0);
+                } catch (e) {
+                    console.warn('Terminal initialization failed:', e);
+                }
+            }
+        });
 
         xtermRef.current = term;
         fitAddonRef.current = fitAddon;
 
         // Initial Banner
-        term.writeln('\x1b[1;32m⚡ NEURAL LINK ESTABLISHED ⚡\x1b[0m');
-        term.writeln('Initializing secure shell connection...');
+        term.writeln('\x1b[1;32m⚡ Terminal ready\x1b[0m');
+        term.writeln('Waiting for active lab session...');
 
         // Connect to WebSocket if labId is provided and we are "connected" (lab running)
         if (isConnected && labId) {
@@ -108,11 +124,22 @@ const CyberTerminal = ({
 
     // Handle maximized state resize
     useEffect(() => {
-        if (fitAddonRef.current) {
-            setTimeout(() => {
-                fitAddonRef.current.fit();
+        let timeoutId;
+        if (fitAddonRef.current && xtermRef.current) {
+            timeoutId = setTimeout(() => {
+                // Defensive check to ensure terminal is still active and attached
+                if (fitAddonRef.current && xtermRef.current) {
+                    try {
+                        fitAddonRef.current.fit();
+                    } catch (e) {
+                        console.warn('Terminal fit failed:', e);
+                    }
+                }
             }, 300); // Wait for transition
         }
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+        };
     }, [isMaximized]);
 
     return (
@@ -155,10 +182,10 @@ const CyberTerminal = ({
             <div className="px-4 py-1 bg-white/5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-gray-500">
                 <div className="flex items-center gap-4">
                     <span>STATUS: {isConnected ? 'ONLINE' : 'OFFLINE'}</span>
-                    <span>LATENCY: 24ms</span>
+                    <span>MODE: {isConnected ? 'LIVE' : 'DEMO'}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                    <span>ENCRYPTION: AES-256</span>
+                    <span>TRANSPORT: WebSocket</span>
                     <span>SESSION: {sessionId}</span>
                 </div>
             </div>

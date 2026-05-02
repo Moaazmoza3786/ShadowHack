@@ -1,0 +1,55 @@
+# Metasploit Deep Dive
+
+It is more than just exploits. It is an entire ecosystem.
+
+## Key Modules
+
+1.  **Exploit:** `exploit/windows/smb/ms17_010_eternalblue`
+2.  **Payload:** `windows/x64/meterpreter/reverse_tcp`
+3.  **Auxiliary:** `auxiliary/scanner/smb/smb_version` (Scanning without hacking).
+4.  **Post:** `post/multi/recon/local_exploit_suggester`.
+
+## Meterpreter
+
+The advanced payload. It lives in memory.
+*   `sysinfo`: System info.
+*   `hashdump`: Dump password hashes.
+*   `upload` / `download`: Move files.
+*   `shell`: Drop to a standard CLI.
+
+## Lab: The Handler
+
+You successfully exploited a machine. You are in a Meterpreter session.
+Run `sysinfo` to identify the target.
+
+<TerminalWindow 
+  cmd="meterpreter > sysinfo" 
+  output="Computer        : DESKTOP-LAB1
+OS              : Windows 10 (10.0 Build 19041).
+Architecture    : x64
+System Language : en_US
+Domain          : WORKGROUP
+Logged On Users : 2
+Meterpreter     : x64/windows
+Flag            : BL{M3t3rpr3t3r_R0cks}" 
+/>
+
+<Quiz 
+  question="Which Metasploit payload type resides entirely in memory and is hard to detect?"
+  options={[
+    "Meterpreter",
+    "Netcat Reverse Shell",
+    "Bind Shell",
+    "Staged Shell"
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag found from the sysinfo command?"
+  options={[
+    "BL{M3t3rpr3t3r_R0cks}",
+    "BL{M5F_C0nsole}",
+    "Windows 10",
+    "DESKTOP-LAB1"
+  ]}
+/>

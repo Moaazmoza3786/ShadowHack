@@ -37,6 +37,10 @@ feedparser>=6.0.10
 
 # AI Integration (Groq)
 groq>=0.4.2
+aiohttp>=3.9.1
+semver>=3.0.2
+markdown>=3.4.1
+weasyprint>=60.0
 
 # PostgreSQL Driver (for Render production)
 psycopg2-binary>=2.9.10

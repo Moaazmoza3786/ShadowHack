@@ -1,0 +1,204 @@
+---
+title: Wireshark — Network Traffic Analysis
+description: Capturing and analyzing network packets to uncover secrets.
+---
+
+# Wireshark — Network Traffic Analysis
+
+Wireshark is the world's most popular network protocol analyzer. It captures live network traffic and lets you inspect every packet in detail. For penetration testers, it's essential for understanding protocols, capturing credentials, and analyzing malware behavior.
+
+## Core Concepts
+
+### Packets and Frames
+Every communication on a network is broken into **packets**. Wireshark captures these at the network interface level and dissects them layer by layer (Ethernet → IP → TCP → HTTP).
+
+### Capture vs. Display Filters
+- **Capture filters** (BPF syntax): Applied during capture — only matching packets are saved
+- **Display filters** (Wireshark syntax): Applied after capture — filter what you see without losing data
+
+## Essential Display Filters
+
+```
+# Filter by protocol
+http
+dns
+ftp
+ssh
+tcp
+udp
+icmp
+arp
+
+# Filter by IP
+ip.addr == 10.10.10.5          # Source OR destination
+ip.src == 10.10.10.5           # Source only
+ip.dst == 10.10.10.5           # Destination only
+
+# Filter by port
+tcp.port == 80
+tcp.port == 443
+udp.port == 53
+
+# Filter by content
+http.request.method == "POST"
+http contains "password"
+dns.qry.name contains "google"
+
+# Combine filters
+ip.addr == 10.10.10.5 && tcp.port == 80
+http.request.method == "POST" || http.request.method == "GET"
+!(arp || dns)                  # Exclude noise
+```
+
+## Finding Credentials in Traffic
+
+### HTTP Basic Auth
+```
+Filter: http.authorization
+```
+Look for `Authorization: Basic` headers. The value is base64-encoded `username:password`.
+
+```bash
+echo "YWRtaW46cGFzc3dvcmQxMjM=" | base64 -d
+# admin:password123
+```
+
+### FTP Credentials (Cleartext)
+```
+Filter: ftp
+```
+FTP sends credentials in plaintext. Look for `USER` and `PASS` commands in the packet list.
+
+### Telnet (Cleartext)
+```
+Filter: telnet
+```
+Follow the TCP stream (Right-click → Follow → TCP Stream) to see the entire session including credentials.
+
+### HTTP Form Submissions
+```
+Filter: http.request.method == "POST"
+```
+Click on a POST packet → Expand "HTML Form URL Encoded" in the packet details to see submitted form data including passwords.
+
+<TerminalWindow
+  title="Extracting HTTP Credentials"
+  command="tshark -r capture.pcap -Y 'http.request.method==POST' -T fields -e http.file_data"
+  output="username=admin&password=SuperSecret123&submit=Login"
+/>
+
+## Following Streams
+
+One of Wireshark's most powerful features — reassembles a complete conversation:
+
+1. Right-click any packet in a conversation
+2. Select **Follow → TCP Stream** (or UDP/HTTP/TLS)
+3. See the complete exchange in human-readable form
+
+This is invaluable for:
+- Reading HTTP requests/responses
+- Seeing FTP/Telnet sessions
+- Extracting transferred files
+
+## Extracting Files from Captures
+
+### HTTP Objects
+`File → Export Objects → HTTP`
+
+Wireshark can extract all files transferred over HTTP — images, documents, executables, etc.
+
+### Manual Extraction
+For other protocols, follow the stream and save the raw bytes.
+
+## TShark — Command-Line Wireshark
+
+```bash
+# Capture on interface
+tshark -i eth0 -w capture.pcap
+
+# Read a capture file
+tshark -r capture.pcap
+
+# Apply display filter
+tshark -r capture.pcap -Y "http.request.method==POST"
+
+# Extract specific fields
+tshark -r capture.pcap -Y "dns" -T fields -e dns.qry.name
+
+# Count packets by protocol
+tshark -r capture.pcap -q -z io,phs
+
+# Extract HTTP credentials
+tshark -r capture.pcap -Y "http.authbasic" -T fields -e http.authbasic
+```
+
+## Capture Filters (BPF Syntax)
+
+```
+# Capture only HTTP traffic
+port 80
+
+# Capture traffic to/from specific host
+host 10.10.10.5
+
+# Capture only TCP
+tcp
+
+# Capture specific subnet
+net 10.10.10.0/24
+
+# Exclude your own traffic
+not host 10.10.14.5
+
+# Capture DNS
+port 53
+```
+
+## Practical Scenarios
+
+### Scenario 1: Credential Harvesting on a Compromised Network
+```
+1. Start capture on the network interface
+2. Filter: http.request.method == "POST" || ftp || telnet
+3. Follow streams to extract credentials
+4. Look for Authorization headers in HTTP traffic
+```
+
+### Scenario 2: Malware Traffic Analysis
+```
+1. Open suspicious .pcap file
+2. Filter: !(arp || dns || broadcast)  → Remove noise
+3. Look for unusual destinations: Statistics → Endpoints
+4. Check for C2 beaconing: regular intervals to same IP
+5. Follow HTTP streams to see commands/data
+```
+
+### Scenario 3: Network Reconnaissance
+```
+1. Capture traffic passively
+2. Statistics → Protocol Hierarchy → See what's running
+3. Statistics → Conversations → See who's talking to whom
+4. Filter: arp → See all hosts on the local network
+```
+
+<InfoBox type="important">
+In a real penetration test, capturing network traffic requires explicit written authorization. Unauthorized packet capture is illegal in most jurisdictions.
+</InfoBox>
+
+<Quiz
+  question="What Wireshark filter shows only POST requests?"
+  answer="http.request.method == POST"
+  hint="Filter by the HTTP method field."
+/>
+
+<Quiz
+  question="How are HTTP Basic Auth credentials encoded?"
+  answer="Base64"
+  hint="The Authorization header contains 'Basic ' followed by base64(username:password)."
+/>
+
+<Quiz
+  question="What Wireshark feature reassembles a complete TCP conversation?"
+  answer="Follow TCP Stream"
+  hint="Right-click a packet → Follow → TCP Stream."
+/>

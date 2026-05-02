@@ -1,0 +1,50 @@
+---
+title: File Permissions
+description: Understanding read, write, and execute.
+---
+
+# File Permissions
+
+Security in Linux is built around permissions. Every file has an owner and a group, and specific permissions for each.
+
+## Understanding `ls -l`
+
+When you run `ls -l`, you see something like this:
+`-rwxr-xr--`
+
+- The first character is the type (`-` for file, `d` for directory).
+- The next 3 are for the **Owner** (User).
+- The next 3 are for the **Group**.
+- The last 3 are for **Others**.
+
+### Permission Types
+- `r`: Read (4)
+- `w`: Write (2)
+- `x`: Execute (1)
+
+## Changing Permissions
+
+We use the `chmod` command to change permissions.
+`chmod 755 file.txt` (Owner: rwx, Group: r-x, Others: r-x).
+
+<TerminalWindow 
+  title="Checking Permissions" 
+  command="ls -l /etc/shadow" 
+  output="-rw-r----- 1 root shadow 1240 Jan 12 10:00 /etc/shadow" 
+/>
+
+<InfoBox type="warning">
+The `/etc/shadow` file contains hashed passwords. Only root should be able to read it!
+</InfoBox>
+
+<Quiz 
+  question="What is the numeric value for 'rwx' permissions?" 
+  answer="7" 
+  hint="4 (read) + 2 (write) + 1 (execute) = ?" 
+/>
+
+<Quiz 
+  question="Which command is used to change the owner of a file?" 
+  answer="chown" 
+  hint="Short for 'change owner'." 
+/>

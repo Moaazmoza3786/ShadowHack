@@ -1,0 +1,41 @@
+---
+title: Attacking Services (FTP, SSH, HTTP)
+description: Common techniques for compromising network services.
+---
+
+# Attacking Services
+
+Once you've identified open ports and running services, the next step is to look for vulnerabilities or weak configurations.
+
+## Common Attacks
+
+### 1. Anonymous Login (FTP)
+Many FTP servers allow users to log in with the username `anonymous` and any password. This can lead to sensitive information disclosure.
+
+### 2. Brute Forcing (SSH)
+If you have a valid username, you can attempt to guess the password using tools like **Hydra**.
+
+### 3. Exploiting Known Vulnerabilities (HTTP)
+Web servers often run outdated software with known CVEs.
+
+<TerminalWindow 
+  title="Brute Forcing SSH with Hydra" 
+  command="hydra -l root -P passwords.txt ssh://10.10.10.5" 
+  output="Hydra v9.1 (c) 2020 by van Hauser/THC\n[22][ssh] host: 10.10.10.5   login: root   password: password123" 
+/>
+
+<InfoBox type="warning">
+Brute forcing is noisy and can lock out accounts. Always try default credentials first!
+</InfoBox>
+
+<Quiz 
+  question="Which tool is commonly used for fast network logon cracking?" 
+  answer="Hydra" 
+  hint="Named after a multi-headed monster." 
+/>
+
+<Quiz 
+  question="What is the default username for anonymous FTP access?" 
+  answer="anonymous" 
+  hint="It's in the name." 
+/>

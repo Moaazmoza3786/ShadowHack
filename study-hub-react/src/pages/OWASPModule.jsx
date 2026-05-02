@@ -7,7 +7,7 @@ import { owaspEducationData } from '../data/owasp-data';
 const OWASPModule = () => {
     const { id, view } = useParams();
     const navigate = useNavigate();
-    const vuln = owaspEducationData[id];
+    const vuln = owaspEducationData[id?.toLowerCase()];
 
     if (!vuln) {
         return (

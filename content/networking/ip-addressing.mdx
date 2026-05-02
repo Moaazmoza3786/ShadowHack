@@ -1,0 +1,37 @@
+---
+title: IP Addresses & Subnetting
+description: How devices are identified on a network.
+---
+
+# IP Addresses & Subnetting
+
+An **IP address** (Internet Protocol address) is a numerical label assigned to each device connected to a computer network.
+
+## IPv4 vs IPv6
+- **IPv4:** 32-bit address, usually written in four parts (e.g., `192.168.1.1`).
+- **IPv6:** 128-bit address, written in hexadecimal (e.g., `2001:0db8:85a3:0000:0000:8a2e:0370:7334`).
+
+## Subnetting
+
+Subnetting is the practice of dividing a network into two or more smaller networks (subnets). This is done for security and performance reasons.
+
+### The Subnet Mask
+A subnet mask (like `255.255.255.0`) identifies which part of the IP address is the network address and which part is the host address.
+
+<TerminalWindow 
+  title="Checking Local IP" 
+  command="ipconfig /all" 
+  output="Ethernet adapter Ethernet:\n   IPv4 Address. . . . . . . . . . . : 192.168.1.15\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0" 
+/>
+
+<Quiz 
+  question="How many bits are in an IPv4 address?" 
+  answer="32" 
+  hint="Think 4 octets of 8 bits each." 
+/>
+
+<Quiz 
+  question="What is the default subnet mask for a Class C network?" 
+  answer="255.255.255.0" 
+  hint="It covers the first three octets." 
+/>

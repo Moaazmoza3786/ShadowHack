@@ -1,0 +1,43 @@
+---
+title: Text Manipulation (grep/sed/awk)
+description: Sifting through data like a pro.
+---
+
+# Text Manipulation
+
+In Linux, everything is text. Being able to search, filter, and modify text is a superpower.
+
+## The Power of Grep
+
+`grep` searches for patterns in files.
+`grep "error" /var/log/syslog`
+
+### Piping (`|`)
+You can send the output of one command to another using the pipe.
+`cat file.txt | grep "admin"`
+
+## Sed & Awk
+- **Sed:** Stream editor for filtering and transforming text.
+- **Awk:** A powerful programming language for pattern scanning and processing.
+
+<TerminalWindow 
+  title="Filtering Users" 
+  command="cat /etc/passwd | cut -d: -f1 | grep 'root'" 
+  output="root" 
+/>
+
+<InfoBox type="tip">
+Use `grep -i` for case-insensitive searches and `grep -v` to invert the match (show lines that DON'T match).
+</InfoBox>
+
+<Quiz 
+  question="Which command is used to search for a string within a file?" 
+  answer="grep" 
+  hint="Global Regular Expression Print." 
+/>
+
+<Quiz 
+  question="What character is used to 'pipe' the output of one command to another?" 
+  answer="|" 
+  hint="It's a vertical bar." 
+/>

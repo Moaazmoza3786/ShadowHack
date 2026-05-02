@@ -65,7 +65,7 @@ const OWASPRange = () => {
 
     React.useEffect(() => {
         fetchCodespaces();
-        const interval = setInterval(fetchCodespaces, 10000);
+        const interval = setInterval(fetchCodespaces, 60000); // 60s instead of 10s
         return () => clearInterval(interval);
     }, []);
 

@@ -1,12 +1,14 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import {
-    Bell, Check, CheckCheck, X, Settings,
+     Bell, Check, CheckCheck, X, Settings,
     Trophy, Users, Target, Zap, MessageSquare
 } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 import './NotificationCenter.css';
 
 const NotificationCenter = ({ userId = 1 }) => {
+    const { apiUrl } = useAppContext();
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +16,7 @@ const NotificationCenter = ({ userId = 1 }) => {
 
     const fetchNotifications = React.useCallback(async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/notifications/user/${userId}`);
+            const res = await fetch(`${apiUrl}/notifications/user/${userId}`);
             const data = await res.json();
             if (data.success) {
                 setNotifications(data.notifications);
@@ -23,14 +25,14 @@ const NotificationCenter = ({ userId = 1 }) => {
         } catch (err) {
             console.error(err);
         }
-    }, [userId]);
+    }, [apiUrl, userId]);
 
     useEffect(() => {
         fetchNotifications();
         // Poll for new notifications every 30 seconds
         const interval = setInterval(fetchNotifications, 30000);
         return () => clearInterval(interval);
-    }, [userId, fetchNotifications]);
+    }, [fetchNotifications]);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -44,7 +46,7 @@ const NotificationCenter = ({ userId = 1 }) => {
 
     const markAsRead = async (id) => {
         try {
-            await fetch(`http://localhost:5000/api/notifications/${id}/read`, { method: 'POST' });
+            await fetch(`${apiUrl}/notifications/${id}/read`, { method: 'POST' });
             setNotifications(prev =>
                 prev.map(n => n.id === id ? { ...n, is_read: true } : n)
             );
@@ -56,7 +58,7 @@ const NotificationCenter = ({ userId = 1 }) => {
 
     const markAllRead = async () => {
         try {
-            await fetch(`http://localhost:5000/api/notifications/user/${userId}/read-all`, { method: 'POST' });
+            await fetch(`${apiUrl}/notifications/user/${userId}/read-all`, { method: 'POST' });
             setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
             setUnreadCount(0);
         } catch (err) {

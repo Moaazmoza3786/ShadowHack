@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { ctfRooms, achievements } from '../data/ctf-rooms';
 import {
@@ -128,12 +128,14 @@ const CTF = () => {
     const [activeCodespaces, setActiveCodespaces] = useState([]);
     const [notification, setNotification] = useState(null);
 
-    const toast = (message, type = 'info') => {
+    // To satisfy linter and console, we'll keep these for now
+    // or we could use them in the UI. 
+    const toast = useCallback((message, type = 'info') => {
         setNotification({ message, type });
         setTimeout(() => setNotification(null), 3000);
-    };
+    }, []);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const campaignsRes = await fetch('/api/tools/campaigns');
             const campaignsData = await campaignsRes.json();
@@ -147,13 +149,18 @@ const CTF = () => {
         } catch (err) {
             console.error("Failed to fetch CTF data:", err);
         }
-    };
+    }, []);
 
     React.useEffect(() => {
         fetchData();
         const interval = setInterval(fetchData, 10000);
         return () => clearInterval(interval);
-    }, []);
+    }, [fetchData]);
+
+    // Use activeCodespaces somewhere to avoid lint error if needed, 
+    // or just acknowledge it's for future use.
+    // console.log('Active Codespaces:', activeCodespaces);
+    // console.log('Toast function available:', !!toast);
 
     const categories = [
         { id: 'web', label: 'Web Exploit', icon: TerminalIcon },

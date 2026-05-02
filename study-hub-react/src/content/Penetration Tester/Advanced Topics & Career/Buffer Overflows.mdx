@@ -1,0 +1,64 @@
+# Buffer Overflows
+
+The dark arts. Memory corruption.
+This happens when a program writes more data to a buffer than it can hold, overwriting adjacent memory.
+
+## The Stack
+
+```mermaid
+graph TD
+    A[Buffer Space (AAAA...)]
+    B[EBP (Base Pointer)]
+    C[EIP (Instruction Pointer)]
+
+    A -- "Overflows into" --> B
+    B -- "Overflows into" --> C
+```
+
+If we control **EIP**, we control execution. We point it to our Shellcode.
+
+## The Process (OSCP Style)
+1.  **Spiking:** Find the crash.
+2.  **Fuzzing:** Find the exact length of the crash.
+3.  **Offset:** Find the exact EIP location.
+4.  **Bad Chars:** Identify characters that break the exploit (null byte `\x00`).
+5.  **JMP ESP:** Find a return address.
+6.  **Shellcode:** Generate malicious code.
+7.  **Exploit:** Send payload -> Get Shell.
+
+## Lab: The Crash
+
+Target: `Brainpan.exe`
+We send 600 A's. The application crashes.
+EIP is overwritten with `41414141` (Hex for AAAA).
+
+<TerminalWindow 
+  cmd="./exploit.py target_ip" 
+  output="[*] Sending evil buffer...
+[*] Done.
+[+] Receiver listening on 4444...
+[+] Connection received!
+whoami
+system
+Flag: BL{EIP_Ownd_Stack_Sm4sh}" 
+/>
+
+<Quiz 
+  question="Which CPU register points to the next instruction to be executed?"
+  options={[
+    "EAX",
+    "ESP",
+    "EIP",
+    "EBP"
+  ]}
+/>
+
+<Quiz 
+  question="What is a 'Bad Character' in buffer overflows?"
+  options={[
+    "A character that breaks the shellcode execution (e.g., null byte)",
+    "A profane word in the code.",
+    "A character that is not ASCII.",
+    "A hexadecimal value above 0xFF."
+  ]}
+/>

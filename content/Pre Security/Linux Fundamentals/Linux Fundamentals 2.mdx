@@ -1,0 +1,65 @@
+# Linux Fundamentals 2: Manipulation
+
+Now that you can move around, it's time to learn how to manipulate the environment.
+In this module, we cover searching, copying, moving, and deleting.
+
+## The Toolkit
+
+| Command | Usage | Description |
+| :--- | :--- | :--- |
+| `grep` | `grep "text" file` | Search for a specific string inside a file. |
+| `cp` | `cp source dest` | Copy a file or directory. |
+| `mv` | `mv source dest` | Move (or rename) a file. |
+| `rm` | `rm file` | Delete (Remove) a file. **Permanent.** |
+
+## 1. Searching with `grep`
+
+`grep` is powerful. It allows you to sift through massive log files to find the one line you need.
+
+<CodeBlock language="bash">
+# Search for "error" in application.log
+grep "error" application.log
+
+# Case insensitive search
+grep -i "Error" application.log
+</CodeBlock>
+
+## 2. Copying and Moving (`cp`, `mv`)
+
+<TerminalWindow 
+  cmd="cp secret.txt backup_secret.txt && mv backup_secret.txt /tmp/" 
+  output="" 
+/>
+
+*   `cp`: Creates a duplicate.
+*   `mv`: Moves the original (or renames it if the destination is a filename).
+
+## 3. The Dangerous `rm`
+
+There is no "Trash Bin" in the CLI. When you `rm` a file, it is gone.
+
+> [!CAUTION]
+> Be extremely careful with `rm -rf`. This recursively modifies and forces deletion of directories. Running this on `/` (root) will destroy the operating system.
+
+---
+
+## Mission: The Needle in the Haystack
+
+We have intercepted a communication log file `server_logs.txt`. It contains thousands of entries.
+The attacker left a trace referencing "BreachLabs".
+Find the line containing "BreachLabs" to get the flag.
+
+<CodeBlock language="bash">
+user@breachlabs:~$ grep "BreachLabs" server_logs.txt
+[2024-01-11 14:02:11] INFO: Connection established to remote host BL{Gr3p_M4st3r_X}
+</CodeBlock>
+
+<Quiz 
+  question="What flag was hidden in the logs?"
+  options={[
+    "BL{Linux_Logs_Secure}",
+    "BL{Gr3p_M4st3r_X}",
+    "BL{Rm_Rf_Danger}",
+    "Log_Entry_Found"
+  ]}
+/>

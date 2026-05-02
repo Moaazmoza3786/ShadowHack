@@ -7,18 +7,24 @@
     "dev": "vite",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
     "lint": "cross-env NODE_OPTIONS=--max-old-space-size=4096 eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest --run"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
+    "axios": "^1.14.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.7",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-force-graph-2d": "^1.29.1",
+    "react-globe.gl": "^2.37.1",
     "react-markdown": "^10.1.0",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -37,6 +43,7 @@
     "postcss": "^8.5.6",
     "react-router-dom": "^7.13.0",
     "tailwindcss": "^4.1.18",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vitest": "^4.1.2"
   }
 }

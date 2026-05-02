@@ -4,7 +4,7 @@ Phase 16: Interactive Web Terminal
 Bridges WebSocket events to Docker exec streams.
 """
 
-from flask import request
+from flask import request, copy_current_request_context
 from flask_socketio import Namespace, emit, disconnect
 from docker_lab_manager import get_docker_manager, logger
 import threading
@@ -25,6 +25,7 @@ class ToolsNamespace(Namespace):
         cmd = data.get('cmd')
         sid = request.sid
         
+        @copy_current_request_context
         def stream_output(text):
             emit('tool_output', {'data': text}, room=sid)
 
@@ -43,6 +44,7 @@ class ToolsNamespace(Namespace):
         target = data.get('target')
         sid = request.sid
 
+        @copy_current_request_context
         def stream_output(text):
             emit('chain_output', {'data': text}, room=sid)
 

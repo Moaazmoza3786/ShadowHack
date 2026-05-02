@@ -1,0 +1,52 @@
+# Reporting & Documentation
+
+The Report **is** the product.
+You can hack the Pentagon, but if you can't explain how to fix it, you failed.
+
+## Structure of a Report
+
+1.  **Executive Summary:** Non-technical. For the CEO. "We found X critical issues. Risk is High."
+2.  **Technical Summary:** For the IT Manager. Overview of findings.
+3.  **Vulnerability Findings:** The meat.
+    *   **Description:** What is it?
+    *   **Evidence:** Screenshots, Logs, HTTP Requests.
+    *   **Remediation:** How to fix it (Step-by-step).
+    *   **Risk Rating:** CVSS Score (Critical, High, Medium, Low).
+4.  **Appendices:** Raw scan data.
+
+## Note Taking (While Hacking)
+
+Don't wait until the end to write notes.
+Use tools like **CherryTree**, **Notion**, or **Obsidian**.
+
+*   Keep screenshots of *everything*.
+*   Log every command you run (use `script` command in Linux).
+
+## Lab: Formatting a Finding
+
+Review this finding snippet.
+
+> **Title:** SQL Injection in Login Page
+> **Impact:** Critical
+> **Description:** The 'username' parameter is vulnerable to SQLi.
+> **Proof:** `admin' OR 1=1--` logged us in as Administrator.
+
+<Quiz 
+  question="Which section of the report is written for non-technical stakeholders?"
+  options={[
+    "Technical Findings",
+    "Appendices",
+    "Executive Summary",
+    "Methodology"
+  ]}
+/>
+
+<Quiz 
+  question="Why is logging your commands important?"
+  options={[
+    "To brag to friends.",
+    "To re-run them if they fail.",
+    "For evidence and to retrace your steps.",
+    "It uses less disk space."
+  ]}
+/>

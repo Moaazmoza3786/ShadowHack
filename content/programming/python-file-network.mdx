@@ -1,0 +1,256 @@
+---
+title: Python File & Network I/O
+description: Reading files, making HTTP requests, and handling network connections.
+---
+
+# Python File & Network I/O
+
+Penetration testing tools constantly read wordlists, send HTTP requests, and open network connections. Mastering I/O in Python is essential.
+
+## Network Sockets
+
+The `socket` module is the foundation of all network tools.
+
+```python
+import socket
+
+# TCP connection (most common)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.settimeout(3)
+
+try:
+    sock.connect(("10.10.10.5", 80))
+    print("[+] Connected!")
+
+    # Send data
+    sock.send(b"GET / HTTP/1.0\r\nHost: 10.10.10.5\r\n\r\n")
+
+    # Receive response
+    response = sock.recv(4096)
+    print(response.decode("utf-8", errors="ignore"))
+
+finally:
+    sock.close()
+```
+
+### Banner Grabbing
+
+```python
+import socket
+
+def grab_banner(ip, port, timeout=2):
+    """Grab service banner from an open port."""
+    try:
+        sock = socket.socket()
+        sock.settimeout(timeout)
+        sock.connect((ip, port))
+
+        # Some services send banner immediately
+        try:
+            banner = sock.recv(1024)
+            return banner.decode("utf-8", errors="ignore").strip()
+        except socket.timeout:
+            pass
+
+        # HTTP services need a request
+        sock.send(b"HEAD / HTTP/1.0\r\n\r\n")
+        banner = sock.recv(1024)
+        return banner.decode("utf-8", errors="ignore").strip()
+
+    except Exception as e:
+        return f"Error: {e}"
+    finally:
+        sock.close()
+
+# Test it
+for port in [21, 22, 80, 443]:
+    banner = grab_banner("10.10.10.5", port)
+    if banner:
+        print(f"Port {port}: {banner[:80]}")
+```
+
+### Netcat-like Listener
+
+```python
+import socket
+import threading
+
+def handle_client(conn, addr):
+    print(f"[+] Connection from {addr[0]}:{addr[1]}")
+    while True:
+        try:
+            data = conn.recv(1024)
+            if not data:
+                break
+            print(f"Received: {data.decode()}")
+            conn.send(b"ACK\n")
+        except Exception:
+            break
+    conn.close()
+
+def start_listener(port=4444):
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server.bind(("0.0.0.0", port))
+    server.listen(5)
+    print(f"[*] Listening on port {port}...")
+
+    while True:
+        conn, addr = server.accept()
+        t = threading.Thread(target=handle_client, args=(conn, addr))
+        t.daemon = True
+        t.start()
+
+start_listener(4444)
+```
+
+## HTTP Requests with `requests`
+
+The `requests` library makes HTTP interactions simple.
+
+```python
+import requests
+
+# Disable SSL warnings (for self-signed certs)
+import urllib3
+urllib3.disable_warnings()
+
+# GET request
+r = requests.get("http://10.10.10.5/", timeout=5)
+print(r.status_code)    # 200
+print(r.headers)        # Response headers
+print(r.text[:500])     # Response body
+
+# POST request (login form)
+data = {"username": "admin", "password": "password123"}
+r = requests.post("http://10.10.10.5/login", data=data, timeout=5)
+
+# With custom headers
+headers = {
+    "User-Agent": "Mozilla/5.0",
+    "Cookie": "session=abc123",
+    "X-Forwarded-For": "127.0.0.1"
+}
+r = requests.get("http://10.10.10.5/admin", headers=headers)
+
+# Follow redirects (default: True)
+r = requests.get("http://10.10.10.5/", allow_redirects=False)
+
+# HTTPS with self-signed cert
+r = requests.get("https://10.10.10.5/", verify=False)
+
+# Use a proxy (route through Burp Suite)
+proxies = {"http": "http://127.0.0.1:8080", "https": "http://127.0.0.1:8080"}
+r = requests.get("http://10.10.10.5/", proxies=proxies, verify=False)
+```
+
+### Web Directory Fuzzer
+
+```python
+import requests
+import sys
+from concurrent.futures import ThreadPoolExecutor
+
+def check_path(base_url, path, found):
+    url = f"{base_url}/{path.strip()}"
+    try:
+        r = requests.get(url, timeout=3, allow_redirects=False)
+        if r.status_code not in [404, 400, 403]:
+            found.append((r.status_code, url))
+            print(f"[{r.status_code}] {url}")
+    except Exception:
+        pass
+
+def fuzz_dirs(target, wordlist_path, threads=20):
+    with open(wordlist_path, "r", errors="ignore") as f:
+        words = f.read().splitlines()
+
+    found = []
+    print(f"[*] Fuzzing {target} with {len(words)} words...")
+
+    with ThreadPoolExecutor(max_workers=threads) as executor:
+        for word in words:
+            executor.submit(check_path, target, word, found)
+
+    print(f"\n[+] Found {len(found)} paths")
+    return found
+
+# Usage
+fuzz_dirs("http://10.10.10.5", "/usr/share/wordlists/dirb/common.txt")
+```
+
+<TerminalWindow
+  title="Directory Fuzzer Output"
+  command="python3 fuzzer.py"
+  output="[*] Fuzzing http://10.10.10.5 with 4614 words...
+[200] http://10.10.10.5/index.php
+[200] http://10.10.10.5/login.php
+[301] http://10.10.10.5/admin
+[200] http://10.10.10.5/uploads
+[403] http://10.10.10.5/.htaccess
+
+[+] Found 5 paths"
+/>
+
+## Working with Files
+
+### Reading Wordlists Efficiently
+
+```python
+# Small wordlist — load all into memory
+with open("rockyou.txt", "r", encoding="latin-1") as f:
+    passwords = [line.strip() for line in f if line.strip()]
+
+# Large wordlist — iterate line by line (memory efficient)
+def wordlist_generator(path):
+    with open(path, "r", encoding="latin-1", errors="ignore") as f:
+        for line in f:
+            word = line.strip()
+            if word:
+                yield word
+
+for password in wordlist_generator("/usr/share/wordlists/rockyou.txt"):
+    if try_login(password):
+        print(f"[+] Password found: {password}")
+        break
+```
+
+### Saving Results
+
+```python
+import json
+from datetime import datetime
+
+results = {
+    "target": "10.10.10.5",
+    "scan_time": datetime.now().isoformat(),
+    "open_ports": [21, 22, 80, 445],
+    "findings": [
+        {"port": 21, "service": "FTP", "note": "Anonymous login allowed"},
+        {"port": 80, "service": "HTTP", "note": "Apache 2.4.29 - outdated"}
+    ]
+}
+
+# Save as JSON
+with open("scan_results.json", "w") as f:
+    json.dump(results, f, indent=2)
+
+# Save as text report
+with open("report.txt", "w") as f:
+    f.write(f"Scan Report — {results['target']}\n")
+    f.write("=" * 40 + "\n")
+    for finding in results["findings"]:
+        f.write(f"[!] Port {finding['port']} ({finding['service']}): {finding['note']}\n")
+```
+
+<Quiz
+  question="What requests parameter routes HTTP traffic through Burp Suite?"
+  answer="proxies={'http': 'http://127.0.0.1:8080'}"
+  hint="Set proxies to point to Burp's default listener on port 8080."
+/>
+
+<Quiz
+  question="What does allow_redirects=False do in a requests.get() call?"
+  answer="Prevents following HTTP redirects — you see the 301/302 response directly"
+  hint="Useful for detecting redirects that might indicate authentication or access control."
+/>

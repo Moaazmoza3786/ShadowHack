@@ -1,0 +1,55 @@
+# PT Methodologies
+
+You don't just "hack". You follow a process.
+A methodology ensures you cover all bases and provide consistent results.
+
+## The Standard: PTES (Penetration Testing Execution Standard)
+
+1.  **Pre-engagement Interactions:** Scoping, RoE.
+2.  **Intelligence Gathering (Recon):** OSINT, Scanning.
+3.  **Threat Modeling:** What are we attacking? How?
+4.  **Vulnerability Analysis:** Finding the holes.
+5.  **Exploitation:** Breaking in.
+6.  **Post Exploitation:** Looting, Pivoting, Persistence.
+7.  **Reporting:** Writing it all down.
+
+## The Lifecycle
+
+```mermaid
+graph TD
+    A[Reconnaissance] --> B[Scanning]
+    B --> C[Exploitation]
+    C --> D[Post-Exploitation]
+    D --> E[Reporting]
+    E --> A
+    
+    style A fill:#4caf50,stroke:#333
+    style C fill:#f44336,stroke:#333 (Attacking)
+    style E fill:#2196f3,stroke:#333
+```
+
+## Black, White, and Gray Box
+
+*   **Black Box:** No prior knowledge. Simulates an external attacker.
+*   **White Box:** Full access (source code, diagrams). Simulates an insider or thorough audit.
+*   **Gray Box:** Partial access (user credentials). The most common type of pentest.
+
+<Quiz 
+  question="Which phase involves finding information about the target without touching it?"
+  options={[
+    "Exploitation",
+    "Intelligence Gathering (Recon)",
+    "Reporting",
+    "Post-Exploitation"
+  ]}
+/>
+
+<Quiz 
+  question="You are given user credentials and a network map. What type of test is this?"
+  options={[
+    "Black Box",
+    "White Box",
+    "Gray Box",
+    "Red Team"
+  ]}
+/>

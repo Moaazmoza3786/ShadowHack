@@ -29,7 +29,7 @@ except ImportError:
 api = Blueprint('api', __name__, url_prefix='/api')
 
 # Import AI Manager (Global instance initialized in main.py)
-from ai_manager import groq_manager
+from ai_manager import get_ai_manager
 
 # ==================== SETTINGS ENDPOINTS ====================
 
@@ -77,8 +77,8 @@ def update_settings_config():
             json.dump(current_config, f, indent=4)
             
         # Trigger reload in managers
-        if groq_manager:
-            groq_manager.reload_config()
+        if get_ai_manager():
+            get_ai_manager().reload_config()
             
         return jsonify({'success': True, 'message': 'Configuration saved successfully'})
     except Exception as e:
@@ -95,10 +95,10 @@ def mask_key(key):
 def ai_chat():
     """Generate AI response for Shadow OS Chat"""
     data = request.json
-    if not groq_manager:
+    if not get_ai_manager():
         return jsonify({'success': False, 'error': 'AI not initialized'}), 503
         
-    response = groq_manager.generate_chat_response(
+    response = get_ai_manager().generate_chat_response(
         persona=data.get('persona', 'System'),
         user_message=data.get('message', ''),
         history=data.get('history', [])
@@ -108,50 +108,50 @@ def ai_chat():
 @api.route('/ai/news', methods=['GET'])
 def ai_news():
     """Generate daily AI news"""
-    if not groq_manager:
+    if not get_ai_manager():
         return jsonify({'success': False, 'error': 'AI not initialized'}), 503
         
-    news = groq_manager.generate_news()
+    news = get_ai_manager().generate_news()
     return jsonify({'success': True, 'news': news}) if news else (jsonify({'success': False}), 500)
 
 @api.route('/ai/report', methods=['POST'])
 def ai_report():
     """Generate executive summary for reports"""
     data = request.json
-    if not groq_manager:
+    if not get_ai_manager():
         return jsonify({'success': False, 'error': 'AI not initialized'}), 503
         
-    summary = groq_manager.generate_report(data.get('findings', []))
+    summary = get_ai_manager().generate_report(data.get('findings', []))
     return jsonify({'success': True, 'summary': summary}) if summary else (jsonify({'success': False}), 500)
 
 @api.route('/ai/wiki', methods=['POST'])
 def ai_wiki():
     """Generate wiki content"""
     data = request.json
-    if not groq_manager:
+    if not get_ai_manager():
         return jsonify({'success': False, 'error': 'AI not initialized'}), 503
         
-    content = groq_manager.update_wiki(data.get('topic'))
+    content = get_ai_manager().update_wiki(data.get('topic'))
     return jsonify({'success': True, 'content': content}) if content else (jsonify({'success': False}), 500)
 
 @api.route('/ai/analyze', methods=['POST'])
 def ai_analyze():
     """Analyze code snippet"""
     data = request.json
-    if not groq_manager:
+    if not get_ai_manager():
         return jsonify({'success': False, 'error': 'AI not initialized'}), 503
         
-    analysis = groq_manager.analyze_code(data.get('code'), data.get('language', 'python'))
+    analysis = get_ai_manager().analyze_code(data.get('code'), data.get('language', 'python'))
     return jsonify({'success': True, 'analysis': analysis}) if analysis else (jsonify({'success': False}), 500)
 
 @api.route('/ai/optimize', methods=['POST'])
 def ai_optimize():
     """Optimize/Obfuscate payload"""
     data = request.json
-    if not groq_manager:
+    if not get_ai_manager():
         return jsonify({'success': False, 'error': 'AI not initialized'}), 503
         
-    result = groq_manager.optimize_payload(data.get('payload'))
+    result = get_ai_manager().optimize_payload(data.get('payload'))
     return jsonify({'success': True, 'result': result}) if result else (jsonify({'success': False}), 500)
 
 @api.route('/payloads', methods=['GET'])
@@ -171,20 +171,20 @@ def mutate_payload():
     payload = data.get('payload')
     technique = data.get('technique', 'obfuscation')
     
-    if not groq_manager:
+    if not get_ai_manager():
         return jsonify({'success': False, 'error': 'AI not initialized'}), 503
         
-    result = groq_manager.mutate_payload(payload, technique)
+    result = get_ai_manager().mutate_payload(payload, technique)
     return jsonify({'success': True, 'result': result}) if result else (jsonify({'success': False}), 500)
 
 @api.route('/ai/campaign', methods=['POST'])
 def ai_campaign():
     """Generate campaign scenario"""
     data = request.json
-    if not groq_manager:
+    if not get_ai_manager():
         return jsonify({'success': False, 'error': 'AI not initialized'}), 503
         
-    campaign = groq_manager.generate_campaign(data.get('sector', 'Technology'))
+    campaign = get_ai_manager().generate_campaign(data.get('sector', 'Technology'))
     return jsonify({'success': True, 'campaign': campaign}) if campaign else (jsonify({'success': False}), 500)
 
 
@@ -195,7 +195,7 @@ def ai_security_chat():
     Helps with XSS, SQLi, PrivEsc, API testing, AD attacks, etc.
     """
     data = request.json
-    if not groq_manager:
+    if not get_ai_manager():
         return jsonify({'success': False, 'error': 'AI not initialized'}), 503
     
     message = data.get('message', '')
@@ -205,7 +205,7 @@ def ai_security_chat():
     if not message:
         return jsonify({'success': False, 'error': 'Message is required'}), 400
     
-    response = groq_manager.security_chat(message, context, history)
+    response = get_ai_manager().security_chat(message, context, history)
     
     if response:
         return jsonify({'success': True, 'response': response})

@@ -45,6 +45,8 @@ import {
   Newspaper,
   MessageCircle,
   Edit,
+  Zap as ZapIcon,
+  Workflow,
 } from "lucide-react";
 
 export const navigationConfig = {
@@ -58,19 +60,27 @@ export const navigationConfig = {
       path: "/",
     },
     {
+      id: "pentester-ai",
+      label: "AI Pentester",
+      labelAr: "مساعد الاختبار الأمني",
+      icon: Bot,
+      path: "/pentester-ai",
+      badge: "NEW",
+    },
+    {
+      id: "workflows",
+      label: "Workflows",
+      labelAr: "سير العمل",
+      icon: Workflow,
+      path: "/workflows",
+      badge: "NEW",
+    },
+    {
       id: "second-brain",
       label: "Second Brain",
       labelAr: "العقل الثاني",
       icon: Brain,
       path: "/second-brain",
-    },
-    {
-      id: "social-eng",
-      label: "Social Eng Pro",
-      labelAr: "الهندسة الاجتماعية",
-      icon: MessageCircle,
-      path: "/tools/social-eng",
-      badge: "Pro",
     },
   ],
 
@@ -85,13 +95,13 @@ export const navigationConfig = {
       tabs: [
         {
           id: "offensive",
-          label: "Offensive Labs",
-          labelAr: "المختبرات الهجومية",
+          label: "Offensive Toolkit",
+          labelAr: "أدوات هجومية",
           icon: Zap,
           columns: [
             {
-              title: "Web & Cloud",
-              titleAr: "الويب والسحابة",
+              title: "Web & Cloud Security",
+              titleAr: "أمن الويب والسحابة",
               items: [
                 {
                   icon: MessageCircle,
@@ -412,22 +422,6 @@ export const navigationConfig = {
           titleAr: "الأكاديمية",
           items: [
             {
-              icon: BookOpen,
-              label: "All Courses",
-              labelAr: "جميع الدورات",
-              subtitle: "Structured video courses",
-              subtitleAr: "دورات فيديو منظمة",
-              path: "/courses",
-            },
-            {
-              icon: Users,
-              label: "Career Hub",
-              labelAr: "مركز المهن",
-              subtitle: "Path to professional roles",
-              subtitleAr: "الطريق للأدوار المهنية",
-              path: "/career-hub",
-            },
-            {
               icon: Youtube,
               label: "YouTube Hub",
               labelAr: "منصة يوتيوب",
@@ -442,14 +436,6 @@ export const navigationConfig = {
           title: "Specializations",
           titleAr: "التخصصات",
           items: [
-            {
-              icon: Info,
-              label: "ShadowHack Specs",
-              labelAr: "تخصصات ShadowHack",
-              subtitle: "System infrastructure details",
-              subtitleAr: "تفاصيل البنية التحتية",
-              path: "/specs",
-            },
             {
               icon: GraduationCap,
               label: "Learning Tracks",
@@ -474,20 +460,11 @@ export const navigationConfig = {
           items: [
             {
               icon: Flag,
-              label: "CTF Arena",
-              labelAr: "ساحة CTF",
-              subtitle: "Ranked capture the flag tags",
-              subtitleAr: "تحديات CTF مصنفة",
+              label: "Challenge Arena",
+              labelAr: "ساحة التحديات",
+              subtitle: "Hands-on capture-the-flag scenarios",
+              subtitleAr: "سيناريوهات عملية على نمط CTF",
               path: "/ctf",
-            },
-            {
-              icon: Calendar,
-              label: "Daily Challenge",
-              labelAr: "تحدي اليوم",
-              subtitle: "Fresh missions every 24h",
-              subtitleAr: "مهام جديدة كل 24 ساعة",
-              path: "/ctf/daily",
-              badge: "New",
             },
           ],
         },
@@ -503,66 +480,6 @@ export const navigationConfig = {
               subtitleAr: "تدريب AppSec تفاعلي",
               path: "/owasp-range",
               badge: "Lab",
-            },
-            {
-              icon: Terminal,
-              label: "Labs Dashboard",
-              labelAr: "لوحة المختبرات",
-              subtitle: "Deployable practice machines",
-              subtitleAr: "ماكينات تدريب قابلة للنشر",
-              path: "/labs",
-            },
-            {
-              icon: Zap,
-              label: "Advanced Campaigns",
-              labelAr: "حملات متقدمة",
-              subtitle: "Complex red team scenarios",
-              subtitleAr: "سيناريوهات فريق أحمر معقدة",
-              path: "/labs/campaigns",
-            },
-          ],
-        },
-      ],
-    },
-
-    platform: {
-      label: "Network",
-      labelAr: "الشبكة",
-      icon: Users,
-      columns: [
-        {
-          title: "Community",
-          titleAr: "المجتمع",
-          items: [
-            {
-              icon: UserCircle,
-              label: "About ShadowHack",
-              labelAr: "عن ShadowHack",
-              subtitle: "Our mission and vision",
-              subtitleAr: "مهمتنا ورؤيتنا",
-              path: "/about",
-            },
-            {
-              icon: Handshake,
-              label: "Partners",
-              labelAr: "الشركاء",
-              subtitle: "Official collaboration",
-              subtitleAr: "التعاون الرسمي",
-              path: "/partners",
-            },
-          ],
-        },
-        {
-          title: "Certification",
-          titleAr: "الشهادات",
-          items: [
-            {
-              icon: BadgeCheck,
-              label: "Verify Certificate",
-              labelAr: "التحقق من الشهادة",
-              subtitle: "Validate your achievement",
-              subtitleAr: "تحقق من إنجازك",
-              path: "/verify",
             },
           ],
         },

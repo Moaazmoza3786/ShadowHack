@@ -13,7 +13,7 @@ const TopicPage = () => {
         return (
             <div className="flex flex-col items-center justify-center py-20">
                 <h1 className="text-2xl font-bold text-white mb-4">Topic Not Found</h1>
-                <button onClick={() => navigate('/courses')} className="text-primary-500 hover:underline">Return to Courses</button>
+                <button onClick={() => navigate('/ctf')} className="text-primary-500 hover:underline">Return to CTF Arena</button>
             </div>
         );
     }

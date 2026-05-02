@@ -1,0 +1,82 @@
+# Welcome to BreachLabs
+
+<div className="hero-section text-center p-5 mb-4 bg-dark rounded-3 border border-secondary glow-effect">
+  <h1 className="display-4 fw-bold text-success"><i className="fas fa-shield-alt me-3"></i>Welcome, Initiate.</h1>
+  <p className="lead text-light">You have taken the first step into a larger world. The world of **BreachLabs**.</p>
+</div>
+
+## Mission Briefing
+
+We don't do "classrooms" here. We do **Operations**. 
+BreachLabs is an elite cyberpunk training ground designed to forge raw talent into tier-one security operators. 
+
+Your journey will take you from the basics of the Linux terminal to the depths of kernel exploitation. You will learn to think like an attacker to better defend the infrastructure of tomorrow.
+
+> [!IMPORTANT]
+> **Warning:** Everything you learn here is a weapon. Use it only on systems you own or have explicit permission to test. Unauthorized access is illegal and violates the BreachLabs Code of Conduct.
+
+## The Curriculum
+
+<div className="row mt-4">
+  <div className="col-md-4">
+    <div className="card bg-black border-success h-100">
+        <div className="card-body text-center">
+            <i className="fas fa-terminal fa-3x text-success mb-3"></i>
+            <h5 className="card-title text-success">Pre Security</h5>
+            <p className="card-text text-secondary">The foundation. Networking, Linux, and the tools of the trade.</p>
+        </div>
+    </div>
+  </div>
+  <div className="col-md-4">
+    <div className="card bg-black border-warning h-100">
+        <div className="card-body text-center">
+            <i className="fas fa-bug fa-3x text-warning mb-3"></i>
+            <h5 className="card-title text-warning">Offensive</h5>
+            <p className="card-text text-secondary">Red Teaming, Web Exploitation, and Active Directory attacks.</p>
+        </div>
+    </div>
+  </div>
+  <div className="col-md-4">
+    <div className="card bg-black border-info h-100">
+        <div className="card-body text-center">
+            <i className="fas fa-shield-virus fa-3x text-info mb-3"></i>
+            <h5 className="card-title text-info">Defensive</h5>
+            <p className="card-text text-secondary">SOC Operations, Threat Hunting, and Digital Forensics.</p>
+        </div>
+    </div>
+  </div>
+</div>
+
+## System Architecture
+
+Understanding our infrastructure is key. Here is how BreachLabs delivers your training environment:
+
+```mermaid
+graph TD
+    A[User / You] -->|VPN / Browser| B(Gateway Server)
+    B -->|Routes Traffic| C{Labs Orchestrator}
+    C -->|Spawns| D[AttackBox (Kali)]
+    C -->|Spawns| E[Target Machine 1]
+    C -->|Spawns| F[Target Machine 2]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px,color:#000
+    style B fill:#333,stroke:#0f0,stroke-width:2px
+    style C fill:#333,stroke:#0f0,stroke-width:2px
+    style D fill:#300,stroke:#f00,stroke-width:2px
+    style E fill:#003,stroke:#00f,stroke-width:2px
+    style F fill:#003,stroke:#00f,stroke-width:2px
+```
+
+## Ready to Begin?
+
+Your first objective is to set up your environment. Proceed to the next module to configure your link to the BreachLabs network.
+
+<Quiz 
+  question="What is the golden rule of BreachLabs?"
+  options={[
+    "Hack everything you see.",
+    "Only test systems you have permission to test.",
+    "Use your skills for financial gain.",
+    "Never use a VPN."
+  ]}
+/>

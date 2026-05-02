@@ -3,6 +3,7 @@ import { useAppContext } from '../context/AppContext';
 import { Bot, X, Send, Link as LinkIcon, Code, BookOpen, ShieldAlert, Search, Crown, Bug, Sparkles, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMissionSystem } from '../hooks/useMissionSystem';
+import { aiService } from '../services/aiService';
 
 const AIAssistant = () => {
     const { t, language } = useAppContext();
@@ -38,29 +39,24 @@ const AIAssistant = () => {
 
         try {
             // Context-aware responses based on mission
-            let response = '';
             const activeMission = state.mission.active ? state.mission.id : null;
 
             if ((text || '').toLowerCase().includes('hint') && activeMission) {
-                response = language === 'ar'
+                const response = language === 'ar'
                     ? `تلميح لمهمة ${activeMission}: حاول استخدام nmap لفحص المنافذ المفتوحة أولاً.`
                     : `Hint for mission ${activeMission}: Try using 'nmap' to scan for open ports first.`;
-            } else {
-                // Simulated AI Response for now - can be connected to real backend
-                response = language === 'ar'
-                    ? `لقد استلمت طلبك بخصوص "${text}". جاري تحليل البيانات الأمنية...`
-                    : `Received your request regarding "${text}". Analyzing security data...`;
-            }
-
-            setTimeout(() => {
-                setMessages(prev => [...prev, {
-                    role: 'assistant',
-                    content: response
-                }]);
+                
+                setMessages(prev => [...prev, { role: 'assistant', content: response }]);
                 setIsLoading(false);
-            }, 1000);
+            } else {
+                // Real AI Response via OpenRouter
+                const response = await aiService.getChatResponse(text, language);
+                setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+                setIsLoading(false);
+            }
         } catch (error) {
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Connection to Brain-Core failed.' }]);
+            console.error('AI Response error:', error);
+            setMessages(prev => [...prev, { role: 'assistant', content: language === 'ar' ? 'فشل الاتصال بالنواة العصبية.' : 'Connection to Brain-Core failed.' }]);
             setIsLoading(false);
         }
     };

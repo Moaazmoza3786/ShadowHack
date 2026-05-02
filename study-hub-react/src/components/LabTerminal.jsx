@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Terminal as TerminalIcon, Play, Square, RefreshCcw, Wifi, ShieldCheck } from 'lucide-react';
 
-const LabTerminal = ({ lesson }) => {
+const LabTerminal = () => {
     const [status, setStatus] = useState('offline'); // offline, starting, online
     const [output, setOutput] = useState([]);
 

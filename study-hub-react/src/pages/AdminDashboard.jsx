@@ -1,9 +1,11 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Shield, Users, Activity, Ban, CheckCircle, Search, AlertTriangle, FileText } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
+    const { apiUrl } = useAppContext();
     const [activeTab, setActiveTab] = useState('users'); // users, logs, stats
     const [stats, setStats] = useState(null);
     const [users, setUsers] = useState([]);
@@ -11,70 +13,70 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
+    const fetchStats = useCallback(async () => {
+        try {
+            const res = await fetch(`${apiUrl}/admin/stats`);
+            const data = await res.json();
+            if (data.success) setStats(data.stats);
+        } catch (err) {
+            console.error('Fetch stats error:', err);
+        }
+    }, [apiUrl]);
+
+    const fetchUsers = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(`${apiUrl}/admin/users?q=${searchTerm}`);
+            const data = await res.json();
+            if (data.success) setUsers(data.users);
+        } catch (err) {
+            console.error('Fetch users error:', err);
+        } finally {
+            setLoading(false);
+        }
+    }, [apiUrl, searchTerm]);
+
+    const fetchLogs = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(`${apiUrl}/admin/logs`);
+            const data = await res.json();
+            if (data.success) setLogs(data.logs);
+        } catch (err) {
+            console.error('Fetch logs error:', err);
+        } finally {
+            setLoading(false);
+        }
+    }, [apiUrl]);
+
     // Fetch Stats
     useEffect(() => {
         fetchStats();
-    }, []);
+    }, [fetchStats]);
 
     // Fetch Users or Logs based on tab
     useEffect(() => {
         if (activeTab === 'users') fetchUsers();
         if (activeTab === 'logs') fetchLogs();
-    }, [activeTab, searchTerm]);
-
-    const fetchStats = async () => {
-        try {
-            const res = await fetch('http://localhost:5000/api/admin/stats');
-            const data = await res.json();
-            if (data.success) setStats(data.stats);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const fetchUsers = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch(`http://localhost:5000/api/admin/users?q=${searchTerm}`);
-            const data = await res.json();
-            if (data.success) setUsers(data.users);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const fetchLogs = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch('http://localhost:5000/api/admin/logs');
-            const data = await res.json();
-            if (data.success) setLogs(data.logs);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [activeTab, fetchUsers, fetchLogs]);
 
     const toggleBan = async (userId) => {
         if (!window.confirm('Are you sure you want to ban/unban this user?')) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/admin/users/${userId}/ban`, { method: 'POST' });
+            const res = await fetch(`${apiUrl}/admin/users/${userId}/ban`, { method: 'POST' });
             const data = await res.json();
             if (data.success) {
                 fetchUsers(); // Refresh list
                 alert(data.message);
             }
         } catch (err) {
-            console.error(err);
+            console.error('Toggle ban error:', err);
         }
     };
 
     const changeRole = async (userId, newRole) => {
         try {
-            const res = await fetch(`http://localhost:5000/api/admin/users/${userId}/role`, {
+            const res = await fetch(`${apiUrl}/admin/users/${userId}/role`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ role: newRole })
@@ -84,7 +86,7 @@ const AdminDashboard = () => {
                 fetchUsers();
             }
         } catch (err) {
-            console.error(err);
+            console.error('Change role error:', err);
         }
     };
 

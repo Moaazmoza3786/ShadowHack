@@ -1,26 +1,24 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     User, Trophy, Target, Zap, Calendar, MapPin,
     Globe, Edit2, Shield, Settings, Award, Code,
     TrendingUp, Star
 } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 import './UserProfile.css';
 
 const UserProfile = ({ userId = 1 }) => {
+    const { apiUrl } = useAppContext();
     const [profile, setProfile] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({});
     const [activeTab, setActiveTab] = useState('overview');
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchProfile();
-    }, [userId]);
-
-    const fetchProfile = async () => {
+    const fetchProfile = useCallback(async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/profile/${userId}`);
+            const res = await fetch(`${apiUrl}/profile/${userId}`);
             const data = await res.json();
             if (data.success) {
                 setProfile(data.profile);
@@ -32,15 +30,19 @@ const UserProfile = ({ userId = 1 }) => {
                 });
             }
         } catch (err) {
-            console.error(err);
+            console.error('Fetch profile error:', err);
         } finally {
             setLoading(false);
         }
-    };
+    }, [apiUrl, userId]);
+
+    useEffect(() => {
+        fetchProfile();
+    }, [fetchProfile]);
 
     const handleSave = async () => {
         try {
-            await fetch(`http://localhost:5000/api/profile/${userId}`, {
+            await fetch(`${apiUrl}/profile/${userId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(editData)
@@ -48,7 +50,7 @@ const UserProfile = ({ userId = 1 }) => {
             fetchProfile();
             setIsEditing(false);
         } catch (err) {
-            console.error(err);
+            console.error('Save profile error:', err);
         }
     };
 
