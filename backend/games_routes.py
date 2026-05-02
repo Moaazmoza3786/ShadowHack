@@ -365,11 +365,11 @@ def get_ai_challenge(game_id):
     - difficulty: beginner, intermediate, advanced, hard, expert
     """
     try:
-        from groq_games_engine import groq_games_engine
+        from games_engine import games_engine
         
         difficulty = request.args.get('difficulty', 'intermediate')
         
-        challenge_data = groq_games_engine.get_game_challenge(game_id, difficulty)
+        challenge_data = games_engine.get_game_challenge(game_id, difficulty)
         
         return jsonify({
             'success': True,
@@ -392,7 +392,7 @@ def submit_ai_challenge(current_user, game_id, challenge_id):
     Calculates dynamic XP based on difficulty, score, and time
     """
     try:
-        from groq_games_engine import groq_games_engine
+        from games_engine import games_engine
         
         data = request.json
         score = data.get('score', 0)
@@ -401,7 +401,7 @@ def submit_ai_challenge(current_user, game_id, challenge_id):
         difficulty = data.get('difficulty', 'intermediate')
         
         # Calculate XP
-        xp_calculation = groq_games_engine.calculate_dynamic_xp(
+        xp_calculation = games_engine.calculate_dynamic_xp(
             game_id=game_id,
             difficulty=difficulty,
             score=score,
@@ -446,9 +446,9 @@ def get_daily_ai_challenge():
     Changes every 24 hours
     """
     try:
-        from groq_games_engine import groq_games_engine
+        from games_engine import games_engine
         
-        daily_challenge = groq_games_engine.generate_daily_challenge()
+        daily_challenge = games_engine.generate_daily_challenge()
         
         return jsonify(daily_challenge), 200
     
@@ -512,12 +512,12 @@ def get_ai_hint(game_id, topic):
     Helps students without giving away the answer
     """
     try:
-        from groq_learning_manager import groq_learning_manager
+        from learning_manager import learning_manager
         
         difficulty = request.args.get('difficulty', 'intermediate')
         context = request.args.get('context')
         
-        hint = groq_learning_manager.generate_learning_hints(
+        hint = learning_manager.generate_learning_hints(
             topic=f'{game_id}: {topic}',
             difficulty=difficulty,
             context=context

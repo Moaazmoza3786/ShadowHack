@@ -1,0 +1,47 @@
+# Requirements for ShadowHack Elite CLI Framework
+
+# Core dependencies (already in main requirements.txt)
+Flask==2.3.0
+Flask-SQLAlchemy==3.0.0
+requests==2.31.0
+
+# CLI-specific optional dependencies
+pyyaml>=6.0  # For YAML workflow files
+colorama>=0.4.6  # For colored terminal output
+click>=8.1.0  # Advanced CLI interface (optional)
+
+# Tool integration
+subprocess32>=3.5.4  # Enhanced subprocess (Python 3.11+)
+
+# Async support
+asyncio-contextmanager>=1.0.0
+
+# Logging enhancements
+python-json-logger>=2.0.0
+
+# For report generation
+Jinja2>=3.1.0
+markupsafe>=2.1.0
+
+# Data processing
+pandas>=1.5.0  # For data analysis in reports
+
+# Security
+cryptography>=40.0.0  # For encrypted findings storage
+
+# Testing
+pytest>=7.3.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+
+# Optional: External tool interfaces
+# Uncomment as needed for your specific tools
+
+# shodan>=1.28.0  # Shodan API
+# censys>=2.1.0  # Censys API
+# python-nmap>=0.0.1  # Nmap parsing
+# paramiko>=3.1.0  # SSH connections
+
+# Optional: Advanced scanning
+# vulners>=1.5.4  # Vulnerability database
+# nuclei-api>=0.0.1  # Nuclei integration

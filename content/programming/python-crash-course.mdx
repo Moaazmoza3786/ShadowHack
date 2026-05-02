@@ -1,0 +1,225 @@
+---
+title: Python Crash Course for Hackers
+description: Everything you need to start writing hacking tools in Python.
+---
+
+# Python Crash Course for Hackers
+
+Python is the language of penetration testing. Metasploit modules, exploit scripts, automation tools — most are written in Python. This crash course covers everything you need to start writing your own tools.
+
+## Why Python for Hacking?
+
+- **Rapid development** — write a port scanner in 10 lines
+- **Massive library ecosystem** — `requests`, `scapy`, `paramiko`, `pwntools`
+- **Cross-platform** — runs on Linux, Windows, macOS
+- **Readable** — easy to modify existing exploits
+- **Default on Kali** — Python 3 is pre-installed
+
+## Variables & Data Types
+
+```python
+# Strings — for IPs, payloads, commands
+target_ip = "10.10.10.5"
+payload = "' OR '1'='1"
+command = f"nmap -sV {target_ip}"   # f-strings for formatting
+
+# Numbers
+port = 4444
+timeout = 5.0
+
+# Lists — for multiple targets, ports
+ports = [21, 22, 80, 443, 8080]
+targets = ["10.10.10.1", "10.10.10.2", "10.10.10.5"]
+
+# Dictionaries — for structured data
+service = {"port": 80, "service": "http", "version": "Apache 2.4.29"}
+
+# Booleans
+is_open = True
+verbose = False
+```
+
+## Control Flow
+
+```python
+# if/elif/else
+port = 80
+if port == 80:
+    print("HTTP")
+elif port == 443:
+    print("HTTPS")
+elif port == 22:
+    print("SSH")
+else:
+    print(f"Unknown service on port {port}")
+
+# for loops — iterate over targets/ports
+for port in [21, 22, 80, 443, 8080]:
+    print(f"Scanning port {port}...")
+
+# while loop — keep trying until success
+attempts = 0
+while attempts < 3:
+    result = try_login()
+    if result:
+        break
+    attempts += 1
+
+# List comprehension — compact and fast
+open_ports = [p for p in range(1, 1025) if is_open(p)]
+```
+
+## Functions
+
+```python
+# Basic function
+def scan_port(ip, port, timeout=1):
+    """Check if a port is open. Returns True/False."""
+    import socket
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
+        result = sock.connect_ex((ip, port))
+        sock.close()
+        return result == 0   # 0 = success = port open
+    except Exception:
+        return False
+
+# Call it
+if scan_port("10.10.10.5", 80):
+    print("[+] Port 80 is OPEN")
+else:
+    print("[-] Port 80 is closed")
+```
+
+## Working with Strings
+
+```python
+ip = "10.10.10.5"
+
+# String methods
+ip.split(".")          # ['10', '10', '10', '5']
+"admin".upper()        # 'ADMIN'
+"  admin  ".strip()    # 'admin'
+"password123".replace("123", "456")  # 'password456'
+
+# Check if string contains something
+if "error" in response.lower():
+    print("Possible vulnerability!")
+
+# String formatting
+print(f"[+] Found open port {port} on {ip}")
+print("[+] Found open port {} on {}".format(port, ip))
+
+# Encode/decode
+import base64
+encoded = base64.b64encode(b"admin:password").decode()  # 'YWRtaW46cGFzc3dvcmQ='
+decoded = base64.b64decode(encoded).decode()             # 'admin:password'
+```
+
+## File Operations
+
+```python
+# Read a wordlist
+with open("/usr/share/wordlists/rockyou.txt", "r", encoding="latin-1") as f:
+    passwords = f.read().splitlines()
+
+# Read line by line (memory efficient for large files)
+with open("targets.txt", "r") as f:
+    for line in f:
+        target = line.strip()
+        if target:  # skip empty lines
+            scan(target)
+
+# Write results
+with open("results.txt", "w") as f:
+    for port in open_ports:
+        f.write(f"{port}/tcp open\n")
+
+# Append to file
+with open("log.txt", "a") as f:
+    f.write(f"[{timestamp}] Found: {finding}\n")
+```
+
+## Error Handling
+
+```python
+import socket
+
+def connect(ip, port):
+    try:
+        sock = socket.socket()
+        sock.settimeout(2)
+        sock.connect((ip, port))
+        return sock
+    except socket.timeout:
+        print(f"[-] Timeout connecting to {ip}:{port}")
+        return None
+    except ConnectionRefusedError:
+        print(f"[-] Connection refused on {ip}:{port}")
+        return None
+    except Exception as e:
+        print(f"[-] Error: {e}")
+        return None
+```
+
+## Command Line Arguments
+
+```python
+import argparse
+
+parser = argparse.ArgumentParser(description="My Pentest Tool")
+parser.add_argument("-t", "--target", required=True, help="Target IP")
+parser.add_argument("-p", "--port", type=int, default=80, help="Port (default: 80)")
+parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
+parser.add_argument("-w", "--wordlist", help="Path to wordlist")
+
+args = parser.parse_args()
+
+print(f"Target: {args.target}")
+print(f"Port: {args.port}")
+if args.verbose:
+    print("[*] Verbose mode enabled")
+```
+
+```bash
+# Usage
+python3 tool.py -t 10.10.10.5 -p 8080 -v -w /usr/share/wordlists/rockyou.txt
+```
+
+## Essential Libraries for Hacking
+
+```python
+import socket          # Network connections
+import requests        # HTTP requests
+import subprocess      # Run system commands
+import threading       # Parallel execution
+import sys, os         # System operations
+import re              # Regular expressions
+import json            # Parse JSON responses
+import base64          # Encoding/decoding
+import hashlib         # Hashing
+from datetime import datetime  # Timestamps
+```
+
+<InfoBox type="tip">
+Install third-party libraries with pip: `pip3 install requests paramiko scapy pwntools`. On Kali, most are pre-installed.
+</InfoBox>
+
+<Quiz
+  question="What Python function opens a file safely and automatically closes it when done?"
+  answer="with open()"
+  hint="The 'with' statement (context manager) handles opening and closing automatically."
+/>
+
+<Quiz
+  question="What does connect_ex() return when a port is open?"
+  answer="0"
+  hint="connect_ex() returns 0 on success (port open) and an error code on failure."
+/>
+
+<Quiz
+  question="What library is used for making HTTP requests in Python?"
+  answer="requests"
+  hint="pip3 install requests — then: import requests; r = requests.get(url)"
+/>

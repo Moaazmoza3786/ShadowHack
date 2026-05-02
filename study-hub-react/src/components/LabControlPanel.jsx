@@ -1,23 +1,19 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Square, RefreshCw, Terminal, Clock, Wifi } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 import './LabControlPanel.css';
 
 const LabControlPanel = ({ labId, userId = 1, onStatusChange }) => {
+    const { apiUrl } = useAppContext();
     const [status, setStatus] = useState('stopped'); // stopped, building, running
     const [connection, setConnection] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(null);
+    // const [timeLeft, setTimeLeft] = useState(null);
 
-    useEffect(() => {
-        checkStatus();
-        const interval = setInterval(checkStatus, 5000);
-        return () => clearInterval(interval);
-    }, [labId]);
-
-    const checkStatus = async () => {
+    const checkStatus = useCallback(async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/labs/${labId}/status?user_id=${userId}`);
+            const res = await fetch(`${apiUrl}/labs/${labId}/status?user_id=${userId}`);
             const data = await res.json();
             if (data.success && data.status) {
                 setStatus(data.status.state);
@@ -29,13 +25,19 @@ const LabControlPanel = ({ labId, userId = 1, onStatusChange }) => {
         } catch (err) {
             console.error(err);
         }
-    };
+    }, [apiUrl, labId, userId, onStatusChange]);
+
+    useEffect(() => {
+        checkStatus();
+        const interval = setInterval(checkStatus, 5000);
+        return () => clearInterval(interval);
+    }, [checkStatus]);
 
     const handleStart = async () => {
         setLoading(true);
         setStatus('building');
         try {
-            const res = await fetch(`http://localhost:5000/api/labs/${labId}/start`, {
+            const res = await fetch(`${apiUrl}/labs/${labId}/start`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userId })
@@ -59,7 +61,7 @@ const LabControlPanel = ({ labId, userId = 1, onStatusChange }) => {
         if (!window.confirm('Are you sure you want to stop this lab? Progress will be lost.')) return;
         setLoading(true);
         try {
-            await fetch(`http://localhost:5000/api/labs/${labId}/stop`, {
+            await fetch(`${apiUrl}/labs/${labId}/stop`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userId })

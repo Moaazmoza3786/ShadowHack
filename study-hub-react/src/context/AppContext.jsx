@@ -7,6 +7,7 @@ const DEFAULT_API_URL = "/api";
 
 export const AppProvider = ({ children }) => {
   const [apiUrl, setApiUrl] = useState(DEFAULT_API_URL);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -38,6 +39,7 @@ export const AppProvider = ({ children }) => {
   }, []);
   const [user, setUser] = useState(() => {
     const defaultUser = {
+      id: 1, // Default User ID
       name: "Student",
       points: 0,
       level: 1,
@@ -61,6 +63,32 @@ export const AppProvider = ({ children }) => {
       return defaultUser;
     }
   });
+
+  // Fetch real user data from backend on mount
+  useEffect(() => {
+    const fetchRealUser = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/profile/1`);
+        const data = await res.json();
+        if (data.success) {
+          const p = data.profile;
+          setUser(prev => ({
+            ...prev,
+            id: p.id,
+            name: p.username,
+            points: p.stats.xp,
+            level: p.stats.level,
+            rank: p.stats.rank,
+            streak: p.stats.streak_days,
+            // Merge other data as needed
+          }));
+        }
+      } catch (err) {
+        console.warn("Backend not ready or profile fetch failed, using local storage/defaults");
+      }
+    };
+    fetchRealUser();
+  }, [apiUrl]);
 
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem("language") || "ar";
@@ -175,6 +203,8 @@ export const AppProvider = ({ children }) => {
         liveFeed,
         LEVELS,
         apiUrl,
+        isSearchOpen,
+        setIsSearchOpen,
       }}
     >
       {children}

@@ -1,0 +1,247 @@
+---
+title: Passive Reconnaissance — OSINT
+description: Gathering intelligence about a target without touching their infrastructure.
+---
+
+# Passive Reconnaissance — OSINT
+
+Before sending a single packet to the target, you can gather enormous amounts of intelligence using only public sources. This is **Open Source Intelligence (OSINT)** — and it's often where the most valuable findings come from.
+
+**Key rule:** In passive recon, you never directly interact with the target's systems. All queries go to third-party sources (Google, Shodan, DNS registrars, etc.).
+
+## Why Passive Recon Matters
+
+- **Stealth:** No logs on the target's systems
+- **Scope:** Reveals the full attack surface before active scanning
+- **Intelligence:** Employee names, email formats, technologies, leaked credentials
+- **Legal:** Publicly available information is generally fair game
+
+## 1. DNS & WHOIS Enumeration
+
+```bash
+# WHOIS — registrar info, contact details, registration dates
+whois target.com
+
+# DNS records
+nslookup target.com
+dig target.com ANY
+dig target.com MX    # Mail servers
+dig target.com NS    # Name servers
+dig target.com TXT   # SPF, DMARC, verification records
+
+# Subdomain enumeration via DNS
+# Certificate Transparency logs (no active scanning)
+curl "https://crt.sh/?q=%.target.com&output=json" | jq '.[].name_value' | sort -u
+
+# DNSDumpster (web-based, passive)
+# https://dnsdumpster.com
+```
+
+<TerminalWindow
+  title="DNS Enumeration"
+  command="dig target.com ANY +short"
+  output="target.com.    300  IN  A      104.21.45.67
+target.com.    300  IN  MX     10 mail.target.com.
+target.com.    300  IN  NS     ns1.cloudflare.com.
+target.com.    300  IN  TXT    v=spf1 include:_spf.google.com ~all"
+/>
+
+## 2. Google Dorking
+
+Google indexes everything — including sensitive files that admins accidentally exposed.
+
+### Essential Operators
+
+| Operator | Example | Purpose |
+|----------|---------|---------|
+| `site:` | `site:target.com` | Limit to domain |
+| `filetype:` | `filetype:pdf` | Specific file type |
+| `intitle:` | `intitle:"index of"` | Text in page title |
+| `inurl:` | `inurl:admin` | Text in URL |
+| `intext:` | `intext:"password"` | Text in page body |
+| `-` | `-site:www.target.com` | Exclude results |
+
+### High-Value Dorks
+
+```
+# Find exposed files with sensitive data
+site:target.com filetype:xlsx "password"
+site:target.com filetype:pdf "confidential"
+site:target.com ext:xml | ext:conf | ext:env | ext:bak
+
+# Find directory listings
+site:target.com intitle:"index of"
+site:target.com intitle:"index of" "parent directory"
+
+# Find login portals
+site:target.com inurl:login
+site:target.com inurl:admin
+site:target.com inurl:portal
+
+# Find exposed databases
+site:target.com inurl:phpmyadmin
+site:target.com inurl:adminer
+
+# Find subdomains
+site:*.target.com -site:www.target.com
+
+# Find cached/old versions
+cache:target.com
+```
+
+<InfoBox type="tip">
+The **Google Hacking Database (GHDB)** at exploit-db.com/google-hacking-database contains thousands of proven dorks organized by category. It's an invaluable resource.
+</InfoBox>
+
+## 3. TheHarvester — Automated OSINT
+
+TheHarvester aggregates data from multiple sources: Google, Bing, LinkedIn, Shodan, and more.
+
+```bash
+# Basic usage
+theHarvester -d target.com -l 500 -b google
+
+# Multiple sources
+theHarvester -d target.com -l 500 -b google,bing,linkedin,shodan
+
+# Save results
+theHarvester -d target.com -l 500 -b all -f results.html
+
+# Output includes:
+# - Email addresses
+# - Subdomains
+# - IP addresses
+# - Employee names (from LinkedIn)
+# - Open ports (from Shodan)
+```
+
+<TerminalWindow
+  title="TheHarvester Output"
+  command="theHarvester -d target.com -l 200 -b google,linkedin"
+  output="[*] Emails found:
+    john.doe@target.com
+    security@target.com
+    admin@target.com
+
+[*] Hosts found:
+    mail.target.com: 104.21.45.68
+    vpn.target.com: 104.21.45.69
+    dev.target.com: 104.21.45.70
+
+[*] LinkedIn employees:
+    John Doe - Senior Security Engineer
+    Jane Smith - DevOps Lead"
+/>
+
+## 4. Shodan — The Internet of Things Search Engine
+
+Shodan indexes internet-connected devices and their banners. It's passive — you're querying Shodan's database, not the target.
+
+```
+# Search for target's IP range
+net:104.21.45.0/24
+
+# Find specific services
+org:"Target Company" port:22
+org:"Target Company" port:3389
+
+# Find vulnerable versions
+org:"Target Company" "Apache/2.2"
+org:"Target Company" "OpenSSH 5"
+
+# Find exposed databases
+org:"Target Company" port:27017  # MongoDB
+org:"Target Company" port:6379   # Redis
+org:"Target Company" port:9200   # Elasticsearch
+
+# Find specific technologies
+org:"Target Company" http.title:"Jenkins"
+org:"Target Company" http.title:"GitLab"
+```
+
+## 5. GitHub & Code Repository Leaks
+
+Developers frequently commit secrets to public repositories. This is one of the most impactful passive recon techniques.
+
+```bash
+# Manual GitHub search
+# Search: org:TargetCompany "AWS_ACCESS_KEY_ID"
+# Search: org:TargetCompany "password" filename:.env
+# Search: org:TargetCompany "api_key"
+
+# Automated: TruffleHog
+trufflehog github --org=TargetCompany
+
+# Automated: GitLeaks
+gitleaks detect --source /path/to/cloned/repo
+
+# Automated: GitDorker
+python3 gitdorker.py -tf tokens.txt -q target.com -d dorks.txt
+```
+
+Common secrets found in repos:
+- AWS/GCP/Azure credentials
+- Database connection strings
+- API keys (Stripe, Twilio, SendGrid)
+- Private SSH keys
+- JWT secrets
+- `.env` files committed by mistake
+
+## 6. Email Harvesting & Format Discovery
+
+Knowing the email format (`firstname.lastname@company.com`) enables targeted phishing and password spraying.
+
+```bash
+# Hunter.io (web-based, free tier available)
+# https://hunter.io/search/target.com
+
+# Email format patterns to test:
+# firstname.lastname@target.com
+# f.lastname@target.com
+# firstname@target.com
+# flastname@target.com
+
+# Verify email exists (without sending)
+# Use tools like email-verifier or hunter.io verification
+```
+
+## 7. Social Media & LinkedIn
+
+LinkedIn reveals organizational structure, technologies used, and employee details.
+
+**What to look for:**
+- Job postings (reveal tech stack: "Experience with Splunk, AWS, Kubernetes...")
+- Employee names and roles (for targeted attacks)
+- Company size and structure
+- Recent hires (new employees = potential weak links)
+
+## Passive Recon Workflow
+
+```
+1. WHOIS + DNS → IP ranges, mail servers, registrar info
+2. Google Dorking → Exposed files, login portals, subdomains
+3. Certificate Transparency → All subdomains (crt.sh)
+4. TheHarvester → Emails, employees, more subdomains
+5. Shodan → Exposed services, versions, vulnerabilities
+6. GitHub → Leaked credentials, source code, configs
+7. LinkedIn → Org structure, tech stack, employees
+8. Compile → Full target profile before active scanning
+```
+
+<Quiz
+  question="What is the key rule of passive reconnaissance?"
+  answer="Never directly interact with the target's systems"
+  hint="All queries go to third-party sources — no packets touch the target."
+/>
+
+<Quiz
+  question="Which website indexes internet-connected devices and their service banners?"
+  answer="Shodan"
+  hint="shodan.io — often called 'the search engine for hackers'."
+/>
+
+<Quiz
+  question="What Google dork finds directory listings on a target domain?"
+  answer="site:target.com intitle:\"index of\""
+  hint="Directory listings expose file structures and often sensitive files."
+/>

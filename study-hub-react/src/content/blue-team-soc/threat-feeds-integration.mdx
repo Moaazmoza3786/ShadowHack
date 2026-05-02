@@ -1,0 +1,350 @@
+---
+title: "Threat Feeds Integration"
+description: "Learn how to integrate and operationalize threat intelligence feeds in your security stack."
+difficulty: "Intermediate"
+estimatedTime: "40 minutes"
+tags: ["blue-team", "threat-intelligence", "threat-feeds", "soc"]
+---
+
+# Threat Feeds Integration
+
+<InfoBox type="tip" title="Automation Power">
+Threat feeds turn **static indicators** into **automated blocking and alerting**. A well-integrated feed can stop attacks before your analysts even see them.
+</InfoBox>
+
+## What Are Threat Feeds?
+
+Threat feeds are **regularly updated lists** of indicators of compromise (IOCs):
+- IP addresses of known malicious infrastructure
+- Domain names used for phishing/C2
+- File hashes of malware
+- URLs serving malicious content
+
+### Feed Formats
+
+| Format | Description | Example |
+|--------|-------------|---------|
+| **STIX/TAXII** | Structured Threat Information eXpression | Industry standard |
+| **CSV** | Simple comma-separated | IP, description, date |
+| **JSON** | Structured data | Custom APIs |
+| **Plain text** | One IOC per line | IP blocklists |
+
+---
+
+## Popular Threat Feeds
+
+### Free/Open Source
+
+| Feed | Focus | URL |
+|------|-------|-----|
+| **AlienVault OTX** | General IOCs | otx.alienvault.com |
+| **Abuse.ch** | Malware URLs, IPs | abuse.ch |
+| **Feodo Tracker** | Banking trojans | feodotracker.abuse.ch |
+| **URLhaus** | Malware distribution URLs | urlhaus.abuse.ch |
+| **MalwareBazaar** | Malware samples | bazaar.abuse.ch |
+| **PhishTank** | Phishing URLs | phishtank.org |
+| **Emerging Threats** | Suricata/Snort rules | rules.emergingthreats.net |
+| **CISA Known Exploits** | Actively exploited vulns | cisa.gov/known-exploited |
+
+### Commercial
+
+| Vendor | Specialty |
+|--------|-----------|
+| **Recorded Future** | Comprehensive intelligence |
+| **Mandiant** | APT focus |
+| **CrowdStrike** | Adversary intelligence |
+| **VirusTotal** | File/URL analysis |
+| **DomainTools** | Domain intelligence |
+
+---
+
+## Integration Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     THREAT FEED INTEGRATION FLOW                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐                 │
+│  │   Feed 1     │   │   Feed 2     │   │   Feed 3     │   ◀─ Sources   │
+│  │ (AlienVault) │   │  (Abuse.ch)  │   │  (Internal)  │                 │
+│  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘                 │
+│         │                  │                  │                          │
+│         └──────────────────┼──────────────────┘                          │
+│                            ▼                                             │
+│              ┌─────────────────────────┐                                 │
+│              │   Threat Intelligence   │  ◀─ Aggregation & Dedup        │
+│              │       Platform (TIP)    │                                 │
+│              └───────────┬─────────────┘                                 │
+│                          │                                               │
+│         ┌────────────────┼────────────────┐                              │
+│         ▼                ▼                ▼                              │
+│  ┌────────────┐   ┌────────────┐   ┌────────────┐                       │
+│  │    SIEM    │   │  Firewall  │   │    EDR     │   ◀─ Enforcement      │
+│  │  (Alert)   │   │  (Block)   │   │  (Detect)  │                       │
+│  └────────────┘   └────────────┘   └────────────┘                       │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## SIEM Integration
+
+### Splunk - Threat Intel Framework
+
+<TerminalWindow title="Splunk Threat Intel Setup">
+# 1. Enable Threat Intelligence Framework
+# Navigate to: Settings → Data Inputs → Threat Intelligence
+
+# 2. Configure feed download
+# In inputs.conf:
+[threatlist://abuse_ch_feodo]
+description = Feodo Tracker C2 IPs
+type = threatlist
+url = https://feodotracker.abuse.ch/downloads/ipblocklist.txt
+weight = 100
+interval = 3600
+
+# 3. Search with threat intel
+index=firewall 
+| lookup threat_intel ip as dest_ip OUTPUT threat_category
+| where isnotnull(threat_category)
+| stats count by dest_ip, threat_category
+</TerminalWindow>
+
+### Elasticsearch (ELK)
+
+<TerminalWindow title="ELK Threat Intel Enrichment">
+# 1. Create a threat intel index
+PUT /threat-intel
+{
+  "mappings": {
+    "properties": {
+      "indicator": { "type": "keyword" },
+      "type": { "type": "keyword" },
+      "source": { "type": "keyword" },
+      "first_seen": { "type": "date" }
+    }
+  }
+}
+
+# 2. Use Logstash enrichment filter
+filter {
+  translate {
+    dictionary_path => "/etc/logstash/threat_intel.yml"
+    field => "[destination][ip]"
+    destination => "[threat][indicator]"
+    fallback => "clean"
+  }
+}
+
+# 3. Create Kibana alert
+# When threat.indicator != "clean" → Alert
+</TerminalWindow>
+
+---
+
+## Firewall Integration
+
+### Palo Alto Networks
+
+<TerminalWindow title="PAN-OS External Dynamic Lists">
+# Create External Dynamic List (EDL)
+# Objects → External Dynamic Lists → Add
+
+Name: malicious_ips
+Type: IP List
+Source: https://your-tip.local/feeds/malicious_ips.txt
+Update Interval: Hourly
+
+# Use in Security Policy
+Source Zone: Trust
+Destination: EDL: malicious_ips
+Action: Block
+Log: Yes
+</TerminalWindow>
+
+### Generic Firewall (IPTables)
+
+<TerminalWindow title="Automated IPTables Blocklist">
+#!/bin/bash
+# update_blocklist.sh
+
+# Download fresh blocklist
+curl -s https://feodotracker.abuse.ch/downloads/ipblocklist.txt > /tmp/blocklist.txt
+
+# Flush existing chain
+iptables -F THREAT_BLOCK 2>/dev/null || iptables -N THREAT_BLOCK
+
+# Add each IP
+while read ip; do
+    [[ "$ip" =~ ^#.*$ ]] && continue  # Skip comments
+    [[ -z "$ip" ]] && continue        # Skip empty lines
+    iptables -A THREAT_BLOCK -s $ip -j DROP
+done < /tmp/blocklist.txt
+
+# Ensure chain is active
+iptables -C INPUT -j THREAT_BLOCK 2>/dev/null || iptables -I INPUT -j THREAT_BLOCK
+
+echo "Blocklist updated: $(wc -l < /tmp/blocklist.txt) IPs"
+</TerminalWindow>
+
+---
+
+## Python Feed Automation
+
+<TerminalWindow title="Automated Feed Downloader">
+#!/usr/bin/env python3
+"""
+Threat Feed Aggregator
+Downloads multiple feeds and outputs unified format
+"""
+
+import requests
+import json
+from datetime import datetime
+
+FEEDS = {
+    'feodo_ips': {
+        'url': 'https://feodotracker.abuse.ch/downloads/ipblocklist.txt',
+        'type': 'ip',
+        'source': 'Feodo Tracker'
+    },
+    'urlhaus': {
+        'url': 'https://urlhaus.abuse.ch/downloads/text/',
+        'type': 'url',
+        'source': 'URLhaus'
+    }
+}
+
+def download_feed(feed_config):
+    """Download and parse a threat feed."""
+    try:
+        response = requests.get(feed_config['url'], timeout=30)
+        response.raise_for_status()
+        
+        indicators = []
+        for line in response.text.splitlines():
+            line = line.strip()
+            if line and not line.startswith('#'):
+                indicators.append({
+                    'indicator': line,
+                    'type': feed_config['type'],
+                    'source': feed_config['source'],
+                    'timestamp': datetime.utcnow().isoformat()
+                })
+        
+        return indicators
+    except Exception as e:
+        print(f"Error downloading {feed_config['source']}: {e}")
+        return []
+
+def main():
+    all_indicators = []
+    
+    for name, config in FEEDS.items():
+        print(f"Downloading {name}...")
+        indicators = download_feed(config)
+        all_indicators.extend(indicators)
+        print(f"  → {len(indicators)} indicators")
+    
+    # Output unified format
+    with open('unified_threat_feed.json', 'w') as f:
+        json.dump(all_indicators, f, indent=2)
+    
+    print(f"\nTotal: {len(all_indicators)} indicators saved")
+
+if __name__ == '__main__':
+    main()
+</TerminalWindow>
+
+---
+
+## Best Practices
+
+<InfoBox type="warning" title="False Positives">
+More feeds ≠ better security. Low-quality feeds create **alert fatigue**. Always validate feed quality before production deployment.
+</InfoBox>
+
+### Feed Validation Checklist
+
+- [ ] What's the **source**? Reputable provider?
+- [ ] How **fresh** is the data? Update frequency?
+- [ ] What's the **false positive rate**?
+- [ ] Does it include **context** (threat type, confidence)?
+- [ ] Can you **attribute** blocks to specific feeds?
+
+### Operational Tips
+
+1. **Start small** - Add one feed at a time
+2. **Monitor before blocking** - Alert first, block after validation
+3. **Track metrics** - Matches per feed, false positives
+4. **Expire old indicators** - IOCs have a shelf life
+5. **Document your sources** - Audit trail for incidents
+
+---
+
+<ChallengeBox 
+  title="Design a Feed Integration"
+  difficulty="hard"
+  points={150}
+>
+
+Your SOC needs to integrate threat feeds for a mid-size enterprise. Design the solution:
+
+**Requirements**:
+- Block known malicious IPs at the firewall
+- Alert on suspicious domains in DNS logs
+- Enrich SIEM alerts with threat context
+- Minimize false positives
+
+**Questions**:
+1. Which 3 feeds would you recommend and why?
+2. How would you handle feed conflicts (same IP, different classifications)?
+3. What's your rollback plan if a feed causes widespread blocking?
+
+<details>
+<summary>Suggested Answer</summary>
+
+**1. Recommended Feeds**:
+- **Feodo Tracker** (IPs) - High quality, banking trojan focus
+- **URLhaus** (URLs) - Malware distribution, well-maintained
+- **AlienVault OTX** (General) - Community-sourced, good coverage
+
+**2. Handling Conflicts**:
+- Assign confidence scores to each source
+- Higher reputation sources override lower
+- Log all classification decisions
+- Use "most severe" classification for alerts
+
+**3. Rollback Plan**:
+- Implement staged deployment (monitor → soft block → hard block)
+- Maintain "whitelist override" capability
+- Keep historical feed data for comparison
+- Automated rollback if block rate exceeds threshold
+
+</details>
+</ChallengeBox>
+
+---
+
+## Key Takeaways
+
+- Threat feeds **automate** indicator-based detection
+- **Quality over quantity** - validate before deploying
+- Integrate with **SIEM** for alerting, **Firewall** for blocking
+- Use **STIX/TAXII** for standardized sharing
+- **Monitor and tune** continuously
+
+<Quiz
+  question="What is the main risk of integrating too many threat feeds without validation?"
+  options={[
+    "Increased network bandwidth usage",
+    "High false positive rate causing alert fatigue",
+    "Slower SIEM query performance",
+    "Compliance violations"
+  ]}
+  correctIndex={1}
+  explanation="Low-quality or outdated threat feeds can cause false positives, blocking legitimate traffic and overwhelming analysts with unnecessary alerts."
+/>

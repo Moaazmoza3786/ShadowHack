@@ -12,20 +12,17 @@ import MainLayout from "./components/MainLayout";
 
 // Lazy load all page components
 const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Courses = lazy(() => import("./pages/Courses"));
-const CourseDetail = lazy(() => import("./pages/CourseDetail"));
-const CTF = lazy(() => import("./pages/CTF"));
-const Labs = lazy(() => import("./pages/Labs"));
 const Achievements = lazy(() => import("./pages/Achievements"));
 const Settings = lazy(() => import("./pages/Settings"));
-const LessonViewer = lazy(() => import("./pages/LessonViewer"));
 const YouTubeHub = lazy(() => import("./pages/YouTubeHub"));
 const OWASPRange = lazy(() => import("./pages/OWASPRange"));
 const OWASPModule = lazy(() => import("./pages/OWASPModule"));
-const CareerHub = lazy(() => import("./pages/CareerHub"));
 const SecondBrain = lazy(() => import("./pages/SecondBrain"));
 const LearningTracks = lazy(() => import("./pages/LearningTracks"));
-const ShadowHackSpecs = lazy(() => import("./pages/ShadowHackSpecs"));
+const TrackDetail    = lazy(() => import("./pages/TrackDetail"));
+const PlaylistWizard = lazy(() => import("./pages/PlaylistWizard"));
+const WorkflowTemplates = lazy(() => import("./pages/WorkflowTemplates"));
+const CTF = lazy(() => import("./pages/CTF"));
 
 // Tools
 const PayloadGenerator = lazy(() => import("./pages/tools/PayloadGenerator"));
@@ -101,15 +98,10 @@ const SOCPath = lazy(() => import("./pages/paths/SOCPath"));
 const About = lazy(() => import("./pages/About"));
 const Partners = lazy(() => import("./pages/Partners"));
 const VerifyCertificate = lazy(() => import("./pages/VerifyCertificate"));
-const Campaigns = lazy(() => import("./pages/labs/Campaigns"));
 const TopicPage = lazy(() => import("./pages/topics/TopicPage"));
 
 // CTF & Labs
-const DailyCTF = lazy(() => import("./pages/ctf/DailyCTF"));
 const CTFRoomDetail = lazy(() => import("./pages/ctf/CTFRoomDetail"));
-const LabWorkspace = lazy(() => import("./pages/LabWorkspace"));
-const FreeLabs = lazy(() => import("./pages/labs/FreeLabs"));
-const ProLabs = lazy(() => import("./pages/labs/ProLabs"));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -176,40 +168,28 @@ function App() {
                 {/* Standalone Landing Nodes - No Layout */}
                 <Route path="/l/auth" element={<LandingNode />} />
 
+                {/* OWASP Module (Learn/Practice) - No Layout (fullscreen simulation) */}
+                <Route path="/owasp-range/:id/:view" element={<OWASPModule />} />
+
+                {/* Playlist Wizard - No Layout (fullscreen) */}
+                <Route path="/playlist-wizard" element={<PlaylistWizard />} />
+
                 {/* Application with MainLayout */}
                 <Route path="/" element={<MainLayout />}>
                   <Route index element={<Dashboard />} />
                   <Route path="/admin" element={<AdminDashboard />} />
-                  <Route path="/courses" element={<Courses />} />
-                  <Route path="/courses/:courseId" element={<CourseDetail />} />
-                  <Route
-                    path="/courses/:courseId/lessons/:lessonId"
-                    element={<LessonViewer />}
-                  />
                   <Route path="/youtube-hub" element={<YouTubeHub />} />
-                  <Route path="/career-hub" element={<CareerHub />} />
                   <Route path="/second-brain" element={<SecondBrain />} />
                   <Route path="/learning-tracks" element={<LearningTracks />} />
-                  <Route path="/specs" element={<ShadowHackSpecs />} />
+                  <Route path="/track/:trackId"  element={<TrackDetail />} />
+                  <Route path="/workflows" element={<WorkflowTemplates />} />
 
                   <Route path="/ctf" element={<CTF />} />
-                  <Route path="/ctf/daily" element={<DailyCTF />} />
                   <Route path="/ctf/room/:roomId" element={<CTFRoomDetail />} />
 
-                  <Route path="/labs" element={<Labs />} />
-                  <Route path="/labs/free" element={<FreeLabs />} />
-                  <Route path="/labs/pro" element={<ProLabs />} />
-                  <Route path="/labs/campaigns" element={<Campaigns />} />
-                  <Route
-                    path="/lab-workspace/:labId"
-                    element={<LabWorkspace />}
-                  />
+                  {/* Removed Labs */}
 
                   <Route path="/owasp-range" element={<OWASPRange />} />
-                  <Route
-                    path="/owasp-range/module/:moduleId"
-                    element={<OWASPModule />}
-                  />
 
                   {/* Tools Routes */}
                   <Route path="/tools" element={<ToolsHub />} />

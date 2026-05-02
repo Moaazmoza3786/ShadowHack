@@ -1,0 +1,235 @@
+---
+title: "Log Analysis Basics"
+description: "Master the fundamentals of log analysis for security operations and incident response."
+difficulty: "Intermediate"
+estimatedTime: "50 minutes"
+tags: ["blue-team", "log-analysis", "soc", "siem"]
+---
+
+# Log Analysis Basics
+
+<InfoBox type="tip" title="The SOC Analyst's Bread and Butter">
+Logs are your **eyes and ears** into every system. Master log analysis, and you can detect threats that automated tools miss.
+</InfoBox>
+
+## Why Logs Matter
+
+Every action on a system generates logs:
+- User logins/logouts
+- Process executions
+- Network connections
+- File access
+- Configuration changes
+
+As a defender, logs tell the **story** of what happened.
+
+---
+
+## Common Log Types
+
+### 1. Windows Event Logs
+
+| Log | Location | Key Events |
+|-----|----------|------------|
+| **Security** | `%SystemRoot%\System32\winevt\Logs\Security.evtx` | Logins, privilege use |
+| **System** | `%SystemRoot%\System32\winevt\Logs\System.evtx` | Services, drivers |
+| **Application** | `%SystemRoot%\System32\winevt\Logs\Application.evtx` | App crashes, errors |
+| **PowerShell** | `Microsoft-Windows-PowerShell/Operational` | Script execution |
+| **Sysmon** | `Microsoft-Windows-Sysmon/Operational` | Process, network, file |
+
+<TerminalWindow title="Critical Windows Event IDs">
+# Authentication Events
+4624 - Successful logon
+4625 - Failed logon
+4648 - Explicit credentials used (runas, psexec)
+4672 - Special privileges assigned (admin logon)
+4776 - NTLM authentication attempt
+
+# Process Events (Sysmon)
+1    - Process Create
+3    - Network Connection
+7    - Image Loaded (DLL)
+11   - File Create
+13   - Registry Value Set
+
+# Lateral Movement Indicators
+4648 - Logon with explicit credentials
+4624 (Type 3) - Network logon
+4624 (Type 10) - RDP logon
+</TerminalWindow>
+
+### 2. Linux/Unix Logs
+
+| Log | Location | Purpose |
+|-----|----------|---------|
+| **auth.log** | `/var/log/auth.log` | Authentication events |
+| **syslog** | `/var/log/syslog` | General system messages |
+| **secure** | `/var/log/secure` | Security-related (RHEL) |
+| **audit.log** | `/var/log/audit/audit.log` | Detailed audit trail |
+| **apache/nginx** | `/var/log/apache2/` or `/var/log/nginx/` | Web server logs |
+
+<TerminalWindow title="Linux Log Analysis Commands">
+# View authentication failures
+$ grep "Failed password" /var/log/auth.log
+
+# Count failed logins by IP
+$ grep "Failed password" /var/log/auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -rn
+
+# SSH successful logins
+$ grep "Accepted" /var/log/auth.log
+
+# Find sudo usage
+$ grep "sudo" /var/log/auth.log
+
+# Real-time log monitoring
+$ tail -f /var/log/syslog | grep --color=auto -i "error\|warning\|failed"
+</TerminalWindow>
+
+### 3. Web Server Logs
+
+<TerminalWindow title="Apache Combined Log Format">
+192.168.1.100 - - [15/Jan/2026:10:15:32 +0000] "GET /admin/config.php HTTP/1.1" 403 4521 "-" "Mozilla/5.0"
+    │           │        │                      │               │      │     │              │
+    │           │        │                      │               │      │     │              └─ User Agent
+    │           │        │                      │               │      │     └─ Referrer
+    │           │        │                      │               │      └─ Response Size
+    │           │        │                      │               └─ Status Code
+    │           │        │                      └─ Request
+    │           │        └─ Timestamp
+    │           └─ Remote User
+    └─ Client IP
+</TerminalWindow>
+
+---
+
+## Log Analysis Techniques
+
+### 1. Baseline Normal Behavior
+
+Before you can spot anomalies, you must know what's **normal**:
+- What IPs typically connect?
+- What processes run at startup?
+- What's the normal login pattern for users?
+
+### 2. Look for Indicators of Compromise (IOCs)
+
+<TerminalWindow title="Common IOC Patterns in Logs">
+# Brute Force Detection
+- Multiple 4625 (failed logins) from same source
+- Failed logins across multiple accounts
+
+# Lateral Movement
+- 4648 events (explicit credential use)
+- 4624 Type 3 from unusual internal IPs
+- PsExec, WMI, WinRM usage patterns
+
+# Malware Indicators
+- Sysmon Event 1 with suspicious paths (\temp, \appdata)
+- Network connections to known bad IPs
+- Encoded PowerShell commands (Event 4104)
+
+# Data Exfiltration
+- Large outbound data transfers
+- Connections to cloud storage services
+- DNS TXT queries (DNS tunneling)
+</TerminalWindow>
+
+### 3. Timeline Analysis
+
+Build a **chronological view** of events:
+
+```
+09:00:00 - User admin logon (4624) from 10.0.0.50
+09:05:23 - PowerShell script execution (4104)
+09:05:45 - New process: mimikatz.exe (Sysmon 1)
+09:06:12 - Credential access detected (Sysmon 10)
+09:07:00 - Lateral movement to DC01 (4624 Type 3)
+```
+
+---
+
+## Practical Log Analysis
+
+<ChallengeBox 
+  title="Detect the Attack"
+  difficulty="medium"
+  points={100}
+>
+
+Analyze these log entries and identify the attack:
+
+```
+Jan 15 09:00:12 webserver sshd[1234]: Failed password for admin from 192.168.1.50
+Jan 15 09:00:14 webserver sshd[1234]: Failed password for admin from 192.168.1.50
+Jan 15 09:00:15 webserver sshd[1234]: Failed password for admin from 192.168.1.50
+Jan 15 09:00:17 webserver sshd[1234]: Accepted password for admin from 192.168.1.50
+Jan 15 09:01:05 webserver sudo: admin : TTY=pts/0 ; PWD=/home/admin ; USER=root ; COMMAND=/bin/bash
+Jan 15 09:02:30 webserver sshd[1567]: Accepted publickey for admin from 10.10.10.100
+```
+
+**Questions**:
+1. What type of attack is this?
+2. Was the attacker successful?
+3. What persistence mechanism was established?
+
+<details>
+<summary>Answer</summary>
+
+1. **Attack Type**: SSH Brute Force followed by privilege escalation
+2. **Success**: Yes - "Accepted password" after 3 failed attempts
+3. **Persistence**: SSH key added - later login via "publickey" from different IP (10.10.10.100)
+
+**Red Flags**:
+- Multiple failed attempts before success
+- Immediate sudo to root after login
+- New SSH key authentication from different IP 2 minutes later
+</details>
+</ChallengeBox>
+
+---
+
+## Log Analysis Tools
+
+| Tool | Purpose | Notes |
+|------|---------|-------|
+| **grep/awk/sed** | CLI log parsing | Fast, always available |
+| **Splunk** | Enterprise SIEM | Powerful but expensive |
+| **ELK Stack** | Open-source SIEM | Elasticsearch, Logstash, Kibana |
+| **Graylog** | Log management | Good free tier |
+| **Windows Event Viewer** | Windows native | Basic but useful |
+| **Log Parser** | Microsoft tool | SQL-like queries on logs |
+
+---
+
+## Best Practices
+
+<InfoBox type="warning" title="Log Retention">
+Always ensure adequate log retention! Many investigations fail because logs were rotated or deleted. Aim for **90+ days** minimum for security logs.
+</InfoBox>
+
+1. **Centralize logs** - Send all logs to a SIEM
+2. **Normalize timestamps** - Use UTC everywhere
+3. **Enrich with context** - Add geo-IP, threat intel
+4. **Create alerts** - Automate detection of known-bad patterns
+5. **Document baselines** - Know what's normal
+
+---
+
+## Key Takeaways
+
+- Logs are the **primary evidence source** for incident response
+- Know your **critical Event IDs** (Windows) and log locations (Linux)
+- Build skills in **timeline reconstruction**
+- Use **automation** for detection, **human analysis** for context
+
+<Quiz
+  question="Which Windows Event ID indicates a successful user logon?"
+  options={[
+    "4625",
+    "4624",
+    "4648",
+    "4672"
+  ]}
+  correctIndex={1}
+  explanation="Event ID 4624 indicates a successful logon. 4625 is failed logon, 4648 is explicit credentials, and 4672 is special privileges assigned."
+/>

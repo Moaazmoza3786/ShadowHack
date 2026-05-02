@@ -1,0 +1,209 @@
+---
+title: Parsing Tool Output
+description: Process and analyze output from Nmap, Gobuster, Nikto, and other tools.
+---
+
+# Parsing Tool Output
+
+Penetration testing generates enormous amounts of data. The ability to quickly parse, filter, and correlate tool output is what separates efficient pentesters from those drowning in terminal output.
+
+## Parsing Nmap XML Output
+
+Nmap's XML output (`-oX`) is the most machine-readable format.
+
+```python
+#!/usr/bin/env python3
+import xml.etree.ElementTree as ET
+
+def parse_nmap_xml(xml_file):
+    """Parse Nmap XML output and extract host/port information."""
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+
+    hosts = []
+
+    for host in root.findall("host"):
+        # Get IP address
+        addr = host.find("address[@addrtype='ipv4']")
+        if addr is None:
+            continue
+        ip = addr.get("addr")
+
+        # Get hostname
+        hostname_elem = host.find(".//hostname")
+        hostname = hostname_elem.get("name") if hostname_elem is not None else ""
+
+        # Get OS detection
+        os_elem = host.find(".//osmatch")
+        os_name = os_elem.get("name") if os_elem is not None else "Unknown"
+
+        # Get open ports
+        ports = []
+        for port in host.findall(".//port"):
+            state = port.find("state")
+            if state is not None and state.get("state") == "open":
+                service = port.find("service")
+                ports.append({
+                    "port": int(port.get("portid")),
+                    "protocol": port.get("protocol"),
+                    "service": service.get("name") if service is not None else "unknown",
+                    "version": service.get("version", "") if service is not None else "",
+                    "product": service.get("product", "") if service is not None else "",
+                })
+
+        hosts.append({
+            "ip": ip,
+            "hostname": hostname,
+            "os": os_name,
+            "ports": ports
+        })
+
+    return hosts
+
+# Usage
+hosts = parse_nmap_xml("scan.xml")
+for host in hosts:
+    print(f"\n[+] {host['ip']} ({host['hostname']}) — {host['os']}")
+    for port in host['ports']:
+        version = f"{port['product']} {port['version']}".strip()
+        print(f"    {port['port']}/{port['protocol']}  {port['service']:<15} {version}")
+```
+
+```bash
+# Generate XML output with Nmap
+nmap -sC -sV -oX scan.xml 10.10.10.5
+python3 parse_nmap.py
+```
+
+## Processing Multiple Tool Outputs
+
+```python
+#!/usr/bin/env python3
+import json
+import re
+import os
+from pathlib import Path
+
+class ReconProcessor:
+    """Aggregate and correlate output from multiple recon tools."""
+
+    def __init__(self, output_dir):
+        self.output_dir = Path(output_dir)
+        self.data = {
+            "hosts": {},
+            "web_paths": [],
+            "credentials": [],
+            "vulnerabilities": []
+        }
+
+    def process_nmap(self, nmap_file):
+        """Process Nmap grepable output (-oG)."""
+        with open(nmap_file) as f:
+            for line in f:
+                if line.startswith("#") or "Status: Down" in line:
+                    continue
+
+                ip_match = re.search(r'Host: (\d+\.\d+\.\d+\.\d+)', line)
+                ports_match = re.findall(r'(\d+)/open/tcp//([^/]*)', line)
+
+                if ip_match:
+                    ip = ip_match.group(1)
+                    if ip not in self.data["hosts"]:
+                        self.data["hosts"][ip] = {"ports": [], "services": []}
+
+                    for port, service in ports_match:
+                        self.data["hosts"][ip]["ports"].append(int(port))
+                        self.data["hosts"][ip]["services"].append(f"{port}/{service}")
+
+    def process_gobuster(self, gobuster_file, target_url):
+        """Process Gobuster output."""
+        with open(gobuster_file) as f:
+            for line in f:
+                match = re.search(r'(/\S+)\s+\(Status: (\d+)\)', line)
+                if match:
+                    path, status = match.groups()
+                    self.data["web_paths"].append({
+                        "url": target_url + path,
+                        "status": int(status)
+                    })
+
+    def process_nikto(self, nikto_file):
+        """Process Nikto output."""
+        with open(nikto_file) as f:
+            for line in f:
+                if "+ " in line and "OSVDB" in line:
+                    self.data["vulnerabilities"].append({
+                        "source": "nikto",
+                        "finding": line.strip()
+                    })
+
+    def generate_report(self):
+        """Generate a consolidated report."""
+        report = []
+        report.append("=" * 60)
+        report.append("CONSOLIDATED RECON REPORT")
+        report.append("=" * 60)
+
+        # Hosts
+        report.append(f"\n[HOSTS] {len(self.data['hosts'])} discovered")
+        for ip, info in self.data["hosts"].items():
+            report.append(f"  {ip}: {', '.join(info['services'])}")
+
+        # Web paths
+        interesting = [p for p in self.data["web_paths"] if p["status"] in [200, 301, 302]]
+        report.append(f"\n[WEB PATHS] {len(interesting)} interesting paths")
+        for path in interesting[:20]:  # Top 20
+            report.append(f"  [{path['status']}] {path['url']}")
+
+        # Vulnerabilities
+        report.append(f"\n[VULNERABILITIES] {len(self.data['vulnerabilities'])} findings")
+        for vuln in self.data["vulnerabilities"][:10]:
+            report.append(f"  {vuln['finding'][:80]}")
+
+        return "\n".join(report)
+
+# Usage
+processor = ReconProcessor("./recon_output/")
+processor.process_nmap("recon_output/nmap.gnmap")
+processor.process_gobuster("recon_output/gobuster_80.txt", "http://10.10.10.5")
+processor.process_nikto("recon_output/nikto.txt")
+print(processor.generate_report())
+```
+
+## Quick One-Liners for Tool Output
+
+```bash
+# Extract open ports from Nmap output
+grep "open" nmap_output.txt | cut -d'/' -f1 | sort -n
+
+# Get unique IPs from any file
+grep -oE "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" file.txt | sort -u
+
+# Extract 200 OK URLs from Gobuster
+grep "(Status: 200)" gobuster.txt | awk '{print $1}'
+
+# Count findings by status code
+grep -oE "Status: [0-9]+" gobuster.txt | sort | uniq -c | sort -rn
+
+# Extract credentials from enum4linux
+grep -E "user:|password:" enum4linux.txt
+
+# Find interesting files in directory listing
+grep -iE "\.(bak|old|sql|zip|tar|gz|config|env|key|pem)" gobuster.txt
+```
+
+<InfoBox type="tip">
+Save your parsing scripts in a personal toolkit directory. Over time, you'll build a library of scripts that process every tool's output automatically — dramatically speeding up your workflow.
+</InfoBox>
+
+<Quiz
+  question="What Nmap output format is best for programmatic parsing?"
+  answer="XML (-oX)"
+  hint="XML provides structured data that's easy to parse with Python's xml.etree.ElementTree."
+/>
+
+<Quiz
+  question="What Nmap flag generates grepable output?"
+  answer="-oG"
+  hint="Grepable format is easy to process with grep, awk, and cut."
+/>

@@ -1,0 +1,318 @@
+---
+title: "Memory Forensics with Volatility"
+description: "Master memory analysis techniques using the Volatility framework for incident response."
+difficulty: "Advanced"
+estimatedTime: "60 minutes"
+tags: ["blue-team", "forensics", "volatility", "memory-analysis", "dfir"]
+---
+
+# Memory Forensics with Volatility
+
+<InfoBox type="tip" title="Why Memory Forensics?">
+Malware often lives **only in memory** - it never touches disk. Memory forensics reveals what disk forensics can't: running processes, injected code, network connections, and encryption keys.
+</InfoBox>
+
+## Why Analyze Memory?
+
+Memory contains:
+- **Running processes** and their command lines
+- **Network connections** (even closed ones in cache)
+- **Injected code** and hollowed processes
+- **Encryption keys** (ransomware decryption!)
+- **Registry hives** in memory
+- **User credentials** (passwords, hashes)
+- **Malware** that never wrote to disk
+
+---
+
+## Volatility Framework
+
+Volatility is the **industry standard** open-source memory analysis tool.
+
+### Installation
+
+<TerminalWindow title="Installing Volatility 3">
+# Install Volatility 3 (latest)
+$ pip install volatility3
+
+# Or clone from source
+$ git clone https://github.com/volatilityfoundation/volatility3.git
+$ cd volatility3
+$ pip install -r requirements.txt
+$ python vol.py -h
+
+# Install symbols (required for Windows analysis)
+$ mkdir -p ~/symbols
+$ cd ~/symbols
+$ wget https://downloads.volatilityfoundation.org/volatility3/symbols/windows.zip
+$ unzip windows.zip
+</TerminalWindow>
+
+### Basic Usage
+
+<TerminalWindow title="Volatility 3 Usage">
+# General syntax
+$ python vol.py -f [memory_dump] [plugin]
+
+# Identify the profile (Volatility 2) / Autodetect (Vol 3)
+$ python vol.py -f memory.dmp windows.info
+
+# List processes
+$ python vol.py -f memory.dmp windows.pslist
+
+# Process tree
+$ python vol.py -f memory.dmp windows.pstree
+
+# With output file
+$ python vol.py -f memory.dmp windows.pslist --output-file processes.txt
+</TerminalWindow>
+
+---
+
+## Essential Volatility Commands
+
+### Process Analysis
+
+<TerminalWindow title="Process Commands">
+# List all processes
+$ vol.py -f memory.dmp windows.pslist
+
+Output columns: PID, PPID, ImageFileName, Offset, Threads, Handles, CreateTime
+
+# Process tree (parent-child relationships)
+$ vol.py -f memory.dmp windows.pstree
+
+# Hidden/terminated processes (compare with pslist)
+$ vol.py -f memory.dmp windows.psscan
+
+# Command line arguments
+$ vol.py -f memory.dmp windows.cmdline
+
+Example output:
+PID: 4532  Command: powershell.exe -enc JABjAGwAaQBlAG4AdAA...
+   ^^^^^^ Base64 encoded - SUSPICIOUS!
+</TerminalWindow>
+
+### DLL and Injection Analysis
+
+<TerminalWindow title="DLL & Injection Detection">
+# List loaded DLLs
+$ vol.py -f memory.dmp windows.dlllist --pid 4532
+
+# Detect code injection
+$ vol.py -f memory.dmp windows.malfind
+
+# Output shows:
+# - Memory regions with suspicious permissions (RWX)
+# - Possibly injected code
+# - Shellcode patterns
+
+# Volatility 2: Check for process hollowing
+$ vol.py -f memory.dmp --profile=Win10x64 hollowfind
+</TerminalWindow>
+
+### Network Connections
+
+<TerminalWindow title="Network Analysis">
+# Active connections
+$ vol.py -f memory.dmp windows.netscan
+
+Output columns: Offset, Proto, LocalAddr, LocalPort, ForeignAddr, ForeignPort, State, PID, Owner
+
+# Example suspicious finding:
+Proto  LocalAddr       ForeignAddr       State        PID    Owner
+TCP    192.168.1.50    185.220.101.45    ESTABLISHED  4532   svchost.exe
+                       ^^^^^^^^^^^^^^ Known C2 IP!
+
+# Network statistics
+$ vol.py -f memory.dmp windows.netstat
+</TerminalWindow>
+
+### Registry Analysis
+
+<TerminalWindow title="Registry in Memory">
+# List registry hives
+$ vol.py -f memory.dmp windows.registry.hivelist
+
+# Print specific key
+$ vol.py -f memory.dmp windows.registry.printkey --key "Software\Microsoft\Windows\CurrentVersion\Run"
+
+# Look for persistence mechanisms!
+</TerminalWindow>
+
+### Credential Extraction
+
+<TerminalWindow title="Credential Analysis">
+# Dump password hashes (requires mimikatz plugin or hashdump)
+$ vol.py -f memory.dmp windows.hashdump
+
+# LSA secrets
+$ vol.py -f memory.dmp windows.lsadump
+
+# Cached credentials
+$ vol.py -f memory.dmp windows.cachedump
+</TerminalWindow>
+
+---
+
+## Investigation Workflow
+
+### Step 1: Initial Triage
+
+<TerminalWindow title="Initial Triage Script">
+#!/bin/bash
+# mem_triage.sh - Quick memory triage
+
+DUMP=$1
+OUTPUT_DIR="./mem_analysis_$(date +%Y%m%d_%H%M%S)"
+mkdir -p $OUTPUT_DIR
+
+echo "[*] Running initial triage..."
+
+# System info
+vol.py -f $DUMP windows.info > $OUTPUT_DIR/01_system_info.txt
+
+# Process list
+vol.py -f $DUMP windows.pslist > $OUTPUT_DIR/02_process_list.txt
+
+# Process tree
+vol.py -f $DUMP windows.pstree > $OUTPUT_DIR/03_process_tree.txt
+
+# Command lines
+vol.py -f $DUMP windows.cmdline > $OUTPUT_DIR/04_cmdline.txt
+
+# Network connections
+vol.py -f $DUMP windows.netscan > $OUTPUT_DIR/05_network.txt
+
+# Malfind (code injection)
+vol.py -f $DUMP windows.malfind > $OUTPUT_DIR/06_malfind.txt
+
+echo "[+] Triage complete. Check $OUTPUT_DIR"
+</TerminalWindow>
+
+### Step 2: Indicator Hunting
+
+Look for common malware indicators:
+
+| Indicator | How to Find |
+|-----------|-------------|
+| Suspicious process names | `pslist` - svchost from wrong path |
+| Encoded PowerShell | `cmdline` - look for `-enc` |
+| Injected code | `malfind` - RWX memory regions |
+| Parent-child anomalies | `pstree` - cmd.exe spawning PowerShell |
+| C2 connections | `netscan` - unusual outbound |
+| Persistence | Registry analysis |
+
+---
+
+## Practical Analysis
+
+<ChallengeBox 
+  title="Analyze the Memory Dump"
+  difficulty="hard"
+  points={200}
+>
+
+You're given a memory dump from a compromised workstation. Initial findings:
+
+```
+windows.pslist output (excerpt):
+PID    PPID   Name             CreateTime
+4      0      System           2026-01-14 08:00:01
+...
+4532   788    svchost.exe      2026-01-14 14:32:15
+6784   4532   powershell.exe   2026-01-14 14:32:18
+7012   6784   cmd.exe          2026-01-14 14:32:45
+
+windows.cmdline output:
+PID 6784: powershell.exe -nop -w hidden -enc JABjAGwAaQBlAG4AdAAgAD0A...
+
+windows.netscan output:
+TCP  192.168.1.50:49832  185.220.101.45:443  ESTABLISHED  4532
+```
+
+**Questions**:
+1. What's suspicious about PID 4532?
+2. What type of attack does this represent?
+3. What Volatility commands would you run next?
+
+<details>
+<summary>Answer</summary>
+
+**1. Suspicious about PID 4532 (svchost.exe)**:
+- Real svchost.exe is spawned by services.exe, not PID 788 (usually explorer or other)
+- svchost.exe shouldn't spawn PowerShell
+- Has direct C2 connection to external IP
+
+**2. Attack Type**:
+- This is a **process injection/hollowing** attack
+- Malware has either:
+  - Replaced svchost.exe
+  - Injected code into legitimate svchost
+- The PowerShell with encoded command is downloading/executing second stage
+
+**3. Next Commands**:
+```bash
+# Check for injection
+vol.py -f dump.dmp windows.malfind --pid 4532
+
+# Dump the suspicious process
+vol.py -f dump.dmp windows.memmap --pid 4532 --dump
+
+# Verify parent legitimacy
+vol.py -f dump.dmp windows.psscan | grep 788
+
+# Decode the PowerShell
+echo "JABjAGwAaQBlAG4AdA..." | base64 -d
+```
+
+</details>
+</ChallengeBox>
+
+---
+
+## Acquiring Memory Dumps
+
+| Tool | Platform | Notes |
+|------|----------|-------|
+| **FTK Imager** | Windows | GUI, reliable |
+| **WinPMEM** | Windows | Command line, open source |
+| **DumpIt** | Windows | Simple, creates raw dump |
+| **LiME** | Linux | Loadable kernel module |
+| **AVML** | Linux | Microsoft's tool, fast |
+
+<TerminalWindow title="Memory Acquisition">
+# Windows - DumpIt (run as admin)
+> DumpIt.exe
+
+# Windows - WinPMEM
+> winpmem_mini_x64.exe memory.raw
+
+# Linux - AVML
+$ sudo ./avml output.lime
+
+# Linux - LiME
+$ sudo insmod lime.ko "path=/tmp/memory.lime format=lime"
+</TerminalWindow>
+
+---
+
+## Key Takeaways
+
+- Memory forensics reveals **fileless malware** and hidden threats
+- **Volatility** is the go-to framework for memory analysis
+- Start with **process analysis** and **network connections**
+- Look for **injection** (malfind) and **parent-child anomalies**
+- Always **acquire memory** early in incident response
+
+<Quiz
+  question="Which Volatility command would you use to detect code injection in a process?"
+  options={[
+    "windows.pslist",
+    "windows.netscan",
+    "windows.malfind",
+    "windows.cmdline"
+  ]}
+  correctIndex={2}
+  explanation="windows.malfind detects potentially injected code by finding memory regions with suspicious permissions (RWX) and suspicious content."
+/>

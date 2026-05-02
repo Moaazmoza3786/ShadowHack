@@ -28,12 +28,15 @@ def load_config():
         'ai_provider': config.get('AI_PROVIDER', 'groq') # groq, openai, local
     }
 
-class GroqManager:
+class AIManager:
     def __init__(self, api_key=None):
         self.config = load_config()
         self.api_key = api_key or self.config.get('groq_api_key')
         self.client = None
-        self.model = "llama-3.3-70b-versatile" # Using Llama 3.3 70B for high intelligence
+        self.model = "llama-3.3-70b-versatile" 
+        self.local_model = "qwen2.5-coder:7b"
+        self.ollama_url = self.config.get('ollama_url', 'http://ollama:11434')
+        self.ai_provider = self.config.get('ai_provider', 'local') # Default to local if user requested
         
         if self.api_key:
             try:
@@ -51,6 +54,35 @@ class GroqManager:
         self.config = load_config()
         if self.config['groq_api_key']:
              self.client = Groq(api_key=self.config['groq_api_key'])
+
+    def _call_ollama(self, messages, temperature=0.7, timeout=60):
+        """Call local Ollama instance"""
+        try:
+            print(f"[*] AI Request: Sending to Ollama ({self.local_model})...")
+            payload = {
+                "model": self.local_model,
+                "messages": messages,
+                "stream": False,
+                "options": {
+                    "temperature": temperature
+                }
+            }
+            # Use the internal docker hostname if available, else localhost
+            url = f"{self.ollama_url}/api/chat"
+            response = requests.post(url, json=payload, timeout=timeout)
+            response.raise_for_status()
+            return response.json().get('message', {}).get('content')
+        except Exception as e:
+            print(f"[X] Ollama Error: {e}")
+            return None
+
+    def _call_ai(self, messages, temperature=0.7, timeout=60):
+        """Unified entry point for AI calls"""
+        if self.ai_provider == 'groq' and self.client:
+            return self._call_groq(messages, temperature, timeout)
+        else:
+            # Fallback to local
+            return self._call_ollama(messages, temperature, timeout)
 
     def _call_groq(self, messages, temperature=0.7, timeout=30):
         if not self.client:
@@ -103,7 +135,7 @@ class GroqManager:
             
         messages.append({"role": "user", "content": user_message})
         
-        return self._call_groq(messages, temperature=0.9, timeout=60)
+        return self._call_ai(messages, temperature=0.9, timeout=60)
 
     def generate_news(self):
         """
@@ -116,7 +148,7 @@ class GroqManager:
         
         messages = [{"role": "system", "content": system_prompt}]
         
-        content = self._call_groq(messages, temperature=0.8, timeout=60)
+        content = self._call_ai(messages, temperature=0.8, timeout=60)
         try:
             # Extract JSON from potential markdown wrapping
             if "```json" in content:
@@ -144,7 +176,7 @@ class GroqManager:
         Focus on the business impact and critical risks. Keep it under 150 words."""
         
         messages = [{"role": "system", "content": system_prompt}]
-        return self._call_groq(messages, temperature=0.5, timeout=60)
+        return self._call_ai(messages, temperature=0.5, timeout=60)
 
     def update_wiki(self, topic):
         """
@@ -160,7 +192,7 @@ class GroqManager:
         """
         
         messages = [{"role": "system", "content": system_prompt}]
-        content = self._call_groq(messages, temperature=0.7, timeout=60)
+        content = self._call_ai(messages, temperature=0.7, timeout=60)
         try:
             if "```json" in content:
                 content = content.split("```json")[1].split("```")[0].strip()
@@ -196,7 +228,7 @@ class GroqManager:
         
         messages = [{"role": "system", "content": system_prompt}]
         # Increased timeout to 120s to handle large payload lists
-        content = self._call_groq(messages, temperature=0.7, timeout=120)
+        content = self._call_ai(messages, temperature=0.7, timeout=120)
         try:
             if not content:
                 raise Exception("AI returned empty content")
@@ -232,7 +264,7 @@ class GroqManager:
         messages = [{"role": "system", "content": system_prompt}]
         messages.append({"role": "user", "content": query})
         
-        content = self._call_groq(messages, temperature=0.3, timeout=30)
+        content = self._call_ai(messages, temperature=0.3, timeout=30)
         try:
             if not content:
                 raise Exception("AI returned empty content")
@@ -259,7 +291,7 @@ class GroqManager:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": code}
         ]
-        content = self._call_groq(messages, temperature=0.5, timeout=60)
+        content = self._call_ai(messages, temperature=0.5, timeout=60)
         
         try:
             # Clean potential markdown
@@ -304,7 +336,7 @@ class GroqManager:
             {"role": "user", "content": payload}
         ]
         
-        content = self._call_groq(messages, temperature=0.9, timeout=60)
+        content = self._call_ai(messages, temperature=0.9, timeout=60)
         
         try:
             if "```json" in content:
@@ -330,7 +362,7 @@ class GroqManager:
             {"role": "user", "content": payload}
         ]
         
-        content = self._call_groq(messages, temperature=0.8, timeout=60)
+        content = self._call_ai(messages, temperature=0.8, timeout=60)
         
         try:
              # Clean potential markdown
@@ -354,7 +386,7 @@ class GroqManager:
         
         messages = [{"role": "system", "content": system_prompt}]
         
-        content = self._call_groq(messages, temperature=0.9, timeout=120)
+        content = self._call_ai(messages, temperature=0.9, timeout=120)
         
         try:
             if "```json" in content:
@@ -380,7 +412,7 @@ class GroqManager:
         Example: ["snip-1", "wiki-2"]"""
         
         messages = [{"role": "system", "content": system_prompt}]
-        content = self._call_groq(messages, temperature=0.3, timeout=60)
+        content = self._call_ai(messages, temperature=0.3, timeout=60)
         try:
             if "```json" in content: content = content.split("```json")[1].split("```")[0].strip()
             return json.loads(content)
@@ -396,7 +428,7 @@ class GroqManager:
         Ensure steps are technical, sequential, and follow modern methodologies."""
         
         messages = [{"role": "system", "content": system_prompt}]
-        content = self._call_groq(messages, temperature=0.7, timeout=120)
+        content = self._call_ai(messages, temperature=0.7, timeout=120)
         try:
             if "```json" in content: content = content.split("```json")[1].split("```")[0].strip()
             return json.loads(content)
@@ -416,7 +448,7 @@ class GroqManager:
         """
         
         messages = [{"role": "system", "content": system_prompt}]
-        content = self._call_groq(messages, temperature=0.6)
+        content = self._call_ai(messages, temperature=0.6)
         try:
             if "```json" in content: content = content.split("```json")[1].split("```")[0].strip()
             return json.loads(content)
@@ -467,15 +499,15 @@ Guidelines:
         
         messages.append({"role": "user", "content": message})
         
-        return self._call_groq(messages, temperature=0.7, timeout=60)
+        return self._call_ai(messages, temperature=0.7, timeout=60)
 
 # Global Instance
-groq_manager = None
+ai_manager = None
 
-def init_groq(api_key):
-    global groq_manager
-    groq_manager = GroqManager(api_key)
+def init_ai(api_key=None):
+    global ai_manager
+    ai_manager = AIManager(api_key)
 
-def get_groq_manager():
-    return groq_manager
+def get_ai_manager():
+    return ai_manager
 

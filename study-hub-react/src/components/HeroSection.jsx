@@ -1,172 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Shield, Zap, Lock } from 'lucide-react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { Activity, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+const ParticleField = lazy(() => import('./ParticleField'));
+import GlitchText from './GlitchText';
+import HealthPanel from './HealthPanel';
 
 const HeroSection = ({ userName = "Operative" }) => {
-    const [text, setText] = useState('');
-    const fullText = 'LEARN. PRACTICE. DOMINATE.';
+  const [text, setText] = useState('');
 
-    useEffect(() => {
-        let index = 0;
-        const timer = setInterval(() => {
-            if (index < fullText.length) {
-                setText(fullText.slice(0, index + 1));
-                index++;
-            } else {
-                clearInterval(timer);
-            }
-        }, 100);
-        return () => clearInterval(timer);
-    }, []);
+  useEffect(() => {
+    let index = 0;
+    const fullText = 'TRANSCEND. EXPLOIT. SECURE.';
+    const timer = setInterval(() => {
+      if (index < fullText.length) {
+        setText(fullText.slice(0, index + 1));
+        index++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 60);
+    return () => clearInterval(timer);
+  }, []);
 
-    return (
-        <section className="relative overflow-hidden py-20 px-6">
-            {/* Animated Background Elements */}
-            <div className="absolute inset-0 -z-10">
-                {/* Gradient Orbs */}
-                <motion.div
-                    className="absolute top-0 left-0 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl"
-                    animate={{
-                        x: [0, 30, 0],
-                        y: [0, 30, 0],
-                    }}
-                    transition={{ duration: 8, repeat: Infinity }}
-                />
-                <motion.div
-                    className="absolute bottom-0 right-0 w-96 h-96 bg-accent-500/20 rounded-full blur-3xl"
-                    animate={{
-                        x: [0, -30, 0],
-                        y: [0, -30, 0],
-                    }}
-                    transition={{ duration: 8, repeat: Infinity, delay: 0.5 }}
-                />
-                {/* Grid Pattern */}
-                <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                        backgroundImage:
-                            'linear-gradient(0deg, transparent 24%, rgba(51, 171, 255, 0.1) 25%, rgba(51, 171, 255, 0.1) 26%, transparent 27%, transparent 74%, rgba(51, 171, 255, 0.1) 75%, rgba(51, 171, 255, 0.1) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(51, 171, 255, 0.1) 25%, rgba(51, 171, 255, 0.1) 26%, transparent 27%, transparent 74%, rgba(51, 171, 255, 0.1) 75%, rgba(51, 171, 255, 0.1) 76%, transparent 77%, transparent)',
-                        backgroundSize: '50px 50px',
-                    }}
-                />
+  return (
+    <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden py-20 px-6 rounded-[4rem] mb-10">
+      <div className="absolute inset-0 -z-10 bg-dark-900">
+        <Suspense fallback={null}>
+          <ParticleField particleCount={40} connectionDistance={100} mouseRadius={150} showCode={true} className="opacity-25" />
+        </Suspense>
+        <div className="absolute top-[-15%] left-[-5%] w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-15%] right-[-5%] w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-[120px]" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          <div className="lg:col-span-12 space-y-8">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl hover:bg-white/10 hover:border-primary-500/20 transition-all cursor-default">
+              <Activity size={16} className="text-primary-500" />
+              <span className="text-[9px] font-black text-primary-500 uppercase tracking-[0.4em]">Uplink Established • Secure Channel</span>
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             </div>
 
-            <div className="relative z-10 max-w-6xl mx-auto text-center">
-                {/* Status Badge */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/30 mb-8"
-                >
-                    <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
-                    <span className="text-sm font-bold text-primary-500 uppercase tracking-widest">
-                        System Online • Global Servers Active
-                    </span>
-                </motion.div>
+            <div className="space-y-5">
+              <GlitchText intensity="high" className="block">
+                <h1 className="text-5xl md:text-6xl font-black text-white italic tracking-tighter uppercase leading-[0.85]">
+                  <span className="block text-primary-500 mb-1">Shadow</span>
+                  <span className="block underline decoration-accent-500/50 underline-offset-[10px]">Hack</span>
+                </h1>
+              </GlitchText>
 
-                {/* Main Heading with Typing Effect */}
-                <motion.h1
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.8 }}
-                    className="text-6xl md:text-7xl font-black text-white mb-6 italic tracking-tighter uppercase"
-                >
-                    {text}
-                    <motion.span
-                        animate={{ opacity: [1, 0] }}
-                        transition={{ duration: 0.8, repeat: Infinity }}
-                        className="text-primary-500"
-                    >
-                        |
-                    </motion.span>
-                </motion.h1>
-
-                {/* Subheading */}
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto font-medium"
-                >
-                    The most advanced cybersecurity education platform for aspiring ethical hackers
-                </motion.p>
-
-                {/* Feature Pills */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    className="flex flex-wrap justify-center gap-4 mb-12"
-                >
-                    {[
-                        { icon: Shield, label: '40+ Security Tools' },
-                        { icon: Zap, label: 'Real-Time Labs' },
-                        { icon: Lock, label: 'Expert Guidance' },
-                    ].map((feature, idx) => {
-                        const Icon = feature.icon;
-                        return (
-                            <motion.div
-                                key={idx}
-                                whileHover={{ scale: 1.05 }}
-                                className="px-6 py-3 rounded-full bg-white/5 border border-white/10 flex items-center gap-3 group hover:border-primary-500/50 transition-all"
-                            >
-                                <Icon className="w-5 h-5 text-primary-500 group-hover:scale-110 transition-transform" />
-                                <span className="text-sm font-bold text-white uppercase tracking-widest">
-                                    {feature.label}
-                                </span>
-                            </motion.div>
-                        );
-                    })}
-                </motion.div>
-
-                {/* Call-to-Action Buttons */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                    className="flex flex-col sm:flex-row gap-6 justify-center"
-                >
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-10 py-4 bg-primary-500 text-dark-900 rounded-2xl font-black uppercase italic tracking-tighter shadow-xl shadow-primary-500/30 hover:shadow-primary-500/50 transition-all"
-                    >
-                        Start Your Journey
-                    </motion.button>
-                    <motion.button
-                        whileHover={{ scale: 1.05, borderColor: 'rgba(51, 171, 255, 0.5)' }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-10 py-4 bg-transparent border-2 border-white/20 text-white rounded-2xl font-black uppercase italic tracking-tighter hover:bg-white/5 transition-all"
-                    >
-                        View Courses
-                    </motion.button>
-                </motion.div>
-
-                {/* User Stats Badges */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
-                    className="mt-16 grid grid-cols-3 gap-6 max-w-md mx-auto"
-                >
-                    {[
-                        { label: '10K+', value: 'Active Users' },
-                        { label: '100+', value: 'Challenges' },
-                        { label: '50+', value: 'Expert Labs' },
-                    ].map((stat, idx) => (
-                        <div
-                            key={idx}
-                            className="p-4 rounded-xl bg-white/5 border border-white/10 text-center hover:border-primary-500/50 transition-all"
-                        >
-                            <div className="text-2xl font-black text-primary-500 mb-1">{stat.label}</div>
-                            <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.value}</div>
-                        </div>
-                    ))}
-                </motion.div>
+              <div className="flex items-center gap-3 text-xl font-black text-white/40 italic uppercase tracking-widest h-10">
+                <span className="text-primary-400">{text}</span>
+                <span className="w-1.5 h-8 bg-primary-500 animate-pulse" />
+              </div>
             </div>
-        </section>
-    );
+
+            <p className="text-lg text-gray-400 max-w-xl font-medium leading-relaxed">
+              Next-generation pentesting platform with real-time AI analysis and gamified learning experience.
+            </p>
+
+            <div className="flex flex-wrap gap-5">
+              <button className="group relative px-8 py-4 bg-primary-500 text-dark-900 rounded-xl font-black uppercase italic tracking-tighter hover:scale-105 transition-all shadow-[0_15px_35px_rgba(0,242,234,0.3)] flex items-center gap-3 overflow-hidden">
+                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity" />
+                <span>Start Mission</span>
+                <ChevronRight className="group-hover:translate-x-1 transition-transform" size={18} />
+              </button>
+              <Link to="/tools" className="px-8 py-4 bg-transparent border-2 border-white/10 text-white rounded-xl font-black uppercase italic tracking-tighter hover:bg-white/5 hover:border-white/20 transition-all flex items-center gap-3">
+                <Activity size={18} className="text-accent-500" />
+                <span>Explore Tools</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+        <HealthPanel />
+      </div>
+    </section>
+  );
 };
 
 export default HeroSection;

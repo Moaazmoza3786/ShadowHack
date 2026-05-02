@@ -1,0 +1,77 @@
+
+# Introduction to Buffer Overflows (Stack-Based)
+
+## Smashing the Stack
+Buffer Overflow (BoF) is the "Dark Art" of hacking. It involves manipulating the memory of a running program to overwrite the **Instruction Pointer (EIP)** and force the CPU to execute *your* code instead of the program's code.
+
+## 1. Memory Theory: The Stack
+Think of the Stack like a stack of plates. You push data on top and pop it off.
+-   **ESP (Stack Pointer):** Points to the top of the stack.
+-   **EIP (Instruction Pointer):** The most critical register. It tells the CPU *where* to fetch the next instruction.
+-   **Buffer:** A reserved space for input (e.g., `char username[100]`).
+
+## 2. The Vulnerability
+If the program asks for a username (Allocated 100 bytes) but provides no check, and you send 200 bytes of "A":
+1.  The Buffer fills up with "A".
+2.  The "A"s spill over (overflow) into neighboring memory.
+3.  Eventually, they overwrite **EIP**.
+
+<Mermaid chart={`
+graph TD
+    A[Buffer Space (100 Bytes)] -->|Overflows| B[Saved EBP]
+    B -->|Overflows| C[EIP (Return Address)]
+    C -->|Points to| D[Attacker's Shellcode]
+    
+    style C fill:#ef4444,stroke:#fff,stroke-width:2px,color:#fff
+    style D fill:#b91c1c,stroke:#fff,stroke-width:2px,color:#fff
+`} />
+
+## 3. The 4 Steps of a Classic BoF
+1.  **Fuzzing:** Send increasing lengths of data until the app crashes (Segmentation Fault).
+2.  **Offset:** Find exact number of bytes needed to hit EIP (e.g., 2046 bytes).
+3.  **Overwrite EIP:** Set EIP to point to our shellcode location (JMP ESP).
+4.  **Shellcode:** Generate malicious bytes (msfvenom) to open a Reverse Shell.
+
+## 4. Example Fuzzer (Python)
+<CodeBlock language="python" showLineNumbers code={`#!/usr/bin/python
+import socket, sys
+
+ip = "10.10.10.5"
+port = 9999
+
+buffer = "A" * 100
+
+while True:
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((ip,port))
+        
+        print("Fuzzing with %s bytes" % len(buffer))
+        s.send(buffer + "\r\n")
+        s.close()
+        
+        buffer = buffer + ("A" * 100)
+    except:
+        print("Crashed at %s bytes" % len(buffer))
+        sys.exit()
+`} />
+
+## 5. Modern Protections
+This "Classic" stack overflow is mostly extinct in modern OS due to:
+-   **ASLR (Address Space Layout Randomization):** Randomizes memory addresses every reboot.
+-   **DEP (Data Execution Prevention):** Marks the stack as non-executable.
+
+However, understanding this is the prerequisite for all advanced Exploit Development.
+
+---
+
+<Quiz 
+    question="You successfully overwrite the EIP register with '41414141' (AAAA). What does this mean?" 
+    options={[
+        "You have control over the execution flow of the program",
+        "You have successfully verified input validation is working",
+        "The program has crashed safely",
+        "You have bypassed the Firewall"
+    ]} 
+    answer="You have control over the execution flow of the program" 
+/>

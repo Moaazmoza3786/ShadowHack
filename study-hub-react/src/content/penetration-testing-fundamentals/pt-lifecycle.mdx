@@ -1,0 +1,114 @@
+
+# The Penetration Testing Lifecycle (PTES)
+
+## Introduction to PTES
+The **Penetration Testing Execution Standard (PTES)** provides a standardized framework for conducting effective and professional penetration tests. Unlike unstructured hacking, a PTES-compliant assessment ensures that the engagement covers all critical phases, from the initial legal agreement to the final report delivery.
+
+As a professional penetration tester, you are not just "finding bugs"; you are emulating an adversary to test the resilience of an organization's defense. This lifecycle guides that emulation.
+
+<Mermaid chart={`
+graph TD
+    A[Pre-engagement Interactions] --> B[Intelligence Gathering]
+    B --> C[Threat Modeling]
+    C --> D[Vulnerability Analysis]
+    D --> E[Exploitation]
+    E --> F[Post Exploitation]
+    F --> G[Reporting]
+    G --> A
+    style A fill:#22c55e,stroke:#fff,stroke-width:2px,color:#000
+    style B fill:#3b82f6,stroke:#fff,stroke-width:2px,color:#000
+    style C fill:#f59e0b,stroke:#fff,stroke-width:2px,color:#000
+    style D fill:#ef4444,stroke:#fff,stroke-width:2px,color:#000
+    style E fill:#b91c1c,stroke:#fff,stroke-width:2px,color:#fff
+    style F fill:#7f1d1d,stroke:#fff,stroke-width:2px,color:#fff
+    style G fill:#fff,stroke:#333,stroke-width:2px,color:#000
+`} />
+
+---
+
+## 1. Pre-engagement Interactions
+Before a single packet is sent, the rules of the game must be established. This phase defines the **Scope**, **Rules of Engagement (RoE)**, and **Success Criteria**.
+- **Scoping:** IP ranges, domains, and applications that are *allowed* to be tested.
+- **RoE:** Can we use social engineering? Is Denial of Service (DoS) permitted? What are the testing hours?
+
+<Note type="warning">
+**CRITICAL:** Testing out of scope is a crime. If the client authorizes 192.168.1.5 but you attack 192.168.1.6, you are violating the CFAA (in the US) or similar laws globally. Always verify permissions in writing.
+</Note>
+
+## 2. Intelligence Gathering (Reconnaissance)
+This is often the longest phase. The goal is to maximize the attack surface.
+- **Passive Recon:** Gathering info without touching the target (OSINT, Whois, Google Dorking).
+- **Active Recon:** Probing the target directly (Port scanning, Banner grabbing).
+
+### Example: Active Recon with Nmap
+We use `nmap` to discover open ports and services.
+<TerminalSimulator 
+    cmd="nmap -sC -sV -oA target_scan 10.10.10.5" 
+    output={`Starting Nmap 7.93 ( https://nmap.org ) at 2025-05-15 10:22 EST
+Nmap scan report for 10.10.10.5
+Host is up (0.04s latency).
+Not shown: 997 closed ports
+PORT    STATE SERVICE     VERSION
+22/tcp  open  ssh         OpenSSH 7.6p1 Ubuntu 4ubuntu0.3
+80/tcp  open  http        Apache httpd 2.4.29 ((Ubuntu))
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+|_http-title: Site doesn't have a title (text/html).
+445/tcp open  microsoft-ds?
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel`} 
+/>
+
+## 3. Threat Modeling
+Here, we analyze the gathered data to identify high-value assets and potential attack vectors.
+- **Business Asset Analysis:** "Where is the customer data?" "Where are the credit cards?"
+- **Attacker Centric:** "If I were a ransomware group, how would I deploy?"
+
+## 4. Vulnerability Analysis
+We identify specific flaws in the systems found during recon. This involves:
+- **Automated Scanning:** Using tools like Nessus or OpenVAS.
+- **Manual Verification:** Confirming that a reported vulnerability (e.g., SQLi) is actually exploitable and not a false positive.
+
+<CodeBlock language="python" showLineNumbers code={`# Conceptual Python script to verify a Boolean-Based SQLi
+import requests
+
+target = "http://target.com/product.php?id=1"
+payload_true = " AND 1=1"
+payload_false = " AND 1=0"
+
+r1 = requests.get(target + payload_true)
+r2 = requests.get(target + payload_false)
+
+if len(r1.content) > len(r2.content):
+    print("[+] Boolean SQL Injection Confirmed!")
+else:
+    print("[-] Not vulnerable or WAF detected.")
+`} />
+
+## 5. Exploitation
+The "Example" phase. We launch exploits to bypass security controls and gain access.
+- **Precision:** Unlike a vulnerability scanner, we execute code to prove the risk.
+- **Evasion:** Bypassing Antivirus (AV) and Endpoint Detection & Response (EDR).
+- **Goal:** Obtain a shell (Command Line Interface access).
+
+## 6. Post Exploitation
+Getting a shell is just the beginning. Now we demonstrate the *impact*.
+- **Privilege Escalation:** Going from `www-data` (low user) to `root` or `SYSTEM` (admin).
+- **Pillaging:** stealing SSH keys, password hashes, or sensitive files.
+- **Pivoting:** Using the compromised machine to attack other internal systems.
+
+## 7. Reporting
+The most important product. If it's not in the report, it didn't happen.
+- **Executive Summary:** For management, focusing on business risk and dollars.
+- **Technical Report:** For engineers, detailing steps to reproduce and how to fix it.
+
+---
+
+<Quiz 
+    question="Which phase of the PTES lifecycle involves defining the Scope and Rules of Engagement?" 
+    options={[
+        "Intelligence Gathering",
+        "Pre-engagement Interactions",
+        "Threat Modeling",
+        "Reporting"
+    ]} 
+    answer="Pre-engagement Interactions" 
+/>

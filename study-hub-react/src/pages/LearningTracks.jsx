@@ -14,7 +14,8 @@ import {
     Star,
     BookOpen,
     Search,
-    Filter
+    Filter,
+    Youtube
 } from 'lucide-react';
 import { learningPaths } from '../data/learning-paths-data';
 
@@ -74,6 +75,13 @@ const LearningTracks = () => {
                     Structured career paths designed to take you from zero to hero.
                     Each track is a complete journey with courses, labs, and certifications.
                 </p>
+                <button
+                    onClick={() => navigate('/playlist-wizard')}
+                    className="mt-6 inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-black uppercase tracking-widest hover:bg-red-500/20 hover:border-red-500/40 transition-all group">
+                    <Youtube size={16} className="text-red-500" />
+                    اختر كورسات يوتيوب لكل مسار
+                    <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </button>
             </div>
 
             {/* Search & Filter */}
@@ -118,8 +126,8 @@ const LearningTracks = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.05 }}
-                            onClick={() => navigate(path.route || `/paths/${path.id}`)}
-                            className="group cursor-pointer p-8 rounded-[2rem] bg-dark-800/40 border border-white/5 hover:border-primary-500/30 transition-all duration-500 overflow-hidden relative"
+                            onClick={() => !path.isLocked && navigate(`/track/${path.id}`)}
+                            className={`group p-8 rounded-[2rem] bg-dark-800/40 border border-white/5 hover:border-primary-500/30 transition-all duration-500 overflow-hidden relative ${path.isLocked ? 'opacity-60' : 'cursor-pointer'}`}
                         >
                             {/* Background Gradient */}
                             <div className={`absolute inset-0 bg-gradient-to-br ${getLevelColor(path.level)} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>

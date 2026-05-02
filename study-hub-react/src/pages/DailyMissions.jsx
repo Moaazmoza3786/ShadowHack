@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     Target, CheckCircle, Clock, Zap, Gift,
     Calendar, TrendingUp, Award, Rocket, AlertCircle, RefreshCcw, Monitor, Terminal, Shield, ChevronRight
@@ -9,19 +9,19 @@ import { useAppContext } from '../context/AppContext';
 import './DailyMissions.css';
 
 const DailyMissions = () => {
-    const { language } = useAppContext();
+    // const { language } = useAppContext();
     const [missions, setMissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeCodespaces, setActiveCodespaces] = useState([]);
     const [isSyncing, setIsSyncing] = useState({});
     const [notification, setNotification] = useState(null);
 
-    const toast = (message, type = 'info') => {
+    const toast = useCallback((message, type = 'info') => {
         setNotification({ message, type });
         setTimeout(() => setNotification(null), 3000);
-    };
+    }, []);
 
-    const fetchCodespaces = async () => {
+    const fetchCodespaces = useCallback(async () => {
         try {
             const res = await fetch('/api/codespaces/active');
             const data = await res.json();
@@ -29,28 +29,28 @@ const DailyMissions = () => {
                 setActiveCodespaces(Object.entries(data.environments).map(([id, env]) => ({ id, ...env })));
             }
         } catch (err) {
-            console.error(err);
+            console.error('Fetch codespaces error:', err);
         }
-    };
+    }, []);
+
+    const fetchMissions = useCallback(async () => {
+        try {
+            const res = await fetch('/api/missions/user/1');
+            const data = await res.json();
+            if (data.success) setMissions(data.missions);
+        } catch (err) {
+            console.error('Fetch missions error:', err);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
         fetchMissions();
         fetchCodespaces();
         const interval = setInterval(fetchCodespaces, 10000);
         return () => clearInterval(interval);
-    }, []);
-
-    const fetchMissions = async () => {
-        try {
-            const res = await fetch('/api/missions/user/1');
-            const data = await res.json();
-            if (data.success) setMissions(data.missions);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [fetchMissions, fetchCodespaces]);
 
     const syncToCodespace = async (mission) => {
         if (activeCodespaces.length === 0) {

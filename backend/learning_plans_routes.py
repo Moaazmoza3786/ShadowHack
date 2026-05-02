@@ -5,7 +5,7 @@ API endpoints for AI-generated learning plans
 
 from flask import Blueprint, request, jsonify
 from models import db, LearningPlan, LearningPlanWeek, User, Lab
-from groq_learning_manager import groq_learning_manager
+from learning_manager import learning_manager
 from datetime import datetime
 
 learning_plans_bp = Blueprint('learning_plans', __name__, url_prefix='/api/learning-plans')
@@ -31,7 +31,7 @@ def create_learning_plan():
 
     try:
         # Generate curriculum using Groq AI
-        curriculum = groq_learning_manager.generate_curriculum(
+        curriculum = learning_manager.generate_curriculum(
             domain=domain,
             difficulty=difficulty,
             duration_weeks=duration_weeks,
@@ -301,7 +301,7 @@ def get_learning_hint(plan_id, topic):
     context = request.args.get('context')
     
     try:
-        hint = groq_learning_manager.generate_learning_hints(
+        hint = learning_manager.generate_learning_hints(
             topic=topic,
             difficulty=difficulty,
             context=context
@@ -333,7 +333,7 @@ def get_dynamic_challenge(plan_id):
     challenge_type = request.args.get('type', 'coding')  # coding, theory, scenario, exploit
     
     try:
-        challenge = groq_learning_manager.generate_challenge(
+        challenge = learning_manager.generate_challenge(
             topic=topic,
             difficulty=difficulty,
             type_=challenge_type
@@ -444,7 +444,7 @@ def generate_advanced_curriculum(plan_id):
             curriculum = plan.plan_data
         else:
             # Regenerate if not available
-            curriculum = groq_learning_manager.generate_curriculum(
+            curriculum = learning_manager.generate_curriculum(
                 domain=plan.domain,
                 difficulty=plan.difficulty,
                 duration_weeks=plan.duration_weeks if hasattr(plan, 'duration_weeks') else 8,

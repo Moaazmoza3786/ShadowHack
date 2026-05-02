@@ -1,0 +1,62 @@
+# Requests & Headers
+
+The web speaks HTTP. Every time you click a link, your browser sends a **Request** and receives a **Response**.
+Hacking the web means manipulating these requests.
+
+## Anatomy of a Request
+
+A standard HTTP request looks like this:
+
+```http
+GET /admin-panel HTTP/1.1
+Host: breachlabs.io
+User-Agent: Mozilla/5.0
+Authorization: Basic YWRtaW46cGFzc3dvcmQ=
+```
+
+*   **Verb:** `GET` (Retrieves info), `POST` (Sends info), `PUT` (Updates info).
+*   **Path:** `/admin-panel` (Where we are going).
+*   **Headers:** Metadata about the request (Who we are, what we accept).
+
+## Key Headers for Hackers
+
+| Header | Description | Attack Vector |
+| :--- | :--- | :--- |
+| `User-Agent` | Identifies your browser/OS. | Sending malicious code here for SQLi/XSS. |
+| `Cookie` | Session ID. | Stealing this = Account Takeover. |
+| `Referer` | Previous page. | Sometimes used for access control (bypassable). |
+
+## 1. Changing the User-Agent
+
+Servers often trust requests based on the User-Agent. Let's pretend to be a specialized admin tool.
+
+<TerminalWindow 
+  cmd="curl -A 'BreachLabs_Admin_Tool_v1' http://10.10.10.5/api/status" 
+  output="{
+  'status': 'access_granted',
+  'role': 'super_admin',
+  'flag': 'BL{Cur1_Us3r_Ag3nt_Sp00f}'
+}" 
+/>
+
+The server checked the User-Agent string. Since it matched the hardcoded admin tool name, it released the flag.
+
+<Quiz 
+  question="Which tool is commonly used in the terminal to send custom HTTP requests?"
+  options={[
+    "ssh",
+    "curl",
+    "ping",
+    "ftp"
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag revealed by the admin tool?"
+  options={[
+    "BL{Cur1_Us3r_Ag3nt_Sp00f}",
+    "BL{Admin_Access_Granted}",
+    "BL{HTTP_Header_Master}",
+    "access_granted"
+  ]}
+/>

@@ -1,0 +1,97 @@
+
+# Service Enumeration: SMB, DNS, SNMP
+
+## Beyond the Open Port
+Nmap tells you *what* is running (e.g., Port 445 is open). **Service Enumeration** asks the service *who* is running it and *what* data it holds.
+
+We look for misconfigurations that allow us to extract Usernames, Shares, Hostnames, and Network Topology without an exploit.
+
+## 1. SMB Enumeration (Server Message Block)
+SMB (Port 445/139) is the "File and Printer Sharing" protocol of Windows. It is a goldmine.
+-   **Null Session:** A legacy feature where you can connect with no username and no password.
+-   **Shares:** Folders exposed to the network (e.g., `\\10.10.10.5\Backups`).
+
+### Tool: Enum4linux
+The standard script wrapper for `smbclient`, `rpcclient`, and `net`.
+
+<TerminalSimulator 
+    cmd="enum4linux -a 10.10.10.5" 
+    output={`Starting enum4linux v0.8.9 ( http://labs.portcullis.co.uk/application/enum4linux/ ) on Sun Jan 11 14:22:10 2026
+...
+[+] Enumerating Users using SID S-1-5-21-.....
+[+] User: Administrator (RID: 500)
+[+] User: Guest (RID: 501)
+[+] User: bob (RID: 1001)
+
+[+] Enumerating Shares
+Sharename       Type      Comment
+---------       ----      -------
+IPC$            IPC       IPC Service (Samba Server)
+print$          Disk      Printer Drivers
+opt             Disk      
+Replication     Disk      
+`} 
+/>
+
+<Note type="tip">
+**Pro Tip:** Always check the `IPC$` share. While it doesn't contain files, it is used for "Inter-Process Communication" and allows you to list users and groups via RPC commands if anonymous access is allowed.
+</Note>
+
+## 2. DNS Enumeration (Domain Name System)
+DNS maps IPs to Hostnames. But a misconfigured DNS server can give you the map to the *entire* kingdom.
+
+### Zone Transfer (AXFR)
+If a DNS Administrator accidentally allows "Zone Transfers" to anyone, you can download the entire list of subdomains in one request.
+
+<Mermaid chart={`
+sequenceDiagram
+    participant Attacker
+    participant DNSServer
+    Attacker->>DNSServer: dig axfr @ns1.target.com target.com
+    DNSServer-->>Attacker: Transfer Accepted
+    DNSServer->>Attacker: admin.target.com -> 192.168.1.5
+    DNSServer->>Attacker: dev.target.com -> 192.168.1.6
+    DNSServer->>Attacker: vpn.target.com -> 192.168.1.7
+    note right of DNSServer: The "Keys to the Castle"
+`} />
+
+**Command:** `dig axfr @<DNS_SERVER_IP> <DOMAIN_NAME>`
+
+## 3. SNMP Enumeration (Simple Network Management Protocol)
+SNMP (Port 161 UDP) is used to monitor network devices (Routers, Printers, Servers).
+-   It uses a "Community String" which acts like a password.
+-   **Default Strings:** `public` (Read-only) and `private` (Read/Write).
+
+### Tool: snmpwalk
+If you find a router with community string `public`, you can read the ARP table, Routing table, and list of running processes.
+
+<TerminalSimulator 
+    cmd="snmpwalk -v2c -c public 10.10.10.5" 
+    output={`iso.3.6.1.2.1.1.1.0 = STRING: "Linux server01 4.15.0-20-generic"
+iso.3.6.1.2.1.1.5.0 = STRING: "server01"
+iso.3.6.1.2.1.25.4.2.1.2.1 = STRING: "systemd"
+iso.3.6.1.2.1.25.4.2.1.2.1254 = STRING: "cron"
+iso.3.6.1.2.1.25.4.2.1.2.1289 = STRING: "nginx"
+...
+`} 
+/>
+
+## Summary of Information Gained
+| Protocol | Port | Critical Info Gained |
+| :--- | :--- | :--- |
+| **SMB** | 445 | Usernames, Shares, Groups, Password Policy |
+| **DNS** | 53 | Subdomains, Internal IPs (via AXFR) |
+| **SNMP** | 161 (UDP) | Network Map, Installed Software, Running Processes |
+
+---
+
+<Quiz 
+    question="You are enumerating an SMB server and successfully connect to the 'IPC$' share with a generic account. What is the primary benefit of this connection?" 
+    options={[
+        "It allows you to download files from the C: drive",
+        "It allows you to upload malware",
+        "It allows you to enumerate users and groups via RPC",
+        "It gives you Administrator access immediately"
+    ]} 
+    answer="It allows you to enumerate users and groups via RPC" 
+/>

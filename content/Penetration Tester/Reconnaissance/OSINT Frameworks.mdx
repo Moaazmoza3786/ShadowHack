@@ -1,0 +1,60 @@
+# OSINT Frameworks
+
+Open Source Intelligence (OSINT) is not just random Googling. 
+It is structured data gathering.
+
+## The OSINT Framework
+
+A collection of tools and resources.
+[osintframework.com](https://osintframework.com/)
+
+## Tools
+
+### 1. TheHarvester
+Gathers emails, subdomains, hosts, employee names.
+
+```bash
+theHarvester -d target.com -b google,linkedin
+```
+
+### 2. Maltego
+Visual link analysis. Connects people to domains, to emails, to social profiles.
+
+### 3. Shodan
+Google for devices. Find webcams, industrial control systems, and servers.
+
+## Lab: Shodan Search
+
+Use Shodan filter syntax to find a vulnerable Apache server belonging to 'BreachLabs'.
+
+Query: `org:"BreachLabs" product:"Apache" port:8080`
+
+<TerminalWindow 
+  cmd="shodan search --fields ip_str,port,data 'org:BreachLabs'" 
+  output="104.22.11.55 8080 HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Ubuntu)
+X-Powered-By: PHP/5.2.4
+<!-- Internal Flag: BL{Sh0d4n_S33s_A11} -->" 
+/>
+
+The banner (data) returned by the server contained sensitive info.
+
+<Quiz 
+  question="Which tool provides a visual graph interface for linking OSINT entities?"
+  options={[
+    "TheHarvester",
+    "Maltego",
+    "Nmap",
+    "Wireshark"
+  ]}
+/>
+
+<Quiz 
+  question="What is the flag found via Shodan?"
+  options={[
+    "BL{0SINT_G0d}",
+    "BL{Sh0d4n_S33s_A11}",
+    "Apache/2.2.8",
+    "PHP/5.2.4"
+  ]}
+/>

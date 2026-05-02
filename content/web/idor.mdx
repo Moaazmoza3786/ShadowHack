@@ -1,0 +1,204 @@
+---
+title: Insecure Direct Object References (IDOR)
+description: Accessing unauthorized resources by manipulating object identifiers.
+---
+
+# Insecure Direct Object References (IDOR)
+
+IDOR is one of the most common and impactful web vulnerabilities. It occurs when an application uses user-controllable input to access objects directly without verifying that the user has permission to access that specific object.
+
+It's classified under **Broken Access Control** (OWASP A01) — the #1 web vulnerability category.
+
+## The Core Concept
+
+```
+Normal request:  GET /api/users/1001/profile
+Attacker changes: GET /api/users/1002/profile  ← Another user's data!
+```
+
+If the server returns user 1002's data without checking that the requester IS user 1002, that's IDOR.
+
+## Where to Find IDOR
+
+IDOR can hide anywhere an identifier is used:
+
+### URL Parameters
+```
+/profile?user_id=1337
+/invoice/download?id=5521
+/admin/delete?record=99
+```
+
+### Request Body (POST/PUT)
+```json
+{"user_id": 1337, "action": "view_orders"}
+```
+
+### Cookies and Headers
+```
+Cookie: user=1337
+X-User-ID: 1337
+```
+
+### File Names
+```
+/uploads/invoice_1337.pdf
+/reports/user_1337_data.csv
+```
+
+### API Endpoints
+```
+GET /api/v1/messages/thread/4521
+PUT /api/v1/users/1337/email
+DELETE /api/v1/posts/9988
+```
+
+## Types of IDOR
+
+### Direct IDOR
+The identifier directly maps to a database record.
+```
+GET /api/orders/5521 → Returns order #5521 regardless of who's asking
+```
+
+### Indirect IDOR
+The identifier is encoded or hashed but still predictable.
+```
+GET /files/dXNlcl8xMzM3 → base64 decode → "user_1337"
+```
+
+### Horizontal Privilege Escalation
+Accessing another user's data at the same privilege level.
+```
+User A (id=1001) accesses User B's (id=1002) private messages
+```
+
+### Vertical Privilege Escalation
+Accessing resources of a higher privilege level.
+```
+Regular user accesses admin panel: GET /admin/users/list
+```
+
+## Practical Testing Methodology
+
+### Step 1: Identify Object References
+Use Burp Suite to intercept all requests and look for:
+- Numeric IDs: `id=1337`, `user=42`, `order=9988`
+- GUIDs: `id=550e8400-e29b-41d4-a716-446655440000`
+- Hashed values: `file=5f4dcc3b5aa765d61d8327deb882cf99`
+- Encoded values: `user=dXNlcl8xMzM3`
+
+### Step 2: Test for IDOR
+```
+Original: GET /api/profile?id=1001
+Test:     GET /api/profile?id=1002
+Test:     GET /api/profile?id=1
+Test:     GET /api/profile?id=0
+Test:     GET /api/profile?id=-1
+```
+
+### Step 3: Test All HTTP Methods
+```
+GET    /api/users/1002          → Read another user's data
+PUT    /api/users/1002          → Modify another user's data
+DELETE /api/users/1002          → Delete another user's account
+POST   /api/users/1002/password → Change another user's password
+```
+
+### Step 4: Test Encoded/Hashed IDs
+```bash
+# Decode base64
+echo "dXNlcl8xMzM3" | base64 -d
+# Output: user_1337
+
+# Try user_1338
+echo -n "user_1338" | base64
+# Output: dXNlcl8xMzM4
+
+# Use in request
+GET /api/profile?id=dXNlcl8xMzM4
+```
+
+<TerminalWindow
+  title="IDOR via Burp Suite Intruder"
+  command="# Burp Suite Intruder payload: numbers 1000-1100"
+  output="1001 → 200 OK (your account)
+1002 → 200 OK (another user's data!) ← IDOR!
+1003 → 404 Not Found
+1004 → 200 OK (another user's data!) ← IDOR!"
+/>
+
+## Real-World IDOR Examples
+
+### Example 1: Account Takeover via Password Reset
+```
+POST /api/reset-password
+{"user_id": 1337, "new_password": "hacked123"}
+
+→ Change to:
+{"user_id": 1, "new_password": "hacked123"}  ← Reset admin's password!
+```
+
+### Example 2: Invoice Download
+```
+GET /invoices/download?invoice_id=10045
+
+→ Enumerate:
+GET /invoices/download?invoice_id=10044  ← Competitor's invoice!
+GET /invoices/download?invoice_id=10043
+```
+
+### Example 3: API with GUIDs (Still Vulnerable)
+```
+GET /api/documents/550e8400-e29b-41d4-a716-446655440000
+
+→ Find another GUID from a public profile or email:
+GET /api/documents/6ba7b810-9dad-11d1-80b4-00c04fd430c8  ← Another user's doc!
+```
+
+<InfoBox type="important">
+GUIDs are not a security control — they're just harder to guess. If you can find a GUID through any other means (public profile, email, API leak), IDOR still works.
+</InfoBox>
+
+## Prevention
+
+```python
+# VULNERABLE: No authorization check
+@app.route('/api/orders/<int:order_id>')
+def get_order(order_id):
+    order = Order.query.get(order_id)
+    return jsonify(order.to_dict())
+
+# SECURE: Verify ownership
+@app.route('/api/orders/<int:order_id>')
+@login_required
+def get_order(order_id):
+    order = Order.query.get(order_id)
+    if order.user_id != current_user.id:
+        abort(403)  # Forbidden
+    return jsonify(order.to_dict())
+```
+
+**Key principles:**
+- Always verify the authenticated user owns/has permission to access the requested resource
+- Never trust client-supplied IDs for authorization decisions
+- Use indirect references (map user-specific tokens to actual IDs server-side)
+- Implement proper access control at the data layer, not just the UI
+
+<Quiz
+  question="What OWASP category does IDOR fall under?"
+  answer="Broken Access Control (A01)"
+  hint="It's the #1 category in the OWASP Top 10 2021."
+/>
+
+<Quiz
+  question="What is horizontal privilege escalation?"
+  answer="Accessing another user's data at the same privilege level"
+  hint="Same level, different user — as opposed to vertical (gaining higher privileges)."
+/>
+
+<Quiz
+  question="If an ID is base64 encoded, does that prevent IDOR?"
+  answer="No"
+  hint="Encoding is not encryption. You can decode, modify, and re-encode the value."
+/>

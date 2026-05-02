@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users, Mail, UserCheck, GraduationCap, Fish,
-    ShieldAlert, Usb, Phone, CheckCircle, XCircle,
+    ShieldAlert, Usb, Phone, Video, CheckCircle, XCircle,
     AlertTriangle, Send, Search, Terminal, Globe,
     ExternalLink, Copy, Eye, Save, Plus, Trash2,
     FileText, UserPlus, Zap, MessageSquare, Monitor,

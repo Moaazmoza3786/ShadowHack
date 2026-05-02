@@ -4,11 +4,16 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  test: {
+    environment: 'node',
+    globals: true,
+  },
   plugins: [tailwindcss(), react()],
   optimizeDeps: {
     esbuildOptions: {
       define: {
-        global: 'globalThis'
+        global: 'globalThis',
+        'process.env': '{}'
       },
       supported: {
         bigint: false
@@ -22,7 +27,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    host: "127.0.0.1",
+    host: "0.0.0.0",
     allowedHosts: true,
     middlewareMode: false,
     proxy: {

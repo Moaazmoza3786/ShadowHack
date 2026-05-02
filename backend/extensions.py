@@ -11,5 +11,5 @@ _storage_uri = os.environ.get("RATELIMIT_STORAGE_URI", "memory://")
 limiter = Limiter(
     key_func=get_remote_address,
     storage_uri=_storage_uri,
-    default_limits=["200 per day", "50 per hour"],
+    default_limits=["2000 per day", "500 per hour"], # Increased for dev
 )

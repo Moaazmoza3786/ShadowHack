@@ -1,0 +1,44 @@
+---
+title: Wireshark Analysis
+description: Deep packet inspection and traffic analysis.
+---
+
+# Wireshark Analysis
+
+Wireshark is the world's foremost network protocol analyzer. It lets you see what's happening on your network at a microscopic level.
+
+## Key Features
+
+- **Capture:** Grab live traffic from a network interface.
+- **Filters:** Use Display Filters to find exactly what you're looking for (e.g., `http.request.method == "POST"`).
+- **Streams:** "Follow TCP Stream" to see the entire conversation in a human-readable format.
+
+<PacketView 
+  source="10.10.10.15" 
+  dest="10.10.10.1" 
+  protocol="HTTP" 
+  flags="POST /login" 
+  seq="200" 
+/>
+
+<InfoBox type="important">
+If traffic is encrypted (HTTPS), you won't be able to see the data unless you have the private key or use a proxy like Burp Suite.
+</InfoBox>
+
+<TerminalWindow 
+  title="Using Tshark (Command-line Wireshark)" 
+  command="tshark -r capture.pcap -Y 'http.response.code == 200'" 
+  output="  1 0.000000 10.10.10.1 -> 10.10.10.15 HTTP 200 OK (text/html)" 
+/>
+
+<Quiz 
+  question="What is the display filter to only show HTTP POST requests?" 
+  answer='http.request.method == "POST"' 
+  hint="Filter by method." 
+/>
+
+<Quiz 
+  question="Which feature in Wireshark reconstructs a full conversation between two hosts?" 
+  answer="Follow TCP Stream" 
+  hint="It's in the right-click menu." 
+/>

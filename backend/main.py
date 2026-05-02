@@ -33,7 +33,8 @@ from models import db
 from subscription_routes import subscription_bp
 
 # Global SocketIO instance
-socketio = SocketIO(cors_allowed_origins="*", async_mode="gevent")
+# Use threading mode for compatibility with Python 3.13
+socketio = SocketIO(cors_allowed_origins="*", async_mode="threading", ping_timeout=60, ping_interval=25)
 
 # Automation manager is initialized lazily or inside create_app
 from automation_manager import get_automation_manager
@@ -103,12 +104,30 @@ def create_app(config_name=None):
     socketio.init_app(app)
     db.init_app(app)
 
+    # Auto-initialize database
+    with app.app_context():
+        try:
+            # We defined init_database below, but let's call it here
+            # Note: init_database is defined later in this file, so we move the call to after it's defined
+            # or just call db.create_all() here.
+            db.create_all()
+        except Exception as e:
+            print(f"Error creating tables: {e}")
+
     # Register blueprints
     app.register_blueprint(api)
     app.register_blueprint(auth_bp)
     app.register_blueprint(leagues_bp)
     app.register_blueprint(subscription_bp)
-    
+
+    # Register AI proxy blueprint
+    try:
+        from ai_proxy_routes import ai_proxy_bp
+        app.register_blueprint(ai_proxy_bp)
+        print("[OK] AI Proxy (Groq + Ollama) - INITIALIZED")
+    except ImportError as e:
+        print(f"Warning: ai_proxy_routes not available: {e}")
+
     # Register learning plans blueprint
     try:
         from learning_plans_routes import learning_plans_bp
@@ -197,14 +216,16 @@ def create_app(config_name=None):
     except ImportError:
         print("Warning: flag_validator not available")
 
-    # Import terminal socket namespace
+    # Import terminal socket namespaces
     try:
         from terminal_socket import TerminalNamespace, ToolsNamespace
+        from workflow_api import WorkflowNamespace
 
         socketio.on_namespace(TerminalNamespace())
         socketio.on_namespace(ToolsNamespace())
-        logger.info("[OK] SocketIO Namespaces: Terminal and Tools Registered")
-        print("[OK] SocketIO Namespaces: Terminal and Tools Registered")
+        socketio.on_namespace(WorkflowNamespace())
+        logger.info("[OK] SocketIO Namespaces: Terminal, Tools, and Workflows Registered")
+        print("[OK] SocketIO Namespaces: Terminal, Tools, and Workflows Registered")
     except ImportError as e:
         print(f"Warning: terminal_socket not available: {e}")
 
@@ -244,21 +265,81 @@ def create_app(config_name=None):
 
     # Initialize AI Manager
     try:
-        from ai_manager import init_groq
+        from ai_manager import init_ai
 
         # Security: Moved to Environment Variables
         GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-        if GROQ_API_KEY:
-            init_groq(GROQ_API_KEY)
+        AI_PROVIDER = os.environ.get("AI_PROVIDER", "local")
+        
+        init_ai(GROQ_API_KEY)
+        
+        if AI_PROVIDER == 'local':
+            logger.info("[OK] AI Manager: INITIALIZED (Local/Ollama)")
+            print("[OK] AI Manager: INITIALIZED (Local/Ollama)")
+        elif GROQ_API_KEY:
             logger.info("[OK] AI Manager: INITIALIZED (Groq)")
             print("[OK] AI Manager: INITIALIZED (Groq)")
         else:
-            logger.warning("[!!] AI Manager: GROQ_API_KEY not found in environment")
-            print("[!!] AI Manager: GROQ_API_KEY not found in environment")
+            logger.warning("[!!] AI Manager: AI Provider set to Groq but NO API KEY found")
+            print("[!!] AI Manager: AI Provider set to Groq but NO API KEY found")
     except ImportError as e:
         print(f"Warning: ai_manager not available: {e}")
     except Exception as e:
         print(f"Error initializing AI: {e}")
+    
+    # Initialize Phase 2: AI Pentester Assistant (MiniMax M2.5)
+    try:
+        from ai_pentester import ai_bp
+        from ai_report_generator import report_bp
+        from recommendations import recommendations_bp
+        
+        app.register_blueprint(ai_bp)
+        app.register_blueprint(report_bp)
+        app.register_blueprint(recommendations_bp)
+        
+        # Set OpenRouter API key
+        OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY")
+        if OPENROUTER_KEY:
+            logger.info("[OK] Phase 2: AI Pentester (MiniMax M2.5) - INITIALIZED")
+            print("[OK] Phase 2: AI Pentester (MiniMax M2.5) - INITIALIZED")
+        else:
+            logger.warning("[!!] Phase 2: OPENROUTER_API_KEY not found")
+            print("[!!] Phase 2: OPENROUTER_API_KEY not found")
+    except ImportError as e:
+        print(f"Warning: Phase 2 AI modules not available: {e}")
+    except Exception as e:
+        print(f"Error initializing Phase 2: {e}")
+    
+    # Initialize Phase 3: Plugin System
+    try:
+        from plugin_marketplace import plugin_bp
+        from plugin_system import get_plugin_manager
+        
+        app.register_blueprint(plugin_bp)
+        
+        # Initialize plugin manager and load plugins
+        plugin_manager = get_plugin_manager("./backend/plugins")
+        plugin_manager.load_all_plugins()
+        
+        logger.info(f"[OK] Phase 3: Plugin System - INITIALIZED ({len(plugin_manager.plugins)} plugins loaded)")
+        print(f"[OK] Phase 3: Plugin System - INITIALIZED ({len(plugin_manager.plugins)} plugins loaded)")
+    except ImportError as e:
+        print(f"Warning: Phase 3 Plugin modules not available: {e}")
+    except Exception as e:
+        print(f"Error initializing Phase 3: {e}")
+    
+    # Initialize Phase 4: Advanced Workflows
+    try:
+        from workflow_api import workflow_bp
+        
+        app.register_blueprint(workflow_bp)
+        
+        logger.info("[OK] Phase 4: Advanced Workflows - INITIALIZED")
+        print("[OK] Phase 4: Advanced Workflows - INITIALIZED")
+    except ImportError as e:
+        print(f"Warning: Phase 4 Workflow modules not available: {e}")
+    except Exception as e:
+        print(f"Error initializing Phase 4: {e}")
 
     # Error handlers
     @app.errorhandler(404)
@@ -273,6 +354,44 @@ def create_app(config_name=None):
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({"success": False, "error": "Bad request"}), 400
+
+    # Health check endpoints for Docker/K8s
+    @app.route("/health")
+    @app.route("/api/health")
+    @app.route("/api/health/status")
+    def health_check():
+        """Backend health check with DB + Ollama probes."""
+        status = {
+            "status": "healthy",
+            "backend": "healthy",
+            "database": "unknown",
+            "version": "3.0.0",
+        }
+
+        # Probe database connectivity (engine existence isn't enough).
+        try:
+            from sqlalchemy import text
+            db.session.execute(text("SELECT 1"))
+            status["database"] = "connected"
+        except Exception:
+            status["database"] = "error"
+            status["status"] = "degraded"
+        
+        # Probe Ollama (AI Engine)
+        try:
+            import requests
+            ollama_url = os.environ.get("OLLAMA_URL", "http://localhost:11434").rstrip("/")
+            r = requests.get(f"{ollama_url}/api/tags", timeout=1)
+            status["ollama"] = "healthy" if r.status_code == 200 else "unhealthy"
+        except Exception:
+            status["ollama"] = "unreachable"
+
+        if status.get("ollama") != "healthy":
+            status["status"] = "degraded"
+
+        # Frontend reachability cannot be asserted by backend in a reliable way.
+        status["frontend"] = "unknown"
+        return jsonify(status), 200
 
     # Root endpoint
     @app.route("/")
@@ -292,6 +411,9 @@ def create_app(config_name=None):
                 },
             }
         )
+
+    # Run one-time initialization
+    init_database(app)
 
     return app
 

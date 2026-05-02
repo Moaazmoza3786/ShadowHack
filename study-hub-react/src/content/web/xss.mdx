@@ -1,0 +1,41 @@
+---
+title: Cross-Site Scripting (XSS)
+description: Attacking the user's browser.
+---
+
+# Cross-Site Scripting (XSS)
+
+XSS allows an attacker to execute malicious scripts in the victim's browser. This can be used to steal cookies, session tokens, or deface websites.
+
+## Types of XSS
+
+1. **Reflected XSS:** The script is part of a URL or form submission and is reflected back to the user.
+2. **Stored XSS:** The script is saved on the server (e.g., in a comment or profile) and shown to every user who views that page.
+3. **DOM-based XSS:** The vulnerability exists entirely in the client-side code.
+
+### Example Payload
+`<script>alert(document.cookie);</script>`
+
+<InfoBox type="important">
+Stored XSS is usually more dangerous because it can potentially affect every user of the application.
+</InfoBox>
+
+```javascript
+// Vulnerable: Directly injecting user input into the DOM
+document.getElementById('welcome').innerHTML = "Welcome, " + name;
+
+// Secure: Using textContent to prevent script execution
+document.getElementById('welcome').textContent = "Welcome, " + name;
+```
+
+<Quiz 
+  question="Which type of XSS is stored on the server's database?" 
+  answer="Stored XSS" 
+  hint="Think of where the payload 'lives'." 
+/>
+
+<Quiz 
+  question="What Javascript property is often used to steal a user's session token?" 
+  answer="document.cookie" 
+  hint="It's where the browser stores session information." 
+/>

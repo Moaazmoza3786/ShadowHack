@@ -1,0 +1,44 @@
+---
+title: Process Management
+description: Controlling what runs on your system.
+---
+
+# Process Management
+
+A process is a running instance of a program. In Linux, you can view, stop, and prioritize these processes.
+
+## Viewing Processes
+
+### 1. `ps` (Process Status)
+Shows the processes running in your current shell.
+- `ps aux`: Shows all processes from all users.
+
+### 2. `top` or `htop`
+Provides a real-time view of running processes and system resources.
+
+## Killing Processes
+
+Sometimes a program freezes or needs to be stopped. We use the `kill` command.
+`kill -9 1234` (Where 1234 is the Process ID or PID).
+
+<TerminalWindow 
+  title="Checking Processes" 
+  command="ps aux | grep 'apache'" 
+  output="root  1024  0.0  0.1  apache2" 
+/>
+
+<InfoBox type="info">
+The `kill -9` signal is the "force kill" signal. It tells the kernel to stop the process immediately.
+</InfoBox>
+
+<Quiz 
+  question="What command shows a real-time list of running processes?" 
+  answer="top" 
+  hint="Or `htop` for a better UI." 
+/>
+
+<Quiz 
+  question="What does PID stand for?" 
+  answer="Process ID" 
+  hint="Every process has a unique one." 
+/>

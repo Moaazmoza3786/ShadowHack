@@ -1,0 +1,41 @@
+---
+title: Nmap Mastery
+description: Specialized scanning techniques for pentesters.
+---
+
+# Nmap Mastery
+
+Nmap (Network Mapper) is the "God mode" tool for network discovery and security auditing.
+
+## Advanced Scan Types
+
+### 1. SYN Scan (`-sS`)
+The default and most popular scan. It's fast and relatively stealthy as it never completes the TCP 3-way handshake.
+
+### 2. UDP Scan (`-sU`)
+Scans UDP ports (like DNS, SNMP, and DHCP). UDP scans are much slower than TCP scans.
+
+### 3. Service Version Detection (`-sV`)
+Probes open ports to determine what service and version is actually running.
+
+<TerminalWindow 
+  title="Aggressive Scan" 
+  command="nmap -A 10.10.10.5" 
+  output="Starting Nmap...\nPORT   STATE SERVICE VERSION\n22/tcp open  ssh     OpenSSH 7.6p1\n80/tcp open  http    Apache httpd 2.4.29\nDevice type: general purpose\nRunning: Linux 3.X|4.X" 
+/>
+
+<InfoBox type="tip">
+Use the `-T4` or `-T5` flags to speed up your scans, but be careful as higher speeds are more likely to be detected by IDS.
+</InfoBox>
+
+<Quiz 
+  question="Which Nmap flag is used for Aggressive scanning (OS detection, version detection, script scanning, and traceroute)?" 
+  answer="-A" 
+  hint="It's a single capital letter." 
+/>
+
+<Quiz 
+  question="What is the default scan type if no flag is specified (and running as root)?" 
+  answer="SYN scan" 
+  hint="Also known as -sS." 
+/>

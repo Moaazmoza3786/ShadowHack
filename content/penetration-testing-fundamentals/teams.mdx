@@ -1,0 +1,78 @@
+
+# Blue Team vs Red Team vs Purple Team
+
+## The Colors of Infosec
+In cybersecurity, we use military terminology to describe the different roles in an engagement. Understanding where you fit is crucial for career development.
+
+<Mermaid chart={`
+graph TD
+    Red[Red Team<br>Attackers] 
+    Blue[Blue Team<br>Defenders]
+    Purple[Purple Team<br>Collaboration]
+
+    Red -->|Attack| Blue
+    Blue -->|Defend| Red
+    Red -.->|Share TTPs| Purple
+    Blue -.->|Share Logs| Purple
+    Purple -->|Improve| Red
+    Purple -->|Improve| Blue
+
+    style Red fill:#b91c1c,stroke:#fff,stroke-width:2px,color:#fff
+    style Blue fill:#1e40af,stroke:#fff,stroke-width:2px,color:#fff
+    style Purple fill:#7e22ce,stroke:#fff,stroke-width:2px,color:#fff
+`} />
+
+## 1. Red Team (The Aggressors)
+Red Teamers emulate real-world adversaries (APTs, Criminal Syndicates).
+- **Goal:** Test the effectiveness of the Blue Team's detection and response.
+- **Mindset:** "How can I get in without being seen?"
+- **Tools:** Cobalt Strike, Metasploit, Custom Malware.
+- **Duration:** Weeks to Months.
+
+## 2. Blue Team (The Defenders)
+The SOC Analysts, Incident Responders, and Threat Hunters who protect the organization 24/7.
+- **Goal:** Detect, Contain, and Eradicate threats.
+- **Mindset:** "What is normal behavior, and what is an anomaly?"
+- **Tools:** SIEM (Splunk, Sentinel), EDR (CrowdStrike), Firewalls.
+
+## 3. Purple Team (The Collaborators)
+A collaborative exercise, not necessarily a separate permanent team. It involves Red and Blue sitting together.
+- **Scenario:** Red runs an attack (e.g., T1003 OS Credential Dumping).
+- **Check:** Does Blue see it?
+- **Optimization:** If not, they tune the SIEM alert together **in real-time**.
+
+### Simulation Example: Identifying a Red Team Attack
+A Red Teamer runs a simple `whoami` command. To a Blue Teamer, this looks like a process execution event.
+
+<CodeBlock language="json" showLineNumbers code={`// Blue Team Log View (Sysmon Event ID 1)
+{
+  "EventID": 1,
+  "Image": "C:\\Windows\\System32\\whoami.exe",
+  "CommandLine": "whoami",
+  "User": "NT AUTHORITY\\SYSTEM",
+  "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+  "ParentCommandLine": "cmd.exe /c whoami"
+}
+`} />
+
+<Note type="warning">
+**Detection Tip:** While `whoami` is a standard command, seeing it executed by `SYSTEM` immediately after `cmd.exe` spawned from `apache.exe` (a web server) is a 99% indicator of a Webshell.
+</Note>
+
+## Which Path is For You?
+*   **Like breaking things?** Go Red.
+*   **Like investigation and puzzles?** Go Blue.
+*   **Like teaching and optimizing?** Go Purple.
+
+---
+
+<Quiz 
+    question="During a Purple Team exercise, the Red Team executes a specific malware sample. The Blue Team checks their SIEM and sees nothing. What is the immediate next step?" 
+    options={[
+        "The Red Team mocks the Blue Team for failing",
+        "The engagement ends immediately",
+        "They work together to create a new detection rule for that specific behavior",
+        "The Red Team deletes the malware and tries a different one"
+    ]} 
+    answer="They work together to create a new detection rule for that specific behavior" 
+/>

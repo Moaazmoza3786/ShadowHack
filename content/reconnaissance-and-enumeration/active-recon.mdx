@@ -1,0 +1,219 @@
+---
+title: Active Reconnaissance — Scanning & Enumeration
+description: Directly probing target systems to map the attack surface.
+---
+
+# Active Reconnaissance — Scanning & Enumeration
+
+Unlike passive recon, **active reconnaissance** involves sending packets directly to the target. You are now interacting with their infrastructure — which means you can be detected by firewalls, IDS/IPS, and security monitoring.
+
+**Only perform active recon with explicit written authorization.**
+
+## TCP Fundamentals
+
+Understanding TCP is essential for understanding how scanning works.
+
+### The TCP Three-Way Handshake
+
+```
+Client          Server
+  |──── SYN ────▶|    "I want to connect"
+  |◀── SYN-ACK ──|    "OK, I'm listening"
+  |──── ACK ────▶|    "Great, let's talk"
+  |   [Connected] |
+```
+
+### Port States
+
+| State | Meaning | Nmap Response |
+|-------|---------|---------------|
+| **Open** | Application is listening | SYN-ACK received |
+| **Closed** | No application, OS responds | RST received |
+| **Filtered** | Firewall dropping packets | No response / ICMP unreachable |
+| **Open\|Filtered** | Can't determine (UDP) | No response |
+
+## Nmap — The Essential Scanner
+
+### Phase 1: Host Discovery
+
+```bash
+# Ping sweep — find live hosts
+nmap -sn 192.168.1.0/24
+
+# Disable ping (scan even if host doesn't respond to ping)
+nmap -Pn 10.10.10.5
+
+# ARP scan (local network only, very reliable)
+sudo nmap -PR -sn 192.168.1.0/24
+```
+
+### Phase 2: Port Scanning
+
+```bash
+# SYN scan (default, requires root) — fast and stealthy
+sudo nmap -sS 10.10.10.5
+
+# Full connect scan (no root needed) — slower, more detectable
+nmap -sT 10.10.10.5
+
+# Scan all 65535 ports
+nmap -p- 10.10.10.5
+
+# Fast scan — top 100 ports
+nmap -F 10.10.10.5
+
+# Specific ports
+nmap -p 22,80,443,8080 10.10.10.5
+
+# Speed up with min-rate
+sudo nmap -sS -p- --min-rate 5000 10.10.10.5
+```
+
+<TerminalWindow
+  title="Full Port Scan"
+  command="sudo nmap -sS -p- -T4 --min-rate 5000 10.10.10.5"
+  output="Starting Nmap 7.93
+Host is up (0.0012s latency).
+PORT      STATE SERVICE
+21/tcp    open  ftp
+22/tcp    open  ssh
+80/tcp    open  http
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+8080/tcp  open  http-proxy
+
+Nmap done: 1 IP address (1 host up) scanned in 14.50 seconds"
+/>
+
+### Phase 3: Service & Version Detection
+
+```bash
+# Service version detection
+nmap -sV 10.10.10.5
+
+# OS detection (requires root)
+sudo nmap -O 10.10.10.5
+
+# Aggressive scan (OS + version + scripts + traceroute)
+sudo nmap -A 10.10.10.5
+
+# Standard pentest starting point
+sudo nmap -sC -sV -p 21,22,80,139,445,8080 10.10.10.5 -oN scan.txt
+```
+
+<TerminalWindow
+  title="Service Version Detection"
+  command="nmap -sC -sV -p 21,22,80,445 10.10.10.5"
+  output="PORT    STATE SERVICE     VERSION
+21/tcp  open  ftp         vsftpd 3.0.3
+| ftp-anon: Anonymous FTP login allowed
+22/tcp  open  ssh         OpenSSH 7.6p1 Ubuntu
+80/tcp  open  http        Apache httpd 2.4.29
+|_http-title: Company Intranet
+445/tcp open  microsoft-ds Samba smbd 4.7.6"
+/>
+
+## Web Enumeration
+
+### Directory & File Discovery
+
+```bash
+# Gobuster — fast directory brute-forcing
+gobuster dir -u http://10.10.10.5 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+gobuster dir -u http://10.10.10.5 -w /usr/share/seclists/Discovery/Web-Content/common.txt -x php,html,txt,bak
+
+# Feroxbuster — recursive scanning
+feroxbuster -u http://10.10.10.5 -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
+
+# Dirsearch
+python3 dirsearch.py -u http://10.10.10.5 -e php,html,txt
+
+# Nikto — vulnerability scanner
+nikto -h http://10.10.10.5
+```
+
+### Subdomain Enumeration
+
+```bash
+# Gobuster DNS mode
+gobuster dns -d target.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+
+# Amass (comprehensive)
+amass enum -d target.com
+
+# Subfinder
+subfinder -d target.com
+
+# DNSRecon
+dnsrecon -d target.com -t brt -D /usr/share/wordlists/subdomains.txt
+```
+
+## SMB Enumeration
+
+```bash
+# Enumerate shares and users
+enum4linux -a 10.10.10.5
+
+# List shares
+smbclient -L //10.10.10.5 -N
+
+# Nmap SMB scripts
+nmap -p 445 --script smb-enum-shares,smb-enum-users,smb-os-discovery 10.10.10.5
+
+# CrackMapExec
+crackmapexec smb 10.10.10.5
+crackmapexec smb 10.10.10.5 --shares -u '' -p ''
+```
+
+## SNMP Enumeration
+
+```bash
+# Walk SNMP tree with default community strings
+snmpwalk -c public -v1 10.10.10.5
+snmpwalk -c private -v1 10.10.10.5
+
+# Brute force community strings
+onesixtyone -c /usr/share/seclists/Discovery/SNMP/common-snmp-community-strings.txt 10.10.10.5
+```
+
+## Standard Recon Workflow
+
+```bash
+# Step 1: Quick port scan to find open ports
+sudo nmap -sS -p- --min-rate 5000 10.10.10.5 -oN ports.txt
+
+# Step 2: Detailed scan on discovered ports
+ports=$(grep "open" ports.txt | cut -d'/' -f1 | tr '\n' ',' | sed 's/,$//')
+sudo nmap -sC -sV -p $ports 10.10.10.5 -oN detailed.txt
+
+# Step 3: Web enumeration (if HTTP found)
+gobuster dir -u http://10.10.10.5 -w /usr/share/seclists/Discovery/Web-Content/common.txt -x php,html,txt
+
+# Step 4: Service-specific enumeration based on findings
+# FTP → try anonymous login
+# SMB → enum4linux, smbclient
+# SSH → check version for known CVEs
+# HTTP → nikto, gobuster, manual browsing
+```
+
+<InfoBox type="important">
+Always save your scan results with `-oN`, `-oX`, or `-oA`. You'll reference them throughout the engagement and need them for your report.
+</InfoBox>
+
+<Quiz
+  question="What does a 'Filtered' port state mean in Nmap?"
+  answer="A firewall is dropping packets — no response received"
+  hint="The port is neither open nor closed from Nmap's perspective — it just gets no answer."
+/>
+
+<Quiz
+  question="What Nmap flag scans all 65535 ports?"
+  answer="-p-"
+  hint="The dash after -p means 'all ports from 1 to 65535'."
+/>
+
+<Quiz
+  question="What tool performs comprehensive SMB enumeration on Linux?"
+  answer="enum4linux"
+  hint="Run with -a for all checks: enum4linux -a 10.10.10.5"
+/>

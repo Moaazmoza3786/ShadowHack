@@ -1,16 +1,35 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Search, User, Users, Code, PenTool, Hash, X, Star, Link2 } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Search, User, Users, Code, PenTool, Hash, X, Link2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
 import './GlobalSearch.css';
 
 const GlobalSearch = ({ userId = 1 }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const { isSearchOpen: isOpen, setIsSearchOpen: setIsOpen, apiUrl } = useAppContext();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const searchRef = useRef(null);
     const navigate = useNavigate();
+
+    // Use userId to satisfy linter if needed, or just leave it
+    // console.log('Current search for user:', userId);
+
+    const performSearch = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(`${apiUrl}/search/global?q=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            if (data.success) {
+                setResults(data.results);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    }, [apiUrl, query]);
 
     // Close on click outside
     useEffect(() => {
@@ -21,7 +40,7 @@ const GlobalSearch = ({ userId = 1 }) => {
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    }, [setIsOpen]);
 
     // Keyboard shortcut (Ctrl+K or Cmd+K)
     useEffect(() => {
@@ -36,7 +55,7 @@ const GlobalSearch = ({ userId = 1 }) => {
         };
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, []);
+    }, [setIsOpen]);
 
     // Debounced search
     useEffect(() => {
@@ -48,22 +67,7 @@ const GlobalSearch = ({ userId = 1 }) => {
             }
         }, 300);
         return () => clearTimeout(delaySearch);
-    }, [query]);
-
-    const performSearch = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch(`http://localhost:5000/api/search/global?q=${encodeURIComponent(query)}`);
-            const data = await res.json();
-            if (data.success) {
-                setResults(data.results);
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [query, performSearch]);
 
     const handleNavigate = (link) => {
         navigate(link);
@@ -82,14 +86,7 @@ const GlobalSearch = ({ userId = 1 }) => {
         }
     };
 
-    if (!isOpen) {
-        return (
-            <button className="search-trigger" onClick={() => setIsOpen(true)}>
-                <Search size={18} />
-                <span className="search-placeholder">Search... (Ctrl+K)</span>
-            </button>
-        );
-    }
+    if (!isOpen) return null;
 
     return (
         <div className="search-overlay">

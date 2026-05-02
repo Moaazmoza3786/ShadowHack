@@ -1,0 +1,58 @@
+
+# The Pentester's Career Path (Certs & Jobs)
+
+## So You Want to be a Hacker?
+The path is not linear. You don't need a CS degree, but you need **Curiosity** and **Persistence**.
+
+## 1. The Certification Roadmap
+Certifications get you past HR filters. Skills get you the job.
+
+### Entry Level
+-   **Security+ (CompTIA):** The baseline. Theory only, but respected by HR.
+-   **eJPT (eLearnSecurity):** 100% Practical. The best "first" pentesting cert.
+
+### The Gold Standard
+-   **OSCP (OffSec Certified Professional):** The "Gatekeeper" cert. A 24-hour brutal exam. If you have this, you will get interviews.
+
+### Advanced
+-   **CPTS (HackTheBox):** Harder than OSCP, very modern. Gaining respect rapidly.
+-   **PNPT (TCM Security):** Focuses on "Real World" pentesting (OSINT, AD, Reporting) rather than just CTF tricks.
+
+<Mermaid chart={`
+graph TD
+    Start[Beginner] --> Sec[Security+]
+    Sec --> eJPT[eJPT]
+    eJPT --> OSCP[OSCP (The Goal)]
+    OSCP --> Job[Junior Pentester Job]
+    Job --> Advanced[CPTS / OSEP / OSED]
+    
+    style OSCP fill:#f59e0b,stroke:#fff,stroke-width:2px,color:#000
+    style Job fill:#22c55e,stroke:#fff,stroke-width:2px,color:#000
+`} />
+
+## 2. Building a Portfolio
+-   **GitHub:** Write your own tools. Even a simple "Python Port Scanner" shows you can code.
+-   **Blog:** Write about machines you hacked (HackTheBox writeups). It shows you can communicate technical concepts.
+-   **CVEs:** If you find a 0-day in a small open-source app, report it. Getting a CVE ID is a golden ticket.
+
+## 3. The Job Hunt
+-   **Titles:** Junior Penetration Tester, Security Analyst, SOC Analyst (often a stepping stone), Associate Consultant.
+-   **The Interview:** They will ask technical questions ("Explain the difference between encoding and encryption", "How does a buffer overflow work?"). They might give you a "test ip" to hack during the interview.
+
+## 4. Soft Skills
+Being a Pentester is 50% Hacking, 50% Consulting.
+-   **Reporting:** If you can't write a report that a CEO understands, you are useless to the client.
+-   **Ethics:** You will see sensitive data. Integrity is non-negotiable.
+
+---
+
+<Quiz 
+    question="Which certification is widely considered the industry 'Standard' or 'Gatekeeper' for getting your first Penetration Testing job?" 
+    options={[
+        "CEH (Certified Ethical Hacker)",
+        "OSCP (OffSec Certified Professional)",
+        "CISSP",
+        "Security+"
+    ]} 
+    answer="OSCP (OffSec Certified Professional)" 
+/>

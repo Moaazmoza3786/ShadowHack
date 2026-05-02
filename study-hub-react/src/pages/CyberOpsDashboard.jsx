@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     Terminal, Shield, Zap, Search, Activity,
     Cpu, Target, AlertTriangle, ChevronRight, Play, CheckCircle
@@ -10,7 +10,7 @@ import './CyberOpsDashboard.css';
 const CyberOpsDashboard = () => {
     const { apiUrl } = useAppContext();
     const [target, setTarget] = useState('');
-    const [activeTasks, setActiveTasks] = useState([]);
+    // const [activeTasks, setActiveTasks] = useState([]);
     const [taskOutput, setTaskOutput] = useState('');
     const [aiAnalysis, setAiAnalysis] = useState(null);
     const [isScanning, setIsScanning] = useState(false);
@@ -30,7 +30,7 @@ const CyberOpsDashboard = () => {
                 pollTaskStatus(data.task_id);
             }
         } catch (err) {
-            console.error(err);
+            console.error('Scan error:', err);
             setIsScanning(false);
         }
     };
@@ -50,6 +50,7 @@ const CyberOpsDashboard = () => {
                     setIsScanning(false);
                 }
             } catch (err) {
+                console.error('Poll status error:', err);
                 clearInterval(interval);
                 setIsScanning(false);
             }
@@ -69,7 +70,7 @@ const CyberOpsDashboard = () => {
                 setAiAnalysis(data.analysis);
             }
         } catch (err) {
-            console.error(err);
+            console.error('Analysis error:', err);
         } finally {
             setIsAnalyzing(false);
         }

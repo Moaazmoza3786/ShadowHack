@@ -55,6 +55,7 @@ const AIAssistant = () => {
                 setIsLoading(false);
             }
         } catch (error) {
+            console.error('AI Response error:', error);
             setMessages(prev => [...prev, { role: 'assistant', content: language === 'ar' ? 'فشل الاتصال بالنواة العصبية.' : 'Connection to Brain-Core failed.' }]);
             setIsLoading(false);
         }
